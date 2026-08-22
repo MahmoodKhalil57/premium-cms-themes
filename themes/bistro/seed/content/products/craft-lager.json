@@ -1,0 +1,35 @@
+{
+ "$schema": "../../schemas/entry.schema.json",
+ "id": "product-craft-lager",
+ "status": "published",
+ "data": {
+  "title": "Craft lager",
+  "price": 5.5,
+  "category": "Drinks",
+  "station": "bar",
+  "image": "https://images.unsplash.com/photo-1608270586620-248524c67de9?w=1000&q=80&auto=format&fit=crop",
+  "summary": "Local pilsner, 330ml.",
+  "description": [
+   {
+    "_type": "block",
+    "_key": "d1",
+    "style": "normal",
+    "markDefs": [],
+    "children": [
+     {
+      "_type": "span",
+      "_key": "s1",
+      "text": "Local pilsner, 330ml.",
+      "marks": []
+     }
+    ]
+   }
+  ],
+  "dietary": "",
+  "options": [],
+  "available": true,
+  "popular": false,
+  "featured": false,
+  "requires_shipping": false
+ }
+}

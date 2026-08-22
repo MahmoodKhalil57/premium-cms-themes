@@ -1,0 +1,54 @@
+{
+ "$schema": "../../schemas/entry.schema.json",
+ "id": "product-diavola",
+ "status": "published",
+ "data": {
+  "title": "Diavola",
+  "price": 13.5,
+  "category": "Pizza",
+  "station": "pizza",
+  "image": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=1000&q=80&auto=format&fit=crop",
+  "summary": "Spicy salami, chilli honey, mozzarella.",
+  "description": [
+   {
+    "_type": "block",
+    "_key": "d1",
+    "style": "normal",
+    "markDefs": [],
+    "children": [
+     {
+      "_type": "span",
+      "_key": "s1",
+      "text": "Spicy salami, chilli honey, mozzarella.",
+      "marks": []
+     }
+    ]
+   }
+  ],
+  "dietary": "spicy",
+  "options": [
+   {
+    "id": "size",
+    "name": "size",
+    "type": "radio",
+    "label": "Size",
+    "required": true,
+    "options": [
+     {
+      "value": "10",
+      "label": "10 inch"
+     },
+     {
+      "value": "14",
+      "label": "14 inch",
+      "priceDelta": 4
+     }
+    ]
+   }
+  ],
+  "available": true,
+  "popular": false,
+  "featured": false,
+  "requires_shipping": false
+ }
+}

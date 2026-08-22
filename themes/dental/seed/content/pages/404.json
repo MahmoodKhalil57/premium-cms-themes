@@ -1,0 +1,17 @@
+{
+ "$schema": "../../schemas/page.schema.json",
+ "id": "page-404",
+ "status": "published",
+ "data": {
+  "title": "Page not found",
+  "content": [
+   {
+    "_type": "grapesBlock",
+    "_key": "404-design",
+    "html": "<section class=\"es-404\">\n  <h1>That page has wandered off.</h1>\n  <p>Try the <a href=\"/products\">shop</a> or head <a href=\"/\">home</a>.</p>\n</section>",
+    "css": ".es-404{padding:4rem 0;text-align:center}.es-404 h1{font-size:2rem}",
+    "project": null
+   }
+  ]
+ }
+}

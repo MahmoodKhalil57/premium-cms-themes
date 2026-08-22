@@ -1,0 +1,46 @@
+{
+	"id": "bistro",
+	"name": "Bistro \u2014 Restaurant",
+	"description": "Restaurant for PremiumCMS: a menu with modifiers and kitchen stations, delivery with postcode zones, pickup and dine-in with QR table cards, reservations, and a staff app with PIN sign-in \u2014 POS with cash/card and open tabs, cash drawer with Z reports, kitchen display per station and automatic ticket/receipt printing (browser agent or PrintNode). Seeds dishes, tables, printers, staff PINs, opening hours and delivery zones.",
+	"author": {
+		"name": "PremiumCMS",
+		"verified": true,
+		"avatarUrl": null
+	},
+	"keywords": [
+		"restaurant",
+		"bistro",
+		"delivery",
+		"pickup",
+		"dine-in",
+		"qr-ordering",
+		"reservations",
+		"pos",
+		"kitchen-display",
+		"printing",
+		"github-pages",
+		"official",
+		"premiumcms"
+	],
+	"previewUrl": "https://bistro.premium-cms.com/",
+	"demoUrl": "https://bistro.premium-cms.com/",
+	"repositoryUrl": "https://github.com/MahmoodKhalil57/premium-cms-bistro-theme",
+	"homepageUrl": "https://premium-cms.com",
+	"license": "MIT",
+	"premiumcms": {
+		"official": true,
+		"templateRepo": "MahmoodKhalil57/premium-cms-bistro-theme",
+		"hosting": [
+			"platform",
+			"github"
+		],
+		"plugins": [
+			"premium-commerce",
+			"premium-forms",
+			"premium-site-kit"
+		],
+		"colorScheme": "vintage-paper"
+	},
+	"createdAt": "2026-08-22T00:00:00Z",
+	"updatedAt": "2026-08-22T00:00:00Z"
+}

@@ -1,0 +1,35 @@
+{
+ "$schema": "../../schemas/entry.schema.json",
+ "id": "product-rigatoni",
+ "status": "published",
+ "data": {
+  "title": "Rigatoni alla vodka",
+  "price": 15,
+  "category": "Mains",
+  "station": "kitchen",
+  "image": "https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=1000&q=80&auto=format&fit=crop",
+  "summary": "Tomato, cream, chilli, pancetta, pecorino.",
+  "description": [
+   {
+    "_type": "block",
+    "_key": "d1",
+    "style": "normal",
+    "markDefs": [],
+    "children": [
+     {
+      "_type": "span",
+      "_key": "s1",
+      "text": "Tomato, cream, chilli, pancetta, pecorino.",
+      "marks": []
+     }
+    ]
+   }
+  ],
+  "dietary": "spicy",
+  "options": [],
+  "available": true,
+  "popular": false,
+  "featured": false,
+  "requires_shipping": false
+ }
+}

@@ -1,0 +1,99 @@
+{
+ "$schema": "../../schemas/entry.schema.json",
+ "id": "product-bistro-burger",
+ "status": "published",
+ "data": {
+  "title": "Bistro burger",
+  "price": 15.5,
+  "category": "Burgers",
+  "station": "kitchen",
+  "image": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=1000&q=80&auto=format&fit=crop",
+  "summary": "Dry-aged beef, smoked cheddar, pickles, burger sauce, fries.",
+  "description": [
+   {
+    "_type": "block",
+    "_key": "d1",
+    "style": "normal",
+    "markDefs": [],
+    "children": [
+     {
+      "_type": "span",
+      "_key": "s1",
+      "text": "Dry-aged beef, smoked cheddar, pickles, burger sauce, fries.",
+      "marks": []
+     }
+    ]
+   }
+  ],
+  "dietary": "",
+  "options": [
+   {
+    "id": "cook",
+    "name": "cook",
+    "type": "radio",
+    "label": "Cooked",
+    "required": true,
+    "options": [
+     {
+      "value": "medium",
+      "label": "Medium"
+     },
+     {
+      "value": "well",
+      "label": "Well done"
+     }
+    ]
+   },
+   {
+    "id": "extras",
+    "name": "extras",
+    "type": "checkbox-group",
+    "label": "Extras",
+    "required": false,
+    "options": [
+     {
+      "value": "bacon",
+      "label": "Smoked bacon",
+      "priceDelta": 1.5
+     },
+     {
+      "value": "egg",
+      "label": "Fried egg",
+      "priceDelta": 1
+     },
+     {
+      "value": "patty",
+      "label": "Extra patty",
+      "priceDelta": 4
+     }
+    ]
+   },
+   {
+    "id": "side",
+    "name": "side",
+    "type": "radio",
+    "label": "Side",
+    "required": true,
+    "options": [
+     {
+      "value": "fries",
+      "label": "Fries"
+     },
+     {
+      "value": "sweet",
+      "label": "Sweet potato fries",
+      "priceDelta": 1.5
+     },
+     {
+      "value": "salad",
+      "label": "Side salad"
+     }
+    ]
+   }
+  ],
+  "available": true,
+  "popular": true,
+  "featured": true,
+  "requires_shipping": false
+ }
+}

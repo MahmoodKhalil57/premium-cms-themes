@@ -1,0 +1,7 @@
+{
+	"$comment": "Demo projects on the platform that run each theme. CI re-applies a theme's seed to its demos after every merge (fleet/sync themes).",
+	"premiumcms": ["shots"],
+	"ecom": ["ecom"],
+	"dental": ["dental"],
+	"bistro": ["bistro"]
+}

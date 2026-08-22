@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/page.schema.json",
+	"id": "page-about",
+	"status": "published",
+	"data": {
+		"title": "About",
+		"content": [
+			{
+				"_type": "grapesBlock",
+				"_key": "about-design",
+				"html": "<article class=\"es-page\">\n  <h1>About</h1>\n  <p>We started with one question: why is it so hard to buy a plain t-shirt that fits well, feels good and still looks new a year later? The answer was usually cheap cotton, loose cuts and dye that washes out.</p>\n  <p>So we make a short list of tees and get each one right. The fabric is GOTS-certified organic cotton, ringspun for softness and knitted to two weights — 200 gsm for everyday and 260 gsm for heavyweight. Every piece is sewn first and dyed after, which is slower and costs more, but it means the colour is in the fibre, not on it.</p>\n  <h2>Made responsibly</h2>\n  <p>Our tees are made in a family-run factory we visit every year, paying above the local living wage. Packaging is recycled paper, no plastic.</p>\n  <h2>Questions</h2>\n  <p>Reply to any email from us — a person reads every one.</p>\n</article>",
+				"css": ".es-page{max-width:46rem;margin:0 auto;padding:2rem 0 4rem}.es-page h1{font-size:2.25rem;letter-spacing:-.02em;margin:0 0 1rem}.es-page h2{font-size:1.35rem;margin:2rem 0 .75rem}.es-page p,.es-page li{color:var(--color-text-secondary,#444);line-height:1.65}\n.es-table{width:100%;border-collapse:collapse;margin:1rem 0 1.5rem;font-size:.95rem}.es-table th,.es-table td{padding:.6rem .75rem;border-bottom:1px solid var(--color-border-subtle,#eee);text-align:start}.es-table th{font-weight:600}",
+				"project": null
+			}
+		]
+	}
+}

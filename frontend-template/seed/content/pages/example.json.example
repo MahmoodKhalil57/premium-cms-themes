@@ -1,0 +1,14 @@
+{
+	"$schema": "../../schemas/entry.schema.json",
+	"status": "published",
+	"data": {
+		"title": "Example page",
+		"content": [
+			{
+				"_type": "block",
+				"style": "normal",
+				"children": [{ "_type": "span", "text": "Rename this file to <slug>.json and it becomes a page at /pages/<slug> on the next deploy." }]
+			}
+		]
+	}
+}

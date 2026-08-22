@@ -1,0 +1,44 @@
+{
+	"$schema": "../../schemas/entry.schema.json",
+	"status": "published",
+	"data": {
+		"title": "Classic Crew Tee — Black",
+		"price": 28,
+		"sku": "TEE-CLS-BLK",
+		"sizes": "XS, S, M, L, XL, XXL",
+		"color": "Black",
+		"stock": 35,
+		"image": {
+			"$media": {
+				"url": "https://images.pexels.com/photos/8532638/pexels-photo-8532638.jpeg?auto=compress&cs=tinysrgb&w=1600",
+				"alt": "Black t-shirt hanging on a white hanger",
+				"filename": "classic-crew-black.jpg"
+			}
+		},
+		"summary": "The everyday crew in deep garment-dyed black.",
+		"requires_shipping": true,
+		"featured": true,
+		"description": [
+			{
+				"_type": "block",
+				"style": "normal",
+				"children": [
+					{
+						"_type": "span",
+						"text": "The same classic crew cut in a rich black that stays black — garment-dyed after sewing so the colour goes all the way through. Mid-weight, soft from the first wear."
+					}
+				]
+			},
+			{
+				"_type": "block",
+				"style": "normal",
+				"children": [
+					{
+						"_type": "span",
+						"text": "Fabric: 100% organic ringspun cotton, 200 gsm, garment-dyed and pre-shrunk. Machine wash cold, tumble dry low. Unisex fit — see the size guide for measurements."
+					}
+				]
+			}
+		]
+	}
+}

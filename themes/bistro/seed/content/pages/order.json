@@ -1,0 +1,17 @@
+{
+ "$schema": "../../schemas/page.schema.json",
+ "id": "page-order",
+ "status": "published",
+ "data": {
+  "title": "Order online",
+  "content": [
+   {
+    "_type": "grapesBlock",
+    "_key": "order",
+    "html": "<section class=\"dn dn-section\"><div data-table-banner hidden></div><span class=\"dn-eyebrow\">Order online</span><h1>Delivery, pickup or to your table</h1><p class=\"dn-lead\">Build your order, then choose how you want it at checkout.</p><div data-restaurant-menu></div></section>",
+    "css": ".dn{max-width:72rem;margin:0 auto;padding:0 1.5rem}.dn-section{padding:4rem 0}.dn-eyebrow{display:inline-block;font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--primary);margin-bottom:.6rem;font-weight:600}.dn h1,.dn h2{margin:0 0 .75rem;letter-spacing:-.02em}.dn h1{font-size:clamp(2.2rem,5vw,3.8rem);line-height:1.05}.dn h2{font-size:clamp(1.7rem,3vw,2.4rem)}.dn-lead{font-size:1.15rem;color:var(--muted-foreground);max-width:40rem;margin:0 0 1.5rem}.dn-btn{display:inline-block;padding:.85rem 1.5rem;border-radius:999px;background:var(--primary);color:var(--primary-foreground);font-weight:600;text-decoration:none;border:1px solid var(--primary)}.dn-btn--ghost{background:transparent;color:var(--foreground);border-color:var(--border)}.dn-btn+.dn-btn{margin-inline-start:.6rem}.dn-grid{display:grid;gap:1.5rem;grid-template-columns:repeat(auto-fit,minmax(16rem,1fr))}.dn-card{background:var(--card);color:var(--card-foreground);border:1px solid var(--border);border-radius:var(--radius,1rem);padding:1.5rem;box-shadow:var(--shadow-sm)}.dn-card h3{margin:.25rem 0 .5rem}.dn-card p{margin:0;color:var(--muted-foreground)}.dn-card img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:calc(var(--radius,1rem) - .4rem);margin-bottom:1rem}.dn-narrow{max-width:48rem}",
+    "project": null
+   }
+  ]
+ }
+}

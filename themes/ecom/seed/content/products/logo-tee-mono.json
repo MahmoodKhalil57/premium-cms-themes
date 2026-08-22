@@ -1,0 +1,44 @@
+{
+	"$schema": "../../schemas/entry.schema.json",
+	"status": "published",
+	"data": {
+		"title": "Logo Tee — Monochrome",
+		"price": 32,
+		"sku": "TEE-LGO-MNO",
+		"sizes": "XS, S, M, L, XL, XXL",
+		"color": "White",
+		"stock": 25,
+		"image": {
+			"$media": {
+				"url": "https://images.unsplash.com/photo-1666358054407-9ea933dadf41?crop=entropy&cs=srgb&fm=jpg&q=85&w=1600",
+				"alt": "White t-shirt with a black logo",
+				"filename": "logo-tee-mono.jpg"
+			}
+		},
+		"summary": "Our mark, screen-printed in black on white.",
+		"requires_shipping": true,
+		"featured": false,
+		"description": [
+			{
+				"_type": "block",
+				"style": "normal",
+				"children": [
+					{
+						"_type": "span",
+						"text": "A small chest logo, hand screen-printed with water-based ink so it stays soft and never cracks. Classic crew cut."
+					}
+				]
+			},
+			{
+				"_type": "block",
+				"style": "normal",
+				"children": [
+					{
+						"_type": "span",
+						"text": "Fabric: 100% organic ringspun cotton, 200 gsm, garment-dyed and pre-shrunk. Machine wash cold, tumble dry low. Unisex fit — see the size guide for measurements."
+					}
+				]
+			}
+		]
+	}
+}

@@ -1,0 +1,35 @@
+{
+ "$schema": "../../schemas/entry.schema.json",
+ "id": "product-burrata-bruschetta",
+ "status": "published",
+ "data": {
+  "title": "Burrata bruschetta",
+  "price": 8.5,
+  "category": "Starters",
+  "station": "kitchen",
+  "image": "https://images.unsplash.com/photo-1572695157366-5e585ab2b69f?w=1000&q=80&auto=format&fit=crop",
+  "summary": "Charred sourdough, burrata, datterini tomatoes, basil oil.",
+  "description": [
+   {
+    "_type": "block",
+    "_key": "d1",
+    "style": "normal",
+    "markDefs": [],
+    "children": [
+     {
+      "_type": "span",
+      "_key": "s1",
+      "text": "Charred sourdough, burrata, datterini tomatoes, basil oil.",
+      "marks": []
+     }
+    ]
+   }
+  ],
+  "dietary": "V",
+  "options": [],
+  "available": true,
+  "popular": true,
+  "featured": false,
+  "requires_shipping": false
+ }
+}

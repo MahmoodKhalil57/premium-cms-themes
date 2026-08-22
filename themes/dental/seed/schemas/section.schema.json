@@ -1,0 +1,52 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"$id": "premiumcms-seed-section",
+	"title": "PremiumCMS seed section",
+	"description": "A reusable content block (Manage → Sections in the admin). Layout sections `site-header` and `site-footer` hold the designer-editable chrome; their html may contain EMPTY marker elements the platform fills at build time: [data-menu=\"<name>\"], [data-widget-area=\"<name>\"], [data-theme-switcher]. Lives in seed/sections/<slug>.json; `slug` defaults to the filename.",
+	"type": "object",
+	"additionalProperties": false,
+	"required": [
+		"title",
+		"content"
+	],
+	"properties": {
+		"$schema": {
+			"type": "string"
+		},
+		"slug": {
+			"type": "string",
+			"pattern": "^[a-z0-9][a-z0-9-]*$"
+		},
+		"title": {
+			"type": "string"
+		},
+		"description": {
+			"type": "string"
+		},
+		"keywords": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"content": {
+			"type": "array",
+			"items": {
+				"anyOf": [
+					{
+						"$ref": "entry.schema.json#/definitions/portableTextBlock"
+					},
+					{
+						"$ref": "entry.schema.json#/definitions/htmlBlock"
+					},
+					{
+						"$ref": "entry.schema.json#/definitions/grapesBlock"
+					},
+					{
+						"$ref": "entry.schema.json#/definitions/otherBlock"
+					}
+				]
+			}
+		}
+	}
+}

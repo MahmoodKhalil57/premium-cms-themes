@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/page.schema.json",
+	"id": "page-shipping-returns",
+	"status": "published",
+	"data": {
+		"title": "Shipping & returns",
+		"content": [
+			{
+				"_type": "grapesBlock",
+				"_key": "shipping-returns-design",
+				"html": "<article class=\"es-page\">\n  <h1>Shipping &amp; returns</h1>\n  <h2>Shipping</h2>\n  <ul>\n    <li>Free tracked shipping on orders over $75; $6 flat below that.</li>\n    <li>Orders placed before 2pm ship the same business day.</li>\n    <li>Delivery in 2–5 business days domestically, 7–14 internationally. Duties for international orders are paid by the recipient.</li>\n  </ul>\n  <h2>Returns &amp; exchanges</h2>\n  <ul>\n    <li>30 days from delivery, unworn and unwashed, with tags.</li>\n    <li>Size exchanges are free — reply to your order email with the size you need and we'll send a prepaid label.</li>\n    <li>Refunds go back to the original payment method within 5 business days of us receiving the return.</li>\n  </ul>\n  <h2>Something wrong with your order?</h2>\n  <p>Reply to your confirmation email with a photo and your order number and we'll fix it — replacement or refund, your call.</p>\n</article>",
+				"css": ".es-page{max-width:46rem;margin:0 auto;padding:2rem 0 4rem}.es-page h1{font-size:2.25rem;letter-spacing:-.02em;margin:0 0 1rem}.es-page h2{font-size:1.35rem;margin:2rem 0 .75rem}.es-page p,.es-page li{color:var(--color-text-secondary,#444);line-height:1.65}\n.es-table{width:100%;border-collapse:collapse;margin:1rem 0 1.5rem;font-size:.95rem}.es-table th,.es-table td{padding:.6rem .75rem;border-bottom:1px solid var(--color-border-subtle,#eee);text-align:start}.es-table th{font-weight:600}",
+				"project": null
+			}
+		]
+	}
+}

@@ -1,0 +1,53 @@
+{
+ "$schema": "../../schemas/entry.schema.json",
+ "id": "product-kids-pasta",
+ "status": "published",
+ "data": {
+  "title": "Kids' pasta",
+  "price": 7,
+  "category": "Kids",
+  "station": "kitchen",
+  "image": "https://images.unsplash.com/photo-1551782450-a2132b4ba21d?w=1000&q=80&auto=format&fit=crop",
+  "summary": "Penne with tomato or butter, served with juice.",
+  "description": [
+   {
+    "_type": "block",
+    "_key": "d1",
+    "style": "normal",
+    "markDefs": [],
+    "children": [
+     {
+      "_type": "span",
+      "_key": "s1",
+      "text": "Penne with tomato or butter, served with juice.",
+      "marks": []
+     }
+    ]
+   }
+  ],
+  "dietary": "",
+  "options": [
+   {
+    "id": "sauce",
+    "name": "sauce",
+    "type": "radio",
+    "label": "Sauce",
+    "required": true,
+    "options": [
+     {
+      "value": "tomato",
+      "label": "Tomato"
+     },
+     {
+      "value": "butter",
+      "label": "Butter & cheese"
+     }
+    ]
+   }
+  ],
+  "available": true,
+  "popular": false,
+  "featured": false,
+  "requires_shipping": false
+ }
+}

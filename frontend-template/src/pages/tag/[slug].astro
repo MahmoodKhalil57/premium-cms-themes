@@ -1,0 +1,38 @@
+---
+import Base from "../../layouts/Base.astro";
+import PostCard from "../../components/PostCard.astro";
+import { getEmDashCollection, getTermsForEntries, getUsedTerms } from "../../lib/emdash";
+import { getReadingTime } from "../../utils/reading-time";
+
+export async function getStaticPaths() {
+	const terms = await getUsedTerms("posts", "tag");
+	return terms.map((term) => ({ params: { slug: term.slug }, props: { term } }));
+}
+
+const term = Astro.props.term ?? (await getUsedTerms("posts", "tag")).find((t) => t.slug === Astro.params.slug);
+if (!term) return Astro.redirect("/404");
+const { entries } = await getEmDashCollection("posts");
+const posts = entries
+	.filter((p) => (p.data.terms.tag ?? []).some((t) => t.slug === term.slug))
+	.sort((a, b) => (b.data.publishedAt?.getTime() ?? 0) - (a.data.publishedAt?.getTime() ?? 0));
+const tagsByEntry = await getTermsForEntries("posts", posts.map((p) => p.data.id), "tag");
+---
+
+<Base title={`${term.label} posts`} description={`All posts in ${term.label}`}>
+	<section class="archive-section">
+		<header class="archive-header">
+			<span class="archive-label">Tag</span>
+			<h1 class="archive-title">{term.label}</h1>
+			<p class="archive-count">{posts.length} {posts.length === 1 ? "post" : "posts"}</p>
+		</header>
+		{posts.length === 0 ? (
+			<p class="no-posts">No posts here yet.</p>
+		) : (
+			<div class="posts-grid">
+				{posts.map((post) => (
+					<PostCard post={post} tags={tagsByEntry.get(post.data.id) ?? []} />
+				))}
+			</div>
+		)}
+	</section>
+</Base>

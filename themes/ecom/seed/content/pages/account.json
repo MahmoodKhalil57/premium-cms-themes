@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/page.schema.json",
+	"id": "page-account",
+	"status": "published",
+	"data": {
+		"title": "Your account",
+		"content": [
+			{
+				"_type": "grapesBlock",
+				"_key": "account-design",
+				"html": "<section class=\"ec-account\" data-account><p>Loading your account…</p></section>",
+				"css": ".ec-account{max-width:var(--wide-width,1200px);margin:0 auto;padding:2rem 1.5rem 4rem}",
+				"project": null
+			}
+		]
+	}
+}

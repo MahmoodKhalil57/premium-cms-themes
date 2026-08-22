@@ -1,0 +1,59 @@
+{
+ "$schema": "../../schemas/entry.schema.json",
+ "id": "product-caesar",
+ "status": "published",
+ "data": {
+  "title": "Chicken Caesar salad",
+  "price": 13,
+  "category": "Mains",
+  "station": "kitchen",
+  "image": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=1000&q=80&auto=format&fit=crop",
+  "summary": "Grilled chicken, gem lettuce, anchovy dressing, croutons.",
+  "description": [
+   {
+    "_type": "block",
+    "_key": "d1",
+    "style": "normal",
+    "markDefs": [],
+    "children": [
+     {
+      "_type": "span",
+      "_key": "s1",
+      "text": "Grilled chicken, gem lettuce, anchovy dressing, croutons.",
+      "marks": []
+     }
+    ]
+   }
+  ],
+  "dietary": "",
+  "options": [
+   {
+    "id": "protein",
+    "name": "protein",
+    "type": "radio",
+    "label": "Protein",
+    "required": true,
+    "options": [
+     {
+      "value": "chicken",
+      "label": "Chicken"
+     },
+     {
+      "value": "prawns",
+      "label": "King prawns",
+      "priceDelta": 3
+     },
+     {
+      "value": "none",
+      "label": "No protein",
+      "priceDelta": -2
+     }
+    ]
+   }
+  ],
+  "available": true,
+  "popular": false,
+  "featured": false,
+  "requires_shipping": false
+ }
+}

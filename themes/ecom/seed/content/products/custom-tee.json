@@ -1,0 +1,294 @@
+{
+	"$schema": "../../schemas/entry.schema.json",
+	"status": "published",
+	"data": {
+		"title": "Custom Tee — design your own",
+		"price": 32,
+		"sku": "TEE-CUSTOM",
+		"sizes": "XS, S, M, L, XL, XXL",
+		"color": "Your choice",
+		"stock": null,
+		"image": {
+			"$media": {
+				"url": "https://images.pexels.com/photos/12025472/pexels-photo-12025472.jpeg?auto=compress&cs=tinysrgb&w=1600",
+				"alt": "Plain white t-shirt ready for a custom print",
+				"filename": "custom-tee.jpg"
+			}
+		},
+		"summary": "Pick the collar, sleeves, fabric and colour — then add a preset print or design your own.",
+		"requires_shipping": true,
+		"featured": true,
+		"description": [
+			{
+				"_type": "block",
+				"style": "normal",
+				"children": [
+					{
+						"_type": "span",
+						"text": "Built to order. Choose the cut and fabric, then either pick one of our prints or open the design studio to place text, artwork and your own image on the front or back. Every design is checked before it goes to print."
+					}
+				]
+			},
+			{
+				"_type": "block",
+				"style": "normal",
+				"children": [
+					{
+						"_type": "span",
+						"text": "Made from the same organic cotton as the rest of the range. Allow 5–7 working days for production."
+					}
+				]
+			}
+		],
+		"options": [
+			{
+				"id": "collar",
+				"type": "radio",
+				"label": "Collar",
+				"name": "collar",
+				"required": true,
+				"width": "half",
+				"options": [
+					{
+						"value": "crew",
+						"label": "Crew neck"
+					},
+					{
+						"value": "vneck",
+						"label": "V-neck",
+						"priceDelta": 2
+					},
+					{
+						"value": "henley",
+						"label": "Henley (3 buttons)",
+						"priceDelta": 4
+					}
+				]
+			},
+			{
+				"id": "sleeve",
+				"type": "radio",
+				"label": "Sleeves",
+				"name": "sleeve",
+				"required": true,
+				"width": "half",
+				"options": [
+					{
+						"value": "short",
+						"label": "Short"
+					},
+					{
+						"value": "long",
+						"label": "Long",
+						"priceDelta": 5
+					},
+					{
+						"value": "raglan",
+						"label": "Raglan ¾",
+						"priceDelta": 4
+					}
+				]
+			},
+			{
+				"id": "fabric",
+				"type": "select",
+				"label": "Fabric",
+				"name": "fabric",
+				"required": true,
+				"options": [
+					{
+						"value": "organic200",
+						"label": "Organic cotton 200 gsm"
+					},
+					{
+						"value": "heavy260",
+						"label": "Heavyweight 260 gsm",
+						"priceDelta": 6
+					},
+					{
+						"value": "triblend",
+						"label": "Tri-blend (cotton/poly/rayon)",
+						"priceDelta": 4
+					}
+				]
+			},
+			{
+				"id": "colour",
+				"type": "swatch",
+				"label": "Colour",
+				"name": "colour",
+				"required": true,
+				"options": [
+					{
+						"value": "white",
+						"label": "White",
+						"color": "#ffffff"
+					},
+					{
+						"value": "black",
+						"label": "Black",
+						"color": "#141414"
+					},
+					{
+						"value": "sage",
+						"label": "Sage",
+						"color": "#b7c9b0"
+					},
+					{
+						"value": "sand",
+						"label": "Sand",
+						"color": "#d9c8a9",
+						"stock": 25
+					},
+					{
+						"value": "navy",
+						"label": "Navy",
+						"color": "#1d3557",
+						"priceDelta": 1
+					}
+				]
+			},
+			{
+				"id": "print_type",
+				"type": "radio",
+				"label": "Print",
+				"name": "print_type",
+				"required": true,
+				"options": [
+					{
+						"value": "none",
+						"label": "No print"
+					},
+					{
+						"value": "preset",
+						"label": "One of our prints",
+						"priceDelta": 6,
+						"description": "Screen-printed artwork from the collection."
+					},
+					{
+						"value": "custom",
+						"label": "My own design",
+						"priceDelta": 8,
+						"description": "Text, artwork and your photos, placed in the design studio."
+					}
+				]
+			},
+			{
+				"id": "preset",
+				"type": "image-choice",
+				"label": "Choose a print",
+				"name": "preset",
+				"required": true,
+				"condition": {
+					"field": "print_type",
+					"op": "eq",
+					"value": "preset"
+				},
+				"options": [
+					{
+						"value": "wave",
+						"label": "Waves",
+						"image": "https://cdn.jsdelivr.net/gh/MahmoodKhalil57/premium-cms-ecom-theme@main/public/prints/wave.svg"
+					},
+					{
+						"value": "sun",
+						"label": "Sun",
+						"image": "https://cdn.jsdelivr.net/gh/MahmoodKhalil57/premium-cms-ecom-theme@main/public/prints/sun.svg"
+					},
+					{
+						"value": "mark",
+						"label": "E mark",
+						"image": "https://cdn.jsdelivr.net/gh/MahmoodKhalil57/premium-cms-ecom-theme@main/public/prints/mark.svg"
+					},
+					{
+						"value": "mountain",
+						"label": "Mountains",
+						"image": "https://cdn.jsdelivr.net/gh/MahmoodKhalil57/premium-cms-ecom-theme@main/public/prints/mountain.svg"
+					}
+				]
+			},
+			{
+				"id": "design",
+				"type": "design",
+				"label": "Your design",
+				"name": "design",
+				"required": true,
+				"condition": {
+					"field": "print_type",
+					"op": "eq",
+					"value": "custom"
+				},
+				"helpText": "Front or back print area, 12 layers max. Text, our artwork, shapes and your own PNG/JPEG.",
+				"design": {
+					"areas": [
+						{
+							"id": "front",
+							"label": "Front",
+							"width": 600,
+							"height": 800,
+							"previewImage": "https://images.pexels.com/photos/12025472/pexels-photo-12025472.jpeg?auto=compress&cs=tinysrgb&w=1000",
+							"printBox": {
+								"x": 33,
+								"y": 28,
+								"w": 34,
+								"h": 44
+							}
+						},
+						{
+							"id": "back",
+							"label": "Back",
+							"width": 600,
+							"height": 800,
+							"previewImage": "https://images.pexels.com/photos/12039633/pexels-photo-12039633.jpeg?auto=compress&cs=tinysrgb&w=1000",
+							"printBox": {
+								"x": 33,
+								"y": 26,
+								"w": 34,
+								"h": 46
+							}
+						}
+					],
+					"presets": [
+						{
+							"id": "wave",
+							"label": "Waves",
+							"image": "https://cdn.jsdelivr.net/gh/MahmoodKhalil57/premium-cms-ecom-theme@main/public/prints/wave.svg"
+						},
+						{
+							"id": "sun",
+							"label": "Sun",
+							"image": "https://cdn.jsdelivr.net/gh/MahmoodKhalil57/premium-cms-ecom-theme@main/public/prints/sun.svg"
+						},
+						{
+							"id": "mark",
+							"label": "E mark",
+							"image": "https://cdn.jsdelivr.net/gh/MahmoodKhalil57/premium-cms-ecom-theme@main/public/prints/mark.svg"
+						},
+						{
+							"id": "mountain",
+							"label": "Mountains",
+							"image": "https://cdn.jsdelivr.net/gh/MahmoodKhalil57/premium-cms-ecom-theme@main/public/prints/mountain.svg"
+						}
+					],
+					"allowText": true,
+					"allowUpload": true,
+					"allowShapes": true,
+					"uploadPriceDelta": 3,
+					"maxLayers": 12,
+					"uploadMaxBytes": 4194304
+				}
+			},
+			{
+				"id": "gift_note",
+				"type": "text",
+				"label": "Gift note (printed on the packing slip)",
+				"name": "gift_note",
+				"required": false,
+				"validation": {
+					"maxLength": 140
+				},
+				"placeholder": "Optional"
+			}
+		]
+	}
+}

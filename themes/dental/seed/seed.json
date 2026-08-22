@@ -1,0 +1,1178 @@
+{
+	"$schema": "./schemas/seed.schema.json",
+	"version": "1",
+	"meta": {
+		"name": "Dental theme seed",
+		"description": "Content-as-code for the PremiumCMS Dental theme: treatments with deposits, online booking with intake forms, smile gallery, Google reviews, consent banner and structured data. Applied on every deploy (update-on-conflict)."
+	},
+	"collections": [
+		{
+			"slug": "products",
+			"label": "Products",
+			"labelSingular": "Product",
+			"hasSeo": true,
+			"supports": [
+				"drafts",
+				"revisions",
+				"search"
+			],
+			"urlPattern": "/products/{slug}",
+			"fields": [
+				{
+					"slug": "title",
+					"label": "Title",
+					"type": "string",
+					"required": true,
+					"searchable": true
+				},
+				{
+					"slug": "price",
+					"label": "Price",
+					"type": "number",
+					"required": true
+				},
+				{
+					"slug": "compare_at_price",
+					"label": "Compare-at price",
+					"type": "number"
+				},
+				{
+					"slug": "sku",
+					"label": "SKU",
+					"type": "string"
+				},
+				{
+					"slug": "sizes",
+					"label": "Sizes (comma-separated, e.g. S, M, L, XL \u2014 leave empty for one-size products)",
+					"type": "string"
+				},
+				{
+					"slug": "color",
+					"label": "Color",
+					"type": "string"
+				},
+				{
+					"slug": "options",
+					"label": "Options (configurable parts: choices with prices, conditions, design studio)",
+					"type": "json",
+					"options": {
+						"schema": {
+							"$schema": "http://json-schema.org/draft-07/schema#",
+							"title": "Product options",
+							"description": "Configurable parts of this product: each field is asked on the product page; choices can add to the price and track their own stock. Conditions show a field only when another has a value.",
+							"type": "array",
+							"items": {
+								"type": "object",
+								"title": "Field",
+								"x-itemTitle": "label",
+								"required": [
+									"type",
+									"name",
+									"label"
+								],
+								"properties": {
+									"type": {
+										"type": "string",
+										"title": "Type",
+										"enum": [
+											"text",
+											"email",
+											"textarea",
+											"number",
+											"tel",
+											"url",
+											"date",
+											"select",
+											"radio",
+											"checkbox",
+											"checkbox-group",
+											"file",
+											"hidden",
+											"swatch",
+											"image-choice",
+											"design"
+										],
+										"x-enumLabels": {
+											"text": "Short text",
+											"textarea": "Paragraph",
+											"email": "Email",
+											"tel": "Phone",
+											"url": "Website",
+											"number": "Number",
+											"date": "Date",
+											"select": "Dropdown",
+											"radio": "Single choice",
+											"checkbox": "Checkbox",
+											"checkbox-group": "Multiple choice",
+											"file": "File upload",
+											"hidden": "Hidden value",
+											"swatch": "Colour swatches",
+											"image-choice": "Picture choice",
+											"design": "Design studio"
+										},
+										"x-ui": {
+											"order": 0
+										}
+									},
+									"label": {
+										"type": "string",
+										"title": "Label",
+										"x-ui": {
+											"order": 1
+										}
+									},
+									"name": {
+										"type": "string",
+										"title": "Name",
+										"description": "Key used in orders and conditions, e.g. collar",
+										"x-ui": {
+											"order": 2
+										}
+									},
+									"id": {
+										"type": "string",
+										"title": "ID",
+										"description": "Optional; defaults to the name",
+										"x-ui": {
+											"order": 3
+										}
+									},
+									"required": {
+										"type": "boolean",
+										"title": "Required"
+									},
+									"width": {
+										"type": "string",
+										"title": "Width",
+										"enum": [
+											"full",
+											"half"
+										],
+										"x-enumLabels": {
+											"full": "Full width",
+											"half": "Half width"
+										}
+									},
+									"placeholder": {
+										"type": "string",
+										"title": "Placeholder"
+									},
+									"helpText": {
+										"type": "string",
+										"title": "Help text"
+									},
+									"defaultValue": {
+										"type": "string",
+										"title": "Default value"
+									},
+									"options": {
+										"type": "array",
+										"title": "Choices",
+										"items": {
+											"type": "object",
+											"title": "Choice",
+											"x-itemTitle": "label",
+											"required": [
+												"value",
+												"label"
+											],
+											"properties": {
+												"label": {
+													"type": "string",
+													"title": "Label",
+													"x-ui": {
+														"order": 0
+													}
+												},
+												"value": {
+													"type": "string",
+													"title": "Value",
+													"description": "Stored key \u2014 letters, numbers, dashes",
+													"x-ui": {
+														"order": 1
+													}
+												},
+												"priceDelta": {
+													"type": "number",
+													"title": "Price added when chosen"
+												},
+												"color": {
+													"type": "string",
+													"format": "color",
+													"title": "Colour (swatches)"
+												},
+												"image": {
+													"type": "string",
+													"format": "uri",
+													"title": "Image URL (picture choices)"
+												},
+												"stock": {
+													"type": "integer",
+													"title": "Stock for this choice",
+													"minimum": 0
+												},
+												"sku": {
+													"type": "string",
+													"title": "SKU"
+												},
+												"description": {
+													"type": "string",
+													"title": "Description"
+												}
+											}
+										},
+										"x-showWhen": {
+											"field": "type",
+											"in": [
+												"select",
+												"radio",
+												"checkbox-group",
+												"swatch",
+												"image-choice"
+											]
+										}
+									},
+									"priceDelta": {
+										"type": "number",
+										"title": "Price added when filled",
+										"x-showWhen": {
+											"field": "type",
+											"in": [
+												"text",
+												"textarea",
+												"number",
+												"checkbox",
+												"file",
+												"date",
+												"design"
+											]
+										}
+									},
+									"validation": {
+										"type": "object",
+										"title": "Validation",
+										"x-ui": {
+											"collapsed": true
+										},
+										"properties": {
+											"minLength": {
+												"type": "integer",
+												"title": "Min length",
+												"minimum": 0
+											},
+											"maxLength": {
+												"type": "integer",
+												"title": "Max length",
+												"minimum": 1
+											},
+											"min": {
+												"type": "number",
+												"title": "Minimum"
+											},
+											"max": {
+												"type": "number",
+												"title": "Maximum"
+											},
+											"pattern": {
+												"type": "string",
+												"title": "Pattern (regex)"
+											},
+											"patternMessage": {
+												"type": "string",
+												"title": "Pattern error message"
+											},
+											"accept": {
+												"type": "string",
+												"title": "Accepted file types"
+											},
+											"maxFileSize": {
+												"type": "integer",
+												"title": "Max file size (bytes)"
+											}
+										}
+									},
+									"condition": {
+										"type": "object",
+										"title": "Show only when\u2026",
+										"x-ui": {
+											"collapsed": true
+										},
+										"properties": {
+											"field": {
+												"type": "string",
+												"title": "Other field (name)"
+											},
+											"op": {
+												"type": "string",
+												"title": "Condition",
+												"enum": [
+													"eq",
+													"neq",
+													"in",
+													"nin",
+													"filled",
+													"empty"
+												],
+												"x-enumLabels": {
+													"eq": "equals",
+													"neq": "does not equal",
+													"in": "is one of (comma-separated)",
+													"nin": "is none of (comma-separated)",
+													"filled": "is filled",
+													"empty": "is empty"
+												}
+											},
+											"value": {
+												"type": "string",
+												"title": "Value"
+											}
+										}
+									},
+									"design": {
+										"title": "Design studio",
+										"type": "object",
+										"description": "Print areas the customer designs on, artwork they can place, and what the studio allows.",
+										"required": [
+											"areas"
+										],
+										"properties": {
+											"areas": {
+												"type": "array",
+												"title": "Print areas",
+												"minItems": 1,
+												"items": {
+													"type": "object",
+													"title": "Print area",
+													"x-itemTitle": "label",
+													"required": [
+														"id",
+														"label",
+														"width",
+														"height"
+													],
+													"properties": {
+														"id": {
+															"type": "string",
+															"title": "ID",
+															"description": "Short key, e.g. front",
+															"x-ui": {
+																"order": 0
+															}
+														},
+														"label": {
+															"type": "string",
+															"title": "Label",
+															"x-ui": {
+																"order": 1
+															}
+														},
+														"width": {
+															"type": "integer",
+															"title": "Width (design units)",
+															"minimum": 1,
+															"maximum": 4000
+														},
+														"height": {
+															"type": "integer",
+															"title": "Height (design units)",
+															"minimum": 1,
+															"maximum": 4000
+														},
+														"previewImage": {
+															"type": "string",
+															"format": "uri",
+															"title": "Mockup image URL",
+															"description": "Garment photo shown under the print area"
+														},
+														"printBox": {
+															"type": "object",
+															"title": "Print box on the mockup (%)",
+															"x-ui": {
+																"collapsed": false
+															},
+															"properties": {
+																"x": {
+																	"type": "number",
+																	"title": "Left %",
+																	"minimum": 0,
+																	"maximum": 100
+																},
+																"y": {
+																	"type": "number",
+																	"title": "Top %",
+																	"minimum": 0,
+																	"maximum": 100
+																},
+																"w": {
+																	"type": "number",
+																	"title": "Width %",
+																	"minimum": 1,
+																	"maximum": 100
+																},
+																"h": {
+																	"type": "number",
+																	"title": "Height %",
+																	"minimum": 1,
+																	"maximum": 100
+																}
+															}
+														}
+													}
+												}
+											},
+											"presets": {
+												"type": "array",
+												"title": "Preset artwork",
+												"items": {
+													"type": "object",
+													"title": "Artwork",
+													"x-itemTitle": "label",
+													"required": [
+														"id",
+														"label",
+														"image"
+													],
+													"properties": {
+														"id": {
+															"type": "string",
+															"title": "ID"
+														},
+														"label": {
+															"type": "string",
+															"title": "Label"
+														},
+														"image": {
+															"type": "string",
+															"format": "uri",
+															"title": "Image URL"
+														},
+														"priceDelta": {
+															"type": "number",
+															"title": "Price added when used"
+														}
+													}
+												}
+											},
+											"allowText": {
+												"type": "boolean",
+												"title": "Allow text",
+												"default": true
+											},
+											"allowUpload": {
+												"type": "boolean",
+												"title": "Allow customer images",
+												"default": true
+											},
+											"allowShapes": {
+												"type": "boolean",
+												"title": "Allow shapes",
+												"default": true
+											},
+											"fonts": {
+												"type": "array",
+												"title": "Fonts",
+												"items": {
+													"type": "string"
+												},
+												"x-ui": {
+													"widget": "chips",
+													"placeholder": "Inter, Arial, Impact\u2026"
+												}
+											},
+											"colors": {
+												"type": "array",
+												"title": "Colour swatches",
+												"items": {
+													"type": "string"
+												},
+												"x-ui": {
+													"widget": "chips",
+													"placeholder": "#111111, #ffffff\u2026"
+												}
+											},
+											"maxLayers": {
+												"type": "integer",
+												"title": "Max layers",
+												"minimum": 1,
+												"maximum": 12
+											},
+											"uploadMaxBytes": {
+												"type": "integer",
+												"title": "Max upload size (bytes)",
+												"minimum": 1
+											},
+											"textPriceDelta": {
+												"type": "number",
+												"title": "Price added for text"
+											},
+											"uploadPriceDelta": {
+												"type": "number",
+												"title": "Price added for a customer image"
+											}
+										},
+										"x-showWhen": {
+											"field": "type",
+											"equals": "design"
+										},
+										"x-ui": {
+											"collapsed": false
+										}
+									}
+								}
+							}
+						}
+					}
+				},
+				{
+					"slug": "stock",
+					"label": "Stock (blank = unlimited)",
+					"type": "integer"
+				},
+				{
+					"slug": "image",
+					"label": "Image",
+					"type": "image"
+				},
+				{
+					"slug": "summary",
+					"label": "Summary",
+					"type": "text",
+					"searchable": true
+				},
+				{
+					"slug": "description",
+					"label": "Description",
+					"type": "portableText",
+					"searchable": true
+				},
+				{
+					"slug": "requires_shipping",
+					"label": "Requires shipping",
+					"type": "boolean",
+					"defaultValue": true
+				},
+				{
+					"slug": "featured",
+					"label": "Featured",
+					"type": "boolean"
+				}
+			]
+		}
+	],
+	"menus": [
+		{
+			"name": "primary",
+			"label": "Primary",
+			"items": [
+				{
+					"label": "Treatments",
+					"url": "/treatments",
+					"type": "custom"
+				},
+				{
+					"label": "Smile gallery",
+					"url": "/smile-gallery",
+					"type": "custom"
+				},
+				{
+					"label": "Team",
+					"url": "/team",
+					"type": "custom"
+				},
+				{
+					"label": "Reviews",
+					"url": "/reviews",
+					"type": "custom"
+				},
+				{
+					"label": "Shop",
+					"url": "/products",
+					"type": "custom"
+				},
+				{
+					"label": "Contact",
+					"url": "/contact",
+					"type": "custom"
+				}
+			]
+		},
+		{
+			"name": "footer",
+			"label": "Footer",
+			"items": [
+				{
+					"label": "Book online",
+					"url": "/book",
+					"type": "custom"
+				},
+				{
+					"label": "New patient form",
+					"url": "/new-patient",
+					"type": "custom"
+				},
+				{
+					"label": "Fees & finance",
+					"url": "/fees",
+					"type": "custom"
+				},
+				{
+					"label": "Privacy & cookies",
+					"url": "/privacy",
+					"type": "custom"
+				},
+				{
+					"label": "My account",
+					"url": "/account",
+					"type": "custom"
+				}
+			]
+		}
+	],
+	"redirects": [
+		{
+			"source": "/admin",
+			"destination": "/_emdash/admin",
+			"type": 302
+		}
+	],
+	"widgetAreas": [
+		{
+			"name": "footer",
+			"label": "Footer widgets",
+			"description": "Rendered in the footer's help column.",
+			"widgets": [
+				{
+					"type": "content",
+					"title": "Opening hours",
+					"content": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Mon\u2013Fri 8:30\u201318:00 \u00b7 Sat 9:00\u201313:00. Emergencies seen same day \u2014 call 020 7946 0000."
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	],
+	"content": {},
+	"retire": [],
+	"plugins": {
+		"premium-site-kit": {
+			"settings": {
+				"businessType": "Dentist",
+				"businessName": "Harley Smile Studio",
+				"phone": "+44 20 7946 0000",
+				"email": "hello@example.com",
+				"streetAddress": "12 Harley Street",
+				"locality": "London",
+				"region": "Greater London",
+				"postalCode": "W1G 9PF",
+				"country": "GB",
+				"latitude": "51.5186",
+				"longitude": "-0.1469",
+				"openingHours": "Mo-Fr 08:30-18:00, Sa 09:00-13:00",
+				"priceRange": "\u00a3\u00a3",
+				"consentEnabled": true,
+				"consentTitle": "We use cookies",
+				"consentText": "Essential cookies keep the site working. With your consent we also use analytics cookies to understand how the site is used.",
+				"privacyUrl": "/privacy",
+				"reviewsMinRating": 4
+			}
+		},
+		"premium-commerce": {
+			"settings": {
+				"bookingTimezone": "Europe/London",
+				"slotIntervalMin": 15,
+				"leadTimeHours": 2,
+				"horizonDays": 45,
+				"holdMinutes": 15,
+				"customerAccounts": true,
+				"currency": "gbp",
+				"storeName": "Harley Smile Studio"
+			},
+			"calls": [
+				{
+					"route": "staff/save",
+					"body": {
+						"record": {
+							"name": "Dr Amira Khan",
+							"title": "Principal dentist",
+							"active": true,
+							"availability": [
+								{
+									"dow": 1,
+									"start": "08:30",
+									"end": "18:00"
+								},
+								{
+									"dow": 2,
+									"start": "08:30",
+									"end": "18:00"
+								},
+								{
+									"dow": 3,
+									"start": "08:30",
+									"end": "13:00"
+								},
+								{
+									"dow": 4,
+									"start": "08:30",
+									"end": "18:00"
+								},
+								{
+									"dow": 5,
+									"start": "08:30",
+									"end": "17:00"
+								},
+								{
+									"dow": 6,
+									"start": "09:00",
+									"end": "13:00"
+								}
+							],
+							"timeOff": []
+						}
+					}
+				},
+				{
+					"route": "staff/save",
+					"body": {
+						"record": {
+							"name": "Dr Tom Okafor",
+							"title": "Implant surgeon",
+							"active": true,
+							"availability": [
+								{
+									"dow": 2,
+									"start": "09:00",
+									"end": "17:00"
+								},
+								{
+									"dow": 3,
+									"start": "09:00",
+									"end": "17:00"
+								},
+								{
+									"dow": 4,
+									"start": "09:00",
+									"end": "17:00"
+								}
+							],
+							"timeOff": []
+						}
+					}
+				},
+				{
+					"route": "staff/save",
+					"body": {
+						"record": {
+							"name": "Sam Lee",
+							"title": "Hygienist",
+							"active": true,
+							"availability": [
+								{
+									"dow": 1,
+									"start": "08:30",
+									"end": "17:00"
+								},
+								{
+									"dow": 2,
+									"start": "08:30",
+									"end": "17:00"
+								},
+								{
+									"dow": 3,
+									"start": "08:30",
+									"end": "17:00"
+								},
+								{
+									"dow": 4,
+									"start": "08:30",
+									"end": "17:00"
+								},
+								{
+									"dow": 5,
+									"start": "08:30",
+									"end": "17:00"
+								},
+								{
+									"dow": 6,
+									"start": "09:00",
+									"end": "13:00"
+								}
+							],
+							"timeOff": []
+						}
+					}
+				},
+				{
+					"route": "services/save",
+					"body": {
+						"record": {
+							"slug": "check-up-hygiene-clean",
+							"title": "Check-up & hygiene clean",
+							"description": "Examination, X-rays when needed and a full hygienist clean.",
+							"durationMin": 40,
+							"bufferMin": 10,
+							"price": 85,
+							"depositType": "fixed",
+							"depositAmount": 25,
+							"staffIds": [],
+							"intakeFormId": "new-patient-intake",
+							"active": true
+						}
+					}
+				},
+				{
+					"route": "services/save",
+					"body": {
+						"record": {
+							"slug": "teeth-whitening",
+							"title": "Professional teeth whitening",
+							"description": "In-clinic whitening plus take-home trays for lasting results.",
+							"durationMin": 60,
+							"bufferMin": 10,
+							"price": 395,
+							"depositType": "fixed",
+							"depositAmount": 95,
+							"staffIds": [],
+							"intakeFormId": "new-patient-intake",
+							"active": true
+						}
+					}
+				},
+				{
+					"route": "services/save",
+					"body": {
+						"record": {
+							"slug": "composite-bonding",
+							"title": "Composite bonding consultation",
+							"description": "Reshape chips and gaps in a single visit \u2014 consultation first.",
+							"durationMin": 30,
+							"bufferMin": 10,
+							"price": 0,
+							"depositType": "none",
+							"depositAmount": 0,
+							"staffIds": [],
+							"intakeFormId": "new-patient-intake",
+							"active": true
+						}
+					}
+				},
+				{
+					"route": "services/save",
+					"body": {
+						"record": {
+							"slug": "invisible-aligners",
+							"title": "Invisible aligners consultation",
+							"description": "Clear aligners with 3D planning; see your end result first.",
+							"durationMin": 30,
+							"bufferMin": 10,
+							"price": 0,
+							"depositType": "none",
+							"depositAmount": 0,
+							"staffIds": [],
+							"intakeFormId": "new-patient-intake",
+							"active": true
+						}
+					}
+				},
+				{
+					"route": "services/save",
+					"body": {
+						"record": {
+							"slug": "dental-implants",
+							"title": "Dental implant consultation",
+							"description": "Permanent replacement teeth with a 10-year guarantee.",
+							"durationMin": 45,
+							"bufferMin": 10,
+							"price": 0,
+							"depositType": "none",
+							"depositAmount": 0,
+							"staffIds": [],
+							"intakeFormId": "new-patient-intake",
+							"active": true
+						}
+					}
+				},
+				{
+					"route": "services/save",
+					"body": {
+						"record": {
+							"slug": "emergency-appointment",
+							"title": "Same-day emergency",
+							"description": "Pain, swelling or a broken tooth \u2014 seen today.",
+							"durationMin": 30,
+							"bufferMin": 0,
+							"price": 95,
+							"depositType": "fixed",
+							"depositAmount": 95,
+							"staffIds": [],
+							"intakeFormId": "new-patient-intake",
+							"active": true
+						}
+					}
+				},
+				{
+					"route": "automations/save",
+					"body": {
+						"record": {
+							"trigger": "booking_confirmed",
+							"subject": "You're booked: {{service}} on {{when}}",
+							"body": "Hi {{first_name}},\n\nYour {{service}} with {{staff}} is confirmed for {{when}}.\n\nAddress: 12 Harley Street, London W1G 9PF. Please arrive 5 minutes early.\n\nNeed to change it? Manage your booking: {{manage_url}}\n\n{{store}}",
+							"active": true,
+							"offset": 0,
+							"title": "Booking confirmation"
+						}
+					}
+				},
+				{
+					"route": "automations/save",
+					"body": {
+						"record": {
+							"trigger": "booking_reminder",
+							"subject": "Reminder: {{service}} tomorrow at {{when}}",
+							"body": "Hi {{first_name}},\n\nJust a reminder of your {{service}} tomorrow, {{when}}, with {{staff}}.\n\nIf you can't make it, let us know today so we can offer the slot to someone else: {{manage_url}}\n\nSee you soon,\n{{store}}",
+							"active": true,
+							"offset": 24,
+							"title": "24-hour reminder"
+						}
+					}
+				},
+				{
+					"route": "automations/save",
+					"body": {
+						"record": {
+							"trigger": "booking_recall",
+							"subject": "Time for your next check-up, {{first_name}}",
+							"body": "Hi {{first_name}},\n\nIt's been six months since your last visit \u2014 time for a check-up and clean to keep everything healthy.\n\nBook online in a minute: {{site_url}}/book\n\n{{store}}",
+							"active": true,
+							"offset": 180,
+							"title": "6-month recall"
+						}
+					}
+				},
+				{
+					"route": "automations/save",
+					"body": {
+						"record": {
+							"trigger": "booking_no_show",
+							"subject": "We missed you today",
+							"body": "Hi {{first_name}},\n\nWe're sorry we missed you for your {{service}} today. Everything okay?\n\nYou can rebook any time: {{site_url}}/book \u2014 or reply to this email and we'll find you a slot.\n\n{{store}}",
+							"active": true,
+							"offset": 2,
+							"title": "Missed appointment follow-up"
+						}
+					}
+				}
+			]
+		},
+		"premium-forms": {
+			"calls": [
+				{
+					"route": "forms/create",
+					"ignoreErrors": true,
+					"body": {
+						"name": "Contact",
+						"slug": "contact",
+						"status": "published",
+						"pages": [
+							{
+								"title": "",
+								"fields": [
+									{
+										"id": "name",
+										"name": "name",
+										"type": "text",
+										"label": "Your name",
+										"required": true,
+										"width": "half"
+									},
+									{
+										"id": "email",
+										"name": "email",
+										"type": "email",
+										"label": "Email",
+										"required": true,
+										"width": "half"
+									},
+									{
+										"id": "phone",
+										"name": "phone",
+										"type": "tel",
+										"label": "Phone",
+										"required": false,
+										"width": "half"
+									},
+									{
+										"id": "topic",
+										"name": "topic",
+										"type": "select",
+										"label": "What is it about?",
+										"required": false,
+										"width": "half",
+										"options": [
+											{
+												"value": "appointment",
+												"label": "An appointment"
+											},
+											{
+												"value": "treatment",
+												"label": "A treatment question"
+											},
+											{
+												"value": "fees",
+												"label": "Fees & finance"
+											},
+											{
+												"value": "other",
+												"label": "Something else"
+											}
+										]
+									},
+									{
+										"id": "message",
+										"name": "message",
+										"type": "textarea",
+										"label": "Message",
+										"required": true
+									}
+								]
+							}
+						],
+						"settings": {
+							"submitLabel": "Send message",
+							"successMessage": "Thanks \u2014 we'll reply within one working day.",
+							"notifyEmails": []
+						}
+					}
+				},
+				{
+					"route": "forms/create",
+					"ignoreErrors": true,
+					"body": {
+						"name": "New patient intake",
+						"slug": "new-patient-intake",
+						"status": "published",
+						"pages": [
+							{
+								"title": "About you",
+								"fields": [
+									{
+										"id": "dob",
+										"name": "dob",
+										"type": "date",
+										"label": "Date of birth",
+										"required": true,
+										"width": "half"
+									},
+									{
+										"id": "phone",
+										"name": "phone",
+										"type": "tel",
+										"label": "Mobile",
+										"required": true,
+										"width": "half"
+									},
+									{
+										"id": "gp",
+										"name": "gp",
+										"type": "text",
+										"label": "GP practice",
+										"required": false
+									},
+									{
+										"id": "conditions",
+										"name": "conditions",
+										"type": "checkbox-group",
+										"label": "Do any of these apply to you?",
+										"required": false,
+										"options": [
+											{
+												"value": "diabetes",
+												"label": "Diabetes"
+											},
+											{
+												"value": "heart",
+												"label": "Heart condition or pacemaker"
+											},
+											{
+												"value": "blood",
+												"label": "Blood-thinning medication"
+											},
+											{
+												"value": "pregnant",
+												"label": "Pregnant or breastfeeding"
+											},
+											{
+												"value": "allergies",
+												"label": "Allergies (latex, penicillin, anaesthetic)"
+											},
+											{
+												"value": "anxious",
+												"label": "I am anxious about dental treatment"
+											}
+										]
+									},
+									{
+										"id": "medication",
+										"name": "medication",
+										"type": "textarea",
+										"label": "Current medication",
+										"required": false
+									},
+									{
+										"id": "notes",
+										"name": "notes",
+										"type": "textarea",
+										"label": "Anything else we should know?",
+										"required": false
+									}
+								]
+							},
+							{
+								"title": "Consent",
+								"fields": [
+									{
+										"id": "consent",
+										"name": "consent",
+										"type": "consent",
+										"label": "Consent to examination and treatment",
+										"placeholder": "I confirm the information above is accurate. I consent to examination, X-rays where clinically needed, and the treatment discussed with me. I understand I can ask questions and withdraw consent at any time.",
+										"required": true
+									},
+									{
+										"id": "privacy",
+										"name": "privacy",
+										"type": "consent",
+										"label": "Privacy notice",
+										"placeholder": "I have read the privacy notice and understand how my records are stored and used.",
+										"required": true
+									},
+									{
+										"id": "signature",
+										"name": "signature",
+										"type": "signature",
+										"label": "Your signature",
+										"required": true
+									}
+								]
+							}
+						],
+						"settings": {
+							"submitLabel": "Save my details",
+							"successMessage": "Thanks \u2014 your details are saved securely for your visit.",
+							"notifyEmails": []
+						}
+					}
+				}
+			]
+		}
+	}
+}

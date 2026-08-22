@@ -1,0 +1,44 @@
+{
+	"$schema": "../../schemas/entry.schema.json",
+	"status": "published",
+	"data": {
+		"title": "Oversized Tee — Off-white",
+		"price": 38,
+		"sku": "TEE-OVR-OFW",
+		"sizes": "XS, S, M, L, XL, XXL",
+		"color": "Off-white",
+		"stock": 22,
+		"image": {
+			"$media": {
+				"url": "https://images.pexels.com/photos/12039633/pexels-photo-12039633.jpeg?auto=compress&cs=tinysrgb&w=1600",
+				"alt": "Simple white t-shirt on a light background",
+				"filename": "oversized-tee-off-white.jpg"
+			}
+		},
+		"summary": "Roomy through the body, cropped at the hem.",
+		"requires_shipping": true,
+		"featured": false,
+		"description": [
+			{
+				"_type": "block",
+				"style": "normal",
+				"children": [
+					{
+						"_type": "span",
+						"text": "An oversized cut with a wider neck, dropped shoulders and a slightly cropped length. Size down for a relaxed fit, keep your size for a full oversized look."
+					}
+				]
+			},
+			{
+				"_type": "block",
+				"style": "normal",
+				"children": [
+					{
+						"_type": "span",
+						"text": "Fabric: 100% organic ringspun cotton, 200 gsm, garment-dyed and pre-shrunk. Machine wash cold, tumble dry low. Unisex fit — see the size guide for measurements."
+					}
+				]
+			}
+		]
+	}
+}

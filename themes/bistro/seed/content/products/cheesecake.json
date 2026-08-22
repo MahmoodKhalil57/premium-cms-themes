@@ -1,0 +1,35 @@
+{
+ "$schema": "../../schemas/entry.schema.json",
+ "id": "product-cheesecake",
+ "status": "published",
+ "data": {
+  "title": "Baked cheesecake",
+  "price": 7,
+  "category": "Desserts",
+  "station": "kitchen",
+  "image": "https://images.unsplash.com/photo-1533134242443-d4fd215305ad?w=1000&q=80&auto=format&fit=crop",
+  "summary": "Seasonal compote.",
+  "description": [
+   {
+    "_type": "block",
+    "_key": "d1",
+    "style": "normal",
+    "markDefs": [],
+    "children": [
+     {
+      "_type": "span",
+      "_key": "s1",
+      "text": "Seasonal compote.",
+      "marks": []
+     }
+    ]
+   }
+  ],
+  "dietary": "V",
+  "options": [],
+  "available": true,
+  "popular": false,
+  "featured": false,
+  "requires_shipping": false
+ }
+}

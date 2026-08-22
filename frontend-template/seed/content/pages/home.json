@@ -1,0 +1,17 @@
+{
+  "$schema": "../../schemas/page.schema.json",
+  "id": "page-home",
+  "status": "published",
+  "data": {
+    "title": "Home",
+    "content": [
+      {
+        "_type": "grapesBlock",
+        "_key": "home-design",
+        "html": "<div class=\"home-content\">\n  <div data-featured-post></div>\n  <section class=\"posts-section\">\n    <header class=\"section-header\">\n      <h2 class=\"section-title\">Latest</h2>\n      <a href=\"/posts\" class=\"section-link\">View all</a>\n    </header>\n    <div class=\"posts-grid\" data-posts-grid data-limit=\"6\" data-skip-featured></div>\n  </section>\n</div>",
+        "css": "",
+        "project": null
+      }
+    ]
+  }
+}

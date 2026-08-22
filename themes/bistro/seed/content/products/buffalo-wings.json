@@ -1,0 +1,57 @@
+{
+ "$schema": "../../schemas/entry.schema.json",
+ "id": "product-buffalo-wings",
+ "status": "published",
+ "data": {
+  "title": "Buffalo wings",
+  "price": 9,
+  "category": "Starters",
+  "station": "kitchen",
+  "image": "https://images.unsplash.com/photo-1527477396000-e27163b481c2?w=1000&q=80&auto=format&fit=crop",
+  "summary": "Crispy wings, house hot sauce, blue cheese dip.",
+  "description": [
+   {
+    "_type": "block",
+    "_key": "d1",
+    "style": "normal",
+    "markDefs": [],
+    "children": [
+     {
+      "_type": "span",
+      "_key": "s1",
+      "text": "Crispy wings, house hot sauce, blue cheese dip.",
+      "marks": []
+     }
+    ]
+   }
+  ],
+  "dietary": "spicy",
+  "options": [
+   {
+    "id": "heat",
+    "name": "heat",
+    "type": "radio",
+    "label": "Heat",
+    "required": true,
+    "options": [
+     {
+      "value": "mild",
+      "label": "Mild"
+     },
+     {
+      "value": "hot",
+      "label": "Hot"
+     },
+     {
+      "value": "nuclear",
+      "label": "Nuclear"
+     }
+    ]
+   }
+  ],
+  "available": true,
+  "popular": false,
+  "featured": false,
+  "requires_shipping": false
+ }
+}

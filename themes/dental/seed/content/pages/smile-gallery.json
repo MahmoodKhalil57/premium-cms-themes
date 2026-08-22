@@ -1,0 +1,17 @@
+{
+ "$schema": "../../schemas/page.schema.json",
+ "id": "page-smile-gallery",
+ "status": "published",
+ "data": {
+  "title": "Smile gallery",
+  "content": [
+   {
+    "_type": "grapesBlock",
+    "_key": "gallery",
+    "html": "<section class=\"dn dn-section\"><span class=\"dn-eyebrow\">Smile gallery</span><h1>Before & after</h1><p class=\"dn-lead\">Drag the handle to compare. All photos are of our own patients, shared with their consent.</p><div class=\"dn-grid\"><figure data-before-after><img class=\"ba__before\" src=\"https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=1000&q=80&auto=format&fit=crop\" alt=\"Before bonding\"><img class=\"ba__after\" src=\"https://images.unsplash.com/photo-1598256989800-fe5f95da9787?w=1000&q=80&auto=format&fit=crop\" alt=\"After bonding\"><figcaption>Composite bonding on four front teeth</figcaption></figure><figure data-before-after><img class=\"ba__before\" src=\"https://images.unsplash.com/photo-1571772996211-2f02c9727629?w=1000&q=80&auto=format&fit=crop\" alt=\"Before whitening\"><img class=\"ba__after\" src=\"https://images.unsplash.com/photo-1607990281513-2c110a25bd8c?w=1000&q=80&auto=format&fit=crop\" alt=\"After whitening\"><figcaption>In-clinic whitening</figcaption></figure><figure data-before-after><img class=\"ba__before\" src=\"https://images.unsplash.com/photo-1607990281513-2c110a25bd8c?w=1000&q=80&auto=format&fit=crop\" alt=\"Before aligners\"><img class=\"ba__after\" src=\"https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=1000&q=80&auto=format&fit=crop\" alt=\"After aligners\"><figcaption>Clear aligners \u00b7 9 months</figcaption></figure></div></section>",
+    "css": ".dn{max-width:72rem;margin:0 auto;padding:0 1.5rem}.dn-section{padding:4rem 0}.dn-eyebrow{display:inline-block;font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--primary);margin-bottom:.6rem;font-weight:600}.dn h1,.dn h2{margin:0 0 .75rem;letter-spacing:-.02em}.dn h1{font-size:clamp(2.2rem,5vw,3.6rem);line-height:1.05}.dn h2{font-size:clamp(1.7rem,3vw,2.4rem)}.dn-lead{font-size:1.15rem;color:var(--muted-foreground);max-width:40rem;margin:0 0 1.5rem}.dn-btn{display:inline-block;padding:.85rem 1.5rem;border-radius:999px;background:var(--primary);color:var(--primary-foreground);font-weight:600;text-decoration:none;border:1px solid var(--primary)}.dn-btn--ghost{background:transparent;color:var(--foreground);border-color:var(--border)}.dn-btn+.dn-btn{margin-inline-start:.6rem}.dn-grid{display:grid;gap:1.5rem;grid-template-columns:repeat(auto-fit,minmax(16rem,1fr))}.dn-card{background:var(--card);color:var(--card-foreground);border:1px solid var(--border);border-radius:var(--radius,1rem);padding:1.5rem;box-shadow:var(--shadow-sm)}.dn-card h3{margin:.25rem 0 .5rem}.dn-card p{margin:0;color:var(--muted-foreground)}.dn-card .dn-price{display:block;margin-top:1rem;font-weight:600;color:var(--foreground)}.dn-card a.dn-link{display:inline-block;margin-top:.75rem;color:var(--primary);font-weight:600;text-decoration:none}.dn-card img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:calc(var(--radius,1rem) - .4rem);margin-bottom:1rem}",
+    "project": null
+   }
+  ]
+ }
+}

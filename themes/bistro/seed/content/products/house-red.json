@@ -1,0 +1,35 @@
+{
+ "$schema": "../../schemas/entry.schema.json",
+ "id": "product-house-red",
+ "status": "published",
+ "data": {
+  "title": "House red (glass)",
+  "price": 7,
+  "category": "Drinks",
+  "station": "bar",
+  "image": "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=1000&q=80&auto=format&fit=crop",
+  "summary": "Montepulciano d'Abruzzo.",
+  "description": [
+   {
+    "_type": "block",
+    "_key": "d1",
+    "style": "normal",
+    "markDefs": [],
+    "children": [
+     {
+      "_type": "span",
+      "_key": "s1",
+      "text": "Montepulciano d'Abruzzo.",
+      "marks": []
+     }
+    ]
+   }
+  ],
+  "dietary": "",
+  "options": [],
+  "available": true,
+  "popular": false,
+  "featured": false,
+  "requires_shipping": false
+ }
+}

@@ -1,0 +1,45 @@
+{
+	"id": "dental",
+	"name": "Dental \u2014 Private practice",
+	"description": "A complete private-practice website for PremiumCMS: treatments with fees and online deposits, one-minute booking against clinician availability, signed new-patient intake forms, a before/after smile gallery, live Google reviews, FAQ structured data, a cookie-consent banner and a small dental shop. Seeds the booking plugin (treatments, team, reminders, 6-month recalls), the forms and the Site Kit Dentist profile. Served by PremiumCMS as is, or forked to GitHub Pages with one-click theme updates.",
+	"author": {
+		"name": "PremiumCMS",
+		"verified": true,
+		"avatarUrl": null
+	},
+	"keywords": [
+		"dentist",
+		"dental",
+		"clinic",
+		"bookings",
+		"deposits",
+		"intake-forms",
+		"reviews",
+		"before-after",
+		"healthcare",
+		"github-pages",
+		"official",
+		"premiumcms"
+	],
+	"previewUrl": "https://dental.premium-cms.com/",
+	"demoUrl": "https://dental.premium-cms.com/",
+	"repositoryUrl": "https://github.com/MahmoodKhalil57/premium-cms-dental-theme",
+	"homepageUrl": "https://premium-cms.com",
+	"license": "MIT",
+	"premiumcms": {
+		"official": true,
+		"templateRepo": "MahmoodKhalil57/premium-cms-dental-theme",
+		"hosting": [
+			"platform",
+			"github"
+		],
+		"plugins": [
+			"premium-commerce",
+			"premium-forms",
+			"premium-site-kit"
+		],
+		"colorScheme": "clean-slate"
+	},
+	"createdAt": "2026-08-22T00:00:00Z",
+	"updatedAt": "2026-08-22T00:00:00Z"
+}

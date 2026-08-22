@@ -1,0 +1,78 @@
+{
+ "$schema": "../../schemas/entry.schema.json",
+ "id": "product-margherita",
+ "status": "published",
+ "data": {
+  "title": "Margherita",
+  "price": 11,
+  "category": "Pizza",
+  "station": "pizza",
+  "image": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=1000&q=80&auto=format&fit=crop",
+  "summary": "San Marzano tomato, fior di latte, basil.",
+  "description": [
+   {
+    "_type": "block",
+    "_key": "d1",
+    "style": "normal",
+    "markDefs": [],
+    "children": [
+     {
+      "_type": "span",
+      "_key": "s1",
+      "text": "San Marzano tomato, fior di latte, basil.",
+      "marks": []
+     }
+    ]
+   }
+  ],
+  "dietary": "V",
+  "options": [
+   {
+    "id": "size",
+    "name": "size",
+    "type": "radio",
+    "label": "Size",
+    "required": true,
+    "options": [
+     {
+      "value": "10",
+      "label": "10 inch"
+     },
+     {
+      "value": "14",
+      "label": "14 inch",
+      "priceDelta": 4
+     }
+    ]
+   },
+   {
+    "id": "extras",
+    "name": "extras",
+    "type": "checkbox-group",
+    "label": "Add",
+    "required": false,
+    "options": [
+     {
+      "value": "burrata",
+      "label": "Burrata",
+      "priceDelta": 3
+     },
+     {
+      "value": "chilli",
+      "label": "Nduja",
+      "priceDelta": 2.5
+     },
+     {
+      "value": "olives",
+      "label": "Olives",
+      "priceDelta": 1
+     }
+    ]
+   }
+  ],
+  "available": true,
+  "popular": true,
+  "featured": false,
+  "requires_shipping": false
+ }
+}

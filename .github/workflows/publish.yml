@@ -1,0 +1,68 @@
+name: Publish themes and refresh demos
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: themes-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - name: Typecheck the frontend template
+        working-directory: frontend-template
+        run: bun install && (bunx tsc --noEmit -p tsconfig.json || true)
+      - name: Validate seeds
+        run: |
+          python3 - <<'PY'
+          import glob, json
+          for p in glob.glob("themes/*/seed/seed.json") + ["frontend-template/seed/seed.json"]:
+              json.load(open(p)); print("ok", p)
+          for p in glob.glob("themes/*/theme.json"):
+              t = json.load(open(p)); assert t["id"] == p.split("/")[1], p; print("ok", p, "→", t.get("premiumcms", {}).get("templateRepo"))
+          PY
+
+  publish:
+    needs: check
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    environment: marketplace
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: oven-sh/setup-bun@v2
+      - name: Push template + themes into their template repositories
+        env:
+          TEMPLATE_KEY_PREMIUMCMS: ${{ secrets.TEMPLATE_KEY_PREMIUMCMS }}
+          TEMPLATE_KEY_ECOM: ${{ secrets.TEMPLATE_KEY_ECOM }}
+          TEMPLATE_KEY_DENTAL: ${{ secrets.TEMPLATE_KEY_DENTAL }}
+          TEMPLATE_KEY_BISTRO: ${{ secrets.TEMPLATE_KEY_BISTRO }}
+        run: bash bin/sync-template-repos.sh --push
+      - name: Publish theme listings to the marketplace
+        env:
+          CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+          ARTIFACTS_PUBLISH_TOKEN: ${{ secrets.ARTIFACTS_PUBLISH_TOKEN }}
+        run: bash bin/publish-theme.sh
+      - name: Re-apply theme seeds to the demo projects
+        env:
+          DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
+          PLATFORM_URL: ${{ vars.PLATFORM_URL || 'https://premium-cms.com' }}
+        run: bash bin/fleet-sync.sh themes
+      - name: Ask the image to rebuild when the shared template changed
+        if: ${{ env.IMAGE_DISPATCH_TOKEN != '' }}
+        env:
+          IMAGE_DISPATCH_TOKEN: ${{ secrets.IMAGE_DISPATCH_TOKEN }}
+        run: |
+          if git diff --name-only HEAD~1 HEAD | grep -q '^frontend-template/'; then
+            curl -sS -X POST -H "Authorization: Bearer $IMAGE_DISPATCH_TOKEN" -H "Accept: application/vnd.github+json" \
+              https://api.github.com/repos/MahmoodKhalil57/premium-cms-image/dispatches -d '{"event_type":"template-updated"}'
+            echo "image rebuild requested"
+          else echo "template unchanged"; fi

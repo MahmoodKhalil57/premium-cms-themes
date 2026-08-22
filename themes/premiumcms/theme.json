@@ -1,0 +1,15 @@
+{
+	"id": "premiumcms",
+	"name": "PremiumCMS",
+	"description": "The official PremiumCMS theme: a production-ready Astro frontend with featured posts, archives, articles, pages, shop and forms — styled by your Color scheme, served by PremiumCMS as is, or forked to your GitHub and hosted on GitHub Pages with one-click theme updates.",
+	"author": { "name": "PremiumCMS", "verified": true, "avatarUrl": null },
+	"keywords": ["premiumcms", "official", "astro", "blog", "shop", "github-pages", "color-schemes"],
+	"previewUrl": "https://premium-cms.com/",
+	"demoUrl": "https://premium-cms.com/",
+	"repositoryUrl": "https://github.com/MahmoodKhalil57/premium-cms-frontend-template",
+	"homepageUrl": "https://premium-cms.com",
+	"license": "MIT",
+	"premiumcms": { "official": true, "templateRepo": "MahmoodKhalil57/premium-cms-frontend-template", "hosting": ["platform", "github"] },
+	"createdAt": "2026-08-21T00:00:00Z",
+	"updatedAt": "2026-08-21T00:00:00Z"
+}

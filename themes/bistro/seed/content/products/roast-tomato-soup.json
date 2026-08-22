@@ -1,0 +1,35 @@
+{
+ "$schema": "../../schemas/entry.schema.json",
+ "id": "product-roast-tomato-soup",
+ "status": "published",
+ "data": {
+  "title": "Roast tomato soup",
+  "price": 7,
+  "category": "Starters",
+  "station": "kitchen",
+  "image": "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=1000&q=80&auto=format&fit=crop",
+  "summary": "Slow-roasted tomatoes, basil, toasted focaccia.",
+  "description": [
+   {
+    "_type": "block",
+    "_key": "d1",
+    "style": "normal",
+    "markDefs": [],
+    "children": [
+     {
+      "_type": "span",
+      "_key": "s1",
+      "text": "Slow-roasted tomatoes, basil, toasted focaccia.",
+      "marks": []
+     }
+    ]
+   }
+  ],
+  "dietary": "VG, GF",
+  "options": [],
+  "available": true,
+  "popular": false,
+  "featured": false,
+  "requires_shipping": false
+ }
+}

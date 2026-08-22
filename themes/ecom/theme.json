@@ -1,0 +1,43 @@
+{
+	"id": "ecom",
+	"name": "Ecom — Apparel store",
+	"description": "A production-ready t-shirt storefront for PremiumCMS: products with sizes, configurable products (collar, sleeves, fabric, colour swatches, preset prints) and a design studio for custom prints, bag, Stripe or Polar checkout, size guide, shipping & returns and about pages — every page designed in the page builder. Served by PremiumCMS as is, or forked to your GitHub and hosted on GitHub Pages with one-click theme updates.",
+	"author": {
+		"name": "PremiumCMS",
+		"verified": true,
+		"avatarUrl": null
+	},
+	"keywords": [
+		"apparel",
+		"custom-products",
+		"design-studio",
+		"ecommerce",
+		"github-pages",
+		"official",
+		"polar",
+		"premiumcms",
+		"print-on-demand",
+		"shop",
+		"stripe",
+		"t-shirts"
+	],
+	"previewUrl": "https://ecom.premium-cms.com/",
+	"demoUrl": "https://ecom.premium-cms.com/",
+	"repositoryUrl": "https://github.com/MahmoodKhalil57/premium-cms-ecom-theme",
+	"homepageUrl": "https://premium-cms.com",
+	"license": "MIT",
+	"premiumcms": {
+		"official": true,
+		"templateRepo": "MahmoodKhalil57/premium-cms-ecom-theme",
+		"hosting": [
+			"platform",
+			"github"
+		],
+		"plugins": [
+			"premium-commerce"
+		],
+		"colorScheme": "modern-minimal"
+	},
+	"createdAt": "2026-08-22T00:00:00Z",
+	"updatedAt": "2026-08-22T00:00:00Z"
+}

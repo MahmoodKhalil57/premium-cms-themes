@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/page.schema.json",
+	"id": "page-size-guide",
+	"status": "published",
+	"data": {
+		"title": "Size guide",
+		"content": [
+			{
+				"_type": "grapesBlock",
+				"_key": "size-guide-design",
+				"html": "<article class=\"es-page\">\n  <h1>Size guide</h1>\n  <p>All tees are unisex. Measurements are of the garment, laid flat, in centimetres. If you're between sizes, size up for a relaxed fit or down for a closer one — the Oversized Tee already runs one size big.</p>\n  <table class=\"es-table\">\n    <thead><tr><th>Size</th><th>Chest (cm)</th><th>Length (cm)</th><th>Shoulder (cm)</th><th>Fits chest</th></tr></thead>\n    <tbody>\n      <tr><td>XS</td><td>47</td><td>66</td><td>42</td><td>81–86 cm</td></tr>\n      <tr><td>S</td><td>50</td><td>69</td><td>44</td><td>86–94 cm</td></tr>\n      <tr><td>M</td><td>53</td><td>72</td><td>46</td><td>94–102 cm</td></tr>\n      <tr><td>L</td><td>56</td><td>74</td><td>49</td><td>102–110 cm</td></tr>\n      <tr><td>XL</td><td>60</td><td>76</td><td>52</td><td>110–118 cm</td></tr>\n      <tr><td>XXL</td><td>64</td><td>78</td><td>55</td><td>118–126 cm</td></tr>\n    </tbody>\n  </table>\n  <h2>How to measure</h2>\n  <p>Take a tee that fits you well, lay it flat and measure across the chest 2 cm below the armholes, then from the top of the shoulder seam to the hem. Match those to the table above.</p>\n  <h2>Shrinkage</h2>\n  <p>Every tee is pre-shrunk; expect at most 2–3% after the first wash if you tumble dry hot. Wash cold and hang dry to keep the exact fit.</p>\n</article>",
+				"css": ".es-page{max-width:46rem;margin:0 auto;padding:2rem 0 4rem}.es-page h1{font-size:2.25rem;letter-spacing:-.02em;margin:0 0 1rem}.es-page h2{font-size:1.35rem;margin:2rem 0 .75rem}.es-page p,.es-page li{color:var(--color-text-secondary,#444);line-height:1.65}\n.es-table{width:100%;border-collapse:collapse;margin:1rem 0 1.5rem;font-size:.95rem}.es-table th,.es-table td{padding:.6rem .75rem;border-bottom:1px solid var(--color-border-subtle,#eee);text-align:start}.es-table th{font-weight:600}",
+				"project": null
+			}
+		]
+	}
+}
