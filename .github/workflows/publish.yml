@@ -77,10 +77,10 @@ jobs:
           PLATFORM_URL: ${{ vars.PLATFORM_URL || 'https://premium-cms.com' }}
         run: bash bin/fleet-sync.sh themes
       - name: Ask the image to rebuild when the shared template changed
-        if: ${{ secrets.IMAGE_DISPATCH_TOKEN != '' }}
         env:
           IMAGE_DISPATCH_TOKEN: ${{ secrets.IMAGE_DISPATCH_TOKEN }}
         run: |
+          [ -n "$IMAGE_DISPATCH_TOKEN" ] || { echo "IMAGE_DISPATCH_TOKEN not set — skipping image dispatch"; exit 0; }
           if git diff --name-only HEAD~1 HEAD | grep -q '^frontend-template/'; then
             curl -sS -X POST -H "Authorization: Bearer $IMAGE_DISPATCH_TOKEN" -H "Accept: application/vnd.github+json" \
               https://api.github.com/repos/MahmoodKhalil57/premium-cms-image/dispatches -d '{"event_type":"template-updated"}'
