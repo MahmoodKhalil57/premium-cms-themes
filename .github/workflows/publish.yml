@@ -57,6 +57,7 @@ jobs:
           TEMPLATE_KEY_ECOM: ${{ secrets.TEMPLATE_KEY_ECOM }}
           TEMPLATE_KEY_DENTAL: ${{ secrets.TEMPLATE_KEY_DENTAL }}
           TEMPLATE_KEY_BISTRO: ${{ secrets.TEMPLATE_KEY_BISTRO }}
+          TEMPLATE_KEY_SAASTEMLY: ${{ secrets.TEMPLATE_KEY_SAASTEMLY }}
           PLUGINS_SRC: ${{ github.workspace }}/plugins-src
         run: bash bin/sync-template-repos.sh --push
       - name: Publish theme listings to the marketplace
@@ -76,7 +77,7 @@ jobs:
           PLATFORM_URL: ${{ vars.PLATFORM_URL || 'https://premium-cms.com' }}
         run: bash bin/fleet-sync.sh themes
       - name: Ask the image to rebuild when the shared template changed
-        if: ${{ env.IMAGE_DISPATCH_TOKEN != '' }}
+        if: ${{ secrets.IMAGE_DISPATCH_TOKEN != '' }}
         env:
           IMAGE_DISPATCH_TOKEN: ${{ secrets.IMAGE_DISPATCH_TOKEN }}
         run: |
