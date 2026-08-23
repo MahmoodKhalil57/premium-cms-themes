@@ -4,7 +4,6 @@
 	"status": "published",
 	"data": {
 		"title": "Blog — SaaSTEMLY",
-		"excerpt": "Engineering write-ups, delivery lessons and updates from the SaaSTEMLY team.",
 		"content": [
 			{
 				"_type": "grapesBlock",

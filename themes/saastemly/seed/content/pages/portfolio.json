@@ -4,7 +4,6 @@
 	"status": "published",
 	"data": {
 		"title": "Portfolio — SaaSTEMLY",
-		"excerpt": "Explore our portfolio of custom web apps, mobile solutions, and digital platforms built for clients worldwide.",
 		"content": [
 			{
 				"_type": "grapesBlock",

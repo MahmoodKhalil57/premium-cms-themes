@@ -4,7 +4,6 @@
 	"status": "published",
 	"data": {
 		"title": "Contact us — SaaSTEMLY",
-		"excerpt": "Reach out to SaaSTEMLY — whether it's a new project, a partnership inquiry, or a question about our work.",
 		"content": [
 			{
 				"_type": "grapesBlock",

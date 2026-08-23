@@ -14,7 +14,7 @@
 			"name": "category",
 			"label": "Categories",
 			"labelSingular": "Category",
-			"hierarchical": false,
+			"hierarchical": true,
 			"collections": [
 				"posts"
 			],

@@ -4,7 +4,6 @@
 	"status": "published",
 	"data": {
 		"title": "FAQ — SaaSTEMLY",
-		"excerpt": "Answers to common questions about working with SaaSTEMLY — pricing, process, support, and more.",
 		"content": [
 			{
 				"_type": "grapesBlock",
