@@ -1,0 +1,20 @@
+{
+	"$schema": "../../schemas/page.schema.json",
+	"id": "page-signup",
+	"status": "published",
+	"data": {
+		"title": "Create your account",
+		"content": [
+			{
+				"_type": "grapesBlock",
+				"_key": "signup-design",
+				"html": "<div class=\"pf-page\">\n  <h1>Create your account</h1>\n  <p class=\"pf-prose\">One email, no password. After you confirm the link we send, you land on your dashboard where you can add credits and create your first site.</p>\n  <div data-platform-auth=\"signup\" data-redirect=\"/account\"><p>Loading…</p></div>\n</div>",
+				"css": ".pf-page{max-width:var(--wide-width,1100px);margin:0 auto;padding:2rem 1.5rem 4rem}.pf-prose{max-width:46rem}.pf-prose h2{margin-top:2rem}",
+				"project": null
+			}
+		],
+		"seo": {
+			"description": "Sign up for PremiumCMS."
+		}
+	}
+}

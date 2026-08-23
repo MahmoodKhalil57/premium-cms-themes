@@ -1,0 +1,20 @@
+{
+	"$schema": "../../schemas/page.schema.json",
+	"id": "page-privacy",
+	"status": "published",
+	"data": {
+		"title": "Privacy Policy",
+		"content": [
+			{
+				"_type": "grapesBlock",
+				"_key": "privacy-design",
+				"html": "<div class=\"pf-page pf-prose\">\n  <h1>Privacy Policy</h1>\n  <p><em>Last updated: 23 August 2026</em></p>\n  <h2>What we collect</h2>\n  <p><strong>Account data:</strong> your email address, optional name, and sign-in activity. <strong>Billing data:</strong> purchases and credit usage; card details are handled by our payment provider (Stripe or Polar) and never reach our servers. <strong>Site data:</strong> the content, media and settings of the sites you create, stored in that site's own database and bucket. <strong>Technical data:</strong> request logs and usage metrics needed to run, secure and meter the Service.</p>\n  <h2>How we use it</h2>\n  <p>To provide the Service, sign you in, meter and bill usage, send transactional email (sign-in links, receipts, site notifications), prevent abuse and improve the platform. We do not sell personal data and we do not use it for advertising.</p>\n  <h2>Where it lives</h2>\n  <p>Data is processed on Cloudflare's global network and, for email, Amazon SES. Payment data is processed by the payment provider under its own policy. Each site's data is isolated in its own resources.</p>\n  <h2>Your sites' visitors</h2>\n  <p>You are the controller of the personal data your sites collect (forms, orders, bookings, accounts). The Service gives you the tools to handle it — consent banners, exports, deletion — but the responsibility for how you use it is yours.</p>\n  <h2>Retention and deletion</h2>\n  <p>Site data is deleted immediately and permanently when you delete the site; nightly backups of hosted sites are kept for a limited time for disaster recovery. Account data is kept while the account exists; ask us to close it and we delete it, keeping only what accounting rules require.</p>\n  <h2>Your rights</h2>\n  <p>You can access, correct, export or delete your data by signing in, or by emailing <a href=\"mailto:hello@premium-cms.com\">hello@premium-cms.com</a>. If you are in the UK or EU you also have the right to complain to your supervisory authority.</p>\n  <h2>Cookies</h2>\n  <p>We use a session cookie to keep you signed in and a theme-preference cookie; nothing for tracking or advertising.</p>\n</div>",
+				"css": ".pf-page{max-width:var(--wide-width,1100px);margin:0 auto;padding:2rem 1.5rem 4rem}.pf-prose{max-width:46rem}.pf-prose h2{margin-top:2rem}",
+				"project": null
+			}
+		],
+		"seo": {
+			"description": "How PremiumCMS handles your data."
+		}
+	}
+}

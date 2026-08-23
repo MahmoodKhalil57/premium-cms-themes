@@ -1,12 +1,6 @@
 {
-	"$comment": "Demo projects on the platform, one per theme. CI reconciles apex with this list on every push: missing projects are provisioned and themed, removed entries are destroyed (only projects created as demos are ever deleted).",
+	"$comment": "Demo projects on the platform, one per theme. CI reconciles apex with this list on every push: missing projects are provisioned and themed, removed entries are destroyed (only projects created as demos are ever deleted). The premiumcms theme's demo is premium-cms.com itself (not a fleet project), so it has no entry here.",
 	"demos": [
-		{
-			"theme": "premiumcms",
-			"project": "shots",
-			"siteTitle": "Shots",
-			"tagline": "Thoughts on building for the web"
-		},
 		{
 			"theme": "ecom",
 			"project": "ecom",
