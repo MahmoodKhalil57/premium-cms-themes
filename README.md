@@ -9,6 +9,10 @@ themes/<id>/         one theme: seed/ (content-as-code), README.md, public/, the
 demos.json           the demo project for each theme — CI provisions, themes and destroys them to match
 ```
 
+## Working on a theme
+
+`bin/dev-theme.sh <theme> [--watch]` applies the local seed straight to the theme's live demo in seconds — no CI, no deployment (content, menus, sections and plugin config are db-backed). `bin/snapshot-theme.sh <project> <theme>` goes the other way: a live project's plugin setup back into the seed. Finish with a push so the template repo, marketplace and every project on the theme catch up. See CLAUDE.md for the rules.
+
 ## How a change ships
 
 Merge to `main` and CI will:
