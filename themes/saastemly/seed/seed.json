@@ -250,114 +250,119 @@
 			"calls": [
 				{
 					"route": "forms/create",
-					"ignoreErrors": true,
 					"body": {
 						"name": "Contact",
 						"slug": "contact",
-						"status": "published",
 						"pages": [
 							{
 								"title": "",
 								"fields": [
 									{
 										"id": "name",
-										"name": "name",
 										"type": "text",
 										"label": "Name",
+										"name": "name",
 										"placeholder": "John Doe",
 										"required": true,
 										"width": "half"
 									},
 									{
 										"id": "email",
-										"name": "email",
 										"type": "email",
 										"label": "Email",
+										"name": "email",
 										"placeholder": "john@example.com",
 										"required": true,
 										"width": "half"
 									},
 									{
 										"id": "subject",
-										"name": "subject",
 										"type": "text",
 										"label": "Subject",
+										"name": "subject",
 										"placeholder": "How can we help?",
-										"required": true
+										"required": true,
+										"width": "full"
 									},
 									{
 										"id": "budget",
-										"name": "budget",
 										"type": "select",
 										"label": "Indicative budget",
+										"name": "budget",
 										"required": false,
-										"width": "half",
 										"options": [
 											{
-												"value": "under-1k",
-												"label": "Under $1,000"
+												"label": "Under $1,000",
+												"value": "under-1k"
 											},
 											{
-												"value": "1k-5k",
-												"label": "$1,000 – $5,000"
+												"label": "$1,000 – $5,000",
+												"value": "1k-5k"
 											},
 											{
-												"value": "5k-25k",
-												"label": "$5,000 – $25,000"
+												"label": "$5,000 – $25,000",
+												"value": "5k-25k"
 											},
 											{
-												"value": "25k-plus",
-												"label": "$25,000+"
+												"label": "$25,000+",
+												"value": "25k-plus"
 											},
 											{
-												"value": "unsure",
-												"label": "Not sure yet"
+												"label": "Not sure yet",
+												"value": "unsure"
 											}
-										]
+										],
+										"width": "half"
 									},
 									{
 										"id": "engagement",
-										"name": "engagement",
 										"type": "select",
 										"label": "Engagement model",
+										"name": "engagement",
 										"required": false,
-										"width": "half",
 										"options": [
 											{
-												"value": "project",
-												"label": "Project-based"
+												"label": "Project-based",
+												"value": "project"
 											},
 											{
-												"value": "retainer",
-												"label": "Monthly retainer"
+												"label": "Monthly retainer",
+												"value": "retainer"
 											},
 											{
-												"value": "augmentation",
-												"label": "Team augmentation"
+												"label": "Team augmentation",
+												"value": "augmentation"
 											},
 											{
-												"value": "unsure",
-												"label": "Not sure yet"
+												"label": "Not sure yet",
+												"value": "unsure"
 											}
-										]
+										],
+										"width": "half"
 									},
 									{
 										"id": "message",
-										"name": "message",
 										"type": "textarea",
 										"label": "Message",
+										"name": "message",
 										"placeholder": "Tell us more about your question or project…",
-										"required": true
+										"required": true,
+										"width": "full"
 									}
 								]
 							}
 						],
 						"settings": {
-							"submitLabel": "Send message",
-							"successMessage": "Thank you for reaching out. We'll get back to you within 24 hours.",
-							"notifyEmails": []
+							"confirmationMessage": "Thank you for reaching out. We'll get back to you within 24 hours.",
+							"notifyEmails": [],
+							"digestEnabled": false,
+							"digestHour": 9,
+							"retentionDays": 0,
+							"spamProtection": "honeypot",
+							"submitLabel": "Send message"
 						}
-					}
+					},
+					"ignoreErrors": true
 				}
 			]
 		}
