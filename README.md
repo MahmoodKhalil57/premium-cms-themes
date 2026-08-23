@@ -5,7 +5,7 @@ Everything a PremiumCMS site looks like: the shared **frontend template** (Astro
 ```
 frontend-template/   the base theme: layouts, scripts (shop, bookings, restaurant, forms…), styles, default seed
 themes/<id>/         one theme: seed/ (content-as-code), README.md, public/, theme.json, thumbnail + screenshots
-demos.json           which platform projects demo each theme
+demos.json           the demo project for each theme — CI provisions, themes and destroys them to match
 ```
 
 ## How a change ships
@@ -14,7 +14,7 @@ Merge to `main` and CI will:
 
 1. Mirror `frontend-template` + each theme's own files into that theme's **template repository** (`premiumcms.templateRepo` in `theme.json`) — the repo projects are generated from and the theme seed is read from.
 2. Publish every `theme.json` + screenshots to the marketplace catalogue (and drop removed themes).
-3. Re-apply each theme's seed to its demo projects (`fleet/sync themes`), so demos always show `main`.
+3. Reconcile demo projects with `demos.json` (`fleet/demos`: provision + bind theme + plugins + colour scheme for new entries, destroy removed ones), then re-apply every theme's seed (`fleet/sync themes`), so demos always show `main`.
 4. If `frontend-template/` changed, ask the image repo to rebuild the platform bundle (optional `IMAGE_DISPATCH_TOKEN`).
 
 No keys needed locally; they live in the repo's `marketplace` environment.

@@ -1,7 +1,29 @@
 {
-	"$comment": "Demo projects on the platform that run each theme. CI re-applies a theme's seed to its demos after every merge (fleet/sync themes).",
-	"premiumcms": ["shots"],
-	"ecom": ["ecom"],
-	"dental": ["dental"],
-	"bistro": ["bistro"]
+	"$comment": "Demo projects on the platform, one per theme. CI reconciles apex with this list on every push: missing projects are provisioned and themed, removed entries are destroyed (only projects created as demos are ever deleted).",
+	"demos": [
+		{
+			"theme": "premiumcms",
+			"project": "shots",
+			"siteTitle": "Shots",
+			"tagline": "Thoughts on building for the web"
+		},
+		{
+			"theme": "ecom",
+			"project": "ecom",
+			"siteTitle": "Ecom",
+			"tagline": "Tees worth wearing"
+		},
+		{
+			"theme": "dental",
+			"project": "dental",
+			"siteTitle": "Harley Smile Studio",
+			"tagline": "Gentle, modern dentistry in Harley Street"
+		},
+		{
+			"theme": "bistro",
+			"project": "bistro",
+			"siteTitle": "Dean Street Bistro",
+			"tagline": "Honest food, wood-fired pizza and a very good burger"
+		}
+	]
 }

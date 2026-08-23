@@ -51,6 +51,11 @@ jobs:
           CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
           ARTIFACTS_PUBLISH_TOKEN: ${{ secrets.ARTIFACTS_PUBLISH_TOKEN }}
         run: bash bin/publish-theme.sh
+      - name: Reconcile demo projects with demos.json (create / theme / destroy)
+        env:
+          DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
+          PLATFORM_URL: ${{ vars.PLATFORM_URL || 'https://premium-cms.com' }}
+        run: bash bin/fleet-demos.sh
       - name: Re-apply theme seeds to the demo projects
         env:
           DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
