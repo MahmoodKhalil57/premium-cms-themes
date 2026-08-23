@@ -1,0 +1,143 @@
+{
+	"$schema": "../../schemas/entry.schema.json",
+	"id": "post-shipping-a-marketplace-in-eight-months",
+	"status": "published",
+	"data": {
+		"title": "Shipping a rental marketplace in eight months",
+		"excerpt": "Kamerly connects tenants with rooms across the Netherlands. A look at the decisions that kept an eight-month, six-developer build on schedule.",
+		"featured_image": {
+			"$media": {
+				"url": "https://images.unsplash.com/photo-1583295125721-766a0088cd3f?crop=entropy&cs=srgb&fm=jpg&q=85&w=1600",
+				"alt": "Canal houses in Amsterdam"
+			}
+		},
+		"content": [
+			{
+				"_type": "block",
+				"style": "normal",
+				"_key": "b24",
+				"markDefs": [],
+				"children": [
+					{
+						"_type": "span",
+						"_key": "s25",
+						"text": "Kamerly is a room-rental platform: tenants search, view and book accommodation across the Netherlands, and landlords manage listings, availability and payouts. Two sides, two very different sets of expectations, one codebase. It shipped in eight months with six developers."
+					}
+				]
+			},
+			{
+				"_type": "block",
+				"style": "h2",
+				"_key": "b26",
+				"markDefs": [],
+				"children": [
+					{
+						"_type": "span",
+						"_key": "s27",
+						"text": "Pick the boring parts early"
+					}
+				]
+			},
+			{
+				"_type": "block",
+				"style": "normal",
+				"_key": "b28",
+				"markDefs": [],
+				"children": [
+					{
+						"_type": "span",
+						"_key": "s29",
+						"text": "Vue on the front, Node and PostgreSQL behind it, Stripe for payments, Socket.io for the messaging between tenant and landlord. None of that is a novel choice, and that is the point. On a two-sided marketplace the interesting problems are search relevance, availability and trust — not which framework renders the listing card."
+					}
+				]
+			},
+			{
+				"_type": "block",
+				"style": "h2",
+				"_key": "b30",
+				"markDefs": [],
+				"children": [
+					{
+						"_type": "span",
+						"_key": "s31",
+						"text": "Model availability before you model anything else"
+					}
+				]
+			},
+			{
+				"_type": "block",
+				"style": "normal",
+				"_key": "b32",
+				"markDefs": [],
+				"children": [
+					{
+						"_type": "span",
+						"_key": "s33",
+						"text": "Every hard bug on a booking product traces back to the availability model. Rooms have viewing windows, minimum stays, overlapping enquiries and holds that expire. We built that model first, wrote tests against it before there was a UI, and everything downstream — search filters, the booking flow, the landlord calendar — became a read of one well-understood structure."
+					}
+				]
+			},
+			{
+				"_type": "block",
+				"style": "h2",
+				"_key": "b34",
+				"markDefs": [],
+				"children": [
+					{
+						"_type": "span",
+						"_key": "s35",
+						"text": "Search is a product decision, not an infrastructure one"
+					}
+				]
+			},
+			{
+				"_type": "block",
+				"style": "normal",
+				"_key": "b36",
+				"markDefs": [],
+				"children": [
+					{
+						"_type": "span",
+						"_key": "s37",
+						"text": "The first version ranked purely on distance and price and it felt wrong to everybody who used it. What tenants actually wanted was a blend: commute time, whether the landlord replies, how recently the listing was updated. That is a conversation with the client, run against real listings, not something you tune in isolation."
+					}
+				]
+			},
+			{
+				"_type": "block",
+				"style": "h2",
+				"_key": "b38",
+				"markDefs": [],
+				"children": [
+					{
+						"_type": "span",
+						"_key": "s39",
+						"text": "What we would do differently"
+					}
+				]
+			},
+			{
+				"_type": "block",
+				"style": "normal",
+				"_key": "b40",
+				"markDefs": [],
+				"children": [
+					{
+						"_type": "span",
+						"_key": "s41",
+						"text": "We integrated maps before we had settled the availability model, which meant re-doing part of the map layer when holds arrived. Order matters: build the thing that everything else reads from, then build the things that read from it."
+					}
+				]
+			}
+		]
+	},
+	"taxonomies": {
+		"category": [
+			"engineering"
+		],
+		"tag": [
+			"case-study",
+			"marketplaces"
+		]
+	}
+}

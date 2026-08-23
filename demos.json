@@ -18,6 +18,12 @@
 			"project": "bistro",
 			"siteTitle": "Dean Street Bistro",
 			"tagline": "Honest food, wood-fired pizza and a very good burger"
+		},
+		{
+			"theme": "saastemly",
+			"project": "saastemly",
+			"siteTitle": "SaaSTEMLY",
+			"tagline": "Custom software for businesses that need it built right — web apps, mobile platforms, and AI systems."
 		}
 	]
 }

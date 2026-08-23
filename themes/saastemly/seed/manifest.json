@@ -1,0 +1,22 @@
+{
+  "generatedAt": "2026-08-23",
+  "files": [
+    "seed/content/pages/404.json",
+    "seed/content/pages/about.json",
+    "seed/content/pages/contact.json",
+    "seed/content/pages/faq.json",
+    "seed/content/pages/home.json",
+    "seed/content/pages/portfolio.json",
+    "seed/content/pages/posts.json",
+    "seed/content/pages/pricing.json",
+    "seed/content/pages/privacy.json",
+    "seed/content/pages/process.json",
+    "seed/content/pages/terms.json",
+    "seed/content/posts/ai-features-that-earn-their-keep.json",
+    "seed/content/posts/milestone-pricing-why-we-invoice-one-step-at-a-time.json",
+    "seed/content/posts/shipping-a-marketplace-in-eight-months.json",
+    "seed/sections/site-footer.json",
+    "seed/sections/site-header.json",
+    "seed/seed.json"
+  ]
+}

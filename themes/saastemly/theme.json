@@ -1,0 +1,44 @@
+{
+	"id": "saastemly",
+	"name": "SaaSTEMLY — Software studio",
+	"description": "A complete website for a software studio or digital agency: a landing page with services, selected work, engagement models, team, testimonials and FAQ; a portfolio of case studies with industry, duration, team size and stack; an about page with values, full team bios and a company timeline; a milestone-by-milestone process page; indicative pricing; a blog; a contact page backed by the Forms plugin; and Terms and Privacy pages. Seeds the Forms plugin (contact form with budget and engagement model) and Site Kit (ProfessionalService schema.org profile, FAQ structured data and a cookie-consent banner). Served by PremiumCMS as is, or forked to GitHub Pages with one-click theme updates.",
+	"author": {
+		"name": "PremiumCMS",
+		"verified": true,
+		"avatarUrl": null
+	},
+	"keywords": [
+		"agency",
+		"studio",
+		"portfolio",
+		"case-studies",
+		"software",
+		"consulting",
+		"services",
+		"blog",
+		"contact-form",
+		"github-pages",
+		"official",
+		"premiumcms"
+	],
+	"previewUrl": "https://saastemly.premium-cms.com/",
+	"demoUrl": "https://saastemly.premium-cms.com/",
+	"repositoryUrl": "https://github.com/MahmoodKhalil57/premium-cms-saastemly-theme",
+	"homepageUrl": "https://premium-cms.com",
+	"license": "MIT",
+	"premiumcms": {
+		"official": true,
+		"templateRepo": "MahmoodKhalil57/premium-cms-saastemly-theme",
+		"hosting": [
+			"platform",
+			"github"
+		],
+		"plugins": [
+			"premium-forms",
+			"premium-site-kit"
+		],
+		"colorScheme": "tangerine"
+	},
+	"createdAt": "2026-08-23T00:00:00Z",
+	"updatedAt": "2026-08-23T00:00:00Z"
+}

@@ -1,0 +1,190 @@
+{
+	"$schema": "../../schemas/entry.schema.json",
+	"id": "post-milestone-pricing-why-we-invoice-one-step-at-a-time",
+	"status": "published",
+	"data": {
+		"title": "Milestone pricing: why we invoice one step at a time",
+		"excerpt": "Fixed-price contracts hide risk on one side of the table. Here is the model we use instead, and what it changes for both of us.",
+		"featured_image": {
+			"$media": {
+				"url": "https://images.unsplash.com/photo-1542626991-cbc4e32524cc?crop=entropy&cs=srgb&fm=jpg&q=85&w=1600",
+				"alt": "Sticky notes on a planning board"
+			}
+		},
+		"content": [
+			{
+				"_type": "block",
+				"style": "normal",
+				"_key": "b0",
+				"markDefs": [],
+				"children": [
+					{
+						"_type": "span",
+						"_key": "s1",
+						"text": "Most agency contracts come in two flavours. A fixed price for the whole scope, which pushes every unknown onto the studio and quietly pushes quality down with it. Or time and materials, which pushes every unknown onto the client and turns the budget into a rumour. We use a third: milestones, invoiced one at a time."
+					}
+				]
+			},
+			{
+				"_type": "block",
+				"style": "h2",
+				"_key": "b2",
+				"markDefs": [],
+				"children": [
+					{
+						"_type": "span",
+						"_key": "s3",
+						"text": "How it works"
+					}
+				]
+			},
+			{
+				"_type": "block",
+				"style": "normal",
+				"_key": "b4",
+				"markDefs": [],
+				"children": [
+					{
+						"_type": "span",
+						"_key": "s5",
+						"text": "Before anything is built we agree a scope, a timeline and a price, broken into milestones. Each milestone is a slice of the product you can actually use — not \"backend work\" but \"customers can register, sign in and reset a password\"."
+					}
+				]
+			},
+			{
+				"_type": "block",
+				"style": "normal",
+				"listItem": "bullet",
+				"level": 1,
+				"_key": "b6",
+				"markDefs": [],
+				"children": [
+					{
+						"_type": "span",
+						"_key": "s7",
+						"text": "You pay for the milestone in front of you, not the whole project."
+					}
+				]
+			},
+			{
+				"_type": "block",
+				"style": "normal",
+				"listItem": "bullet",
+				"level": 1,
+				"_key": "b8",
+				"markDefs": [],
+				"children": [
+					{
+						"_type": "span",
+						"_key": "s9",
+						"text": "We build, deploy it somewhere real, and walk you through it."
+					}
+				]
+			},
+			{
+				"_type": "block",
+				"style": "normal",
+				"listItem": "bullet",
+				"level": 1,
+				"_key": "b10",
+				"markDefs": [],
+				"children": [
+					{
+						"_type": "span",
+						"_key": "s11",
+						"text": "One round of minor adjustments per milestone is included."
+					}
+				]
+			},
+			{
+				"_type": "block",
+				"style": "normal",
+				"listItem": "bullet",
+				"level": 1,
+				"_key": "b12",
+				"markDefs": [],
+				"children": [
+					{
+						"_type": "span",
+						"_key": "s13",
+						"text": "Anything larger is quoted before it is built, and you decide whether you want it."
+					}
+				]
+			},
+			{
+				"_type": "block",
+				"style": "h2",
+				"_key": "b14",
+				"markDefs": [],
+				"children": [
+					{
+						"_type": "span",
+						"_key": "s15",
+						"text": "What it changes"
+					}
+				]
+			},
+			{
+				"_type": "block",
+				"style": "normal",
+				"_key": "b16",
+				"markDefs": [],
+				"children": [
+					{
+						"_type": "span",
+						"_key": "s17",
+						"text": "The most you ever have at risk is one milestone. If we are the wrong fit, you find out after a few weeks and a small invoice rather than after six months. And because scope changes get priced when they appear rather than absorbed silently, nobody spends the last month of a project arguing about what \"done\" meant in a document written before either of us understood the problem."
+					}
+				]
+			},
+			{
+				"_type": "block",
+				"style": "normal",
+				"_key": "b18",
+				"markDefs": [],
+				"children": [
+					{
+						"_type": "span",
+						"_key": "s19",
+						"text": "It also changes how we estimate. When you are quoting a slice you will build in three weeks, you cannot hand-wave the hard part — so the hard part gets discussed at the start, which is where it is cheapest to discover."
+					}
+				]
+			},
+			{
+				"_type": "block",
+				"style": "h2",
+				"_key": "b20",
+				"markDefs": [],
+				"children": [
+					{
+						"_type": "span",
+						"_key": "s21",
+						"text": "When it doesn't fit"
+					}
+				]
+			},
+			{
+				"_type": "block",
+				"style": "normal",
+				"_key": "b22",
+				"markDefs": [],
+				"children": [
+					{
+						"_type": "span",
+						"_key": "s23",
+						"text": "Milestones need a product with a shape. Pure research, or an engagement where the deliverable is an opinion rather than a system, works better as a retainer. Team augmentation is priced by capacity for the same reason: you are buying engineers for your backlog, not a defined outcome."
+					}
+				]
+			}
+		]
+	},
+	"taxonomies": {
+		"category": [
+			"company"
+		],
+		"tag": [
+			"process",
+			"pricing"
+		]
+	}
+}

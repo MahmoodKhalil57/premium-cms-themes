@@ -1,0 +1,365 @@
+{
+	"$schema": "./schemas/seed.schema.json",
+	"version": "1",
+	"meta": {
+		"name": "SaaSTEMLY theme seed",
+		"description": "Content-as-code for the SaaSTEMLY theme: landing page, about & team, portfolio case studies, milestone process, pricing, FAQ, contact form and legal pages. Applied on every deploy (update-on-conflict)."
+	},
+	"settings": {
+		"title": "SaaSTEMLY",
+		"tagline": "Custom software for businesses that need it built right — web apps, mobile platforms, and AI systems."
+	},
+	"taxonomies": [
+		{
+			"name": "category",
+			"label": "Categories",
+			"labelSingular": "Category",
+			"hierarchical": false,
+			"collections": [
+				"posts"
+			],
+			"terms": [
+				{
+					"slug": "engineering",
+					"label": "Engineering",
+					"description": "How we build things, and why."
+				},
+				{
+					"slug": "company",
+					"label": "Company",
+					"description": "How we run projects and the studio."
+				},
+				{
+					"slug": "product",
+					"label": "Product",
+					"description": "Product thinking and delivery."
+				}
+			]
+		},
+		{
+			"name": "tag",
+			"label": "Tags",
+			"labelSingular": "Tag",
+			"hierarchical": false,
+			"collections": [
+				"posts"
+			],
+			"terms": [
+				{
+					"slug": "process",
+					"label": "Process"
+				},
+				{
+					"slug": "pricing",
+					"label": "Pricing"
+				},
+				{
+					"slug": "case-study",
+					"label": "Case study"
+				},
+				{
+					"slug": "marketplaces",
+					"label": "Marketplaces"
+				},
+				{
+					"slug": "ai",
+					"label": "AI"
+				},
+				{
+					"slug": "architecture",
+					"label": "Architecture"
+				}
+			]
+		}
+	],
+	"menus": [
+		{
+			"name": "primary",
+			"label": "Primary",
+			"items": [
+				{
+					"label": "Work",
+					"url": "/portfolio",
+					"type": "custom"
+				},
+				{
+					"label": "About",
+					"url": "/about",
+					"type": "custom"
+				},
+				{
+					"label": "Process",
+					"url": "/process",
+					"type": "custom"
+				},
+				{
+					"label": "Pricing",
+					"url": "/pricing",
+					"type": "custom"
+				},
+				{
+					"label": "Blog",
+					"url": "/posts",
+					"type": "custom"
+				},
+				{
+					"label": "Contact",
+					"url": "/contact",
+					"type": "custom"
+				}
+			]
+		},
+		{
+			"name": "footer",
+			"label": "Footer",
+			"items": [
+				{
+					"label": "Portfolio",
+					"url": "/portfolio",
+					"type": "custom"
+				},
+				{
+					"label": "How we work",
+					"url": "/process",
+					"type": "custom"
+				},
+				{
+					"label": "Pricing",
+					"url": "/pricing",
+					"type": "custom"
+				},
+				{
+					"label": "FAQ",
+					"url": "/faq",
+					"type": "custom"
+				},
+				{
+					"label": "Blog",
+					"url": "/posts",
+					"type": "custom"
+				}
+			]
+		},
+		{
+			"name": "legal",
+			"label": "Legal",
+			"items": [
+				{
+					"label": "Terms",
+					"url": "/terms",
+					"type": "custom"
+				},
+				{
+					"label": "Privacy",
+					"url": "/privacy",
+					"type": "custom"
+				}
+			]
+		},
+		{
+			"name": "social",
+			"label": "Social",
+			"items": [
+				{
+					"label": "GitHub",
+					"url": "https://github.com/MahmoodKhalil57",
+					"type": "custom"
+				},
+				{
+					"label": "LinkedIn",
+					"url": "https://www.linkedin.com/company/saastemly/",
+					"type": "custom"
+				}
+			]
+		}
+	],
+	"redirects": [
+		{
+			"source": "/admin",
+			"destination": "/_emdash/admin",
+			"type": 302
+		},
+		{
+			"source": "/blog",
+			"destination": "/posts",
+			"type": 301
+		},
+		{
+			"source": "/work",
+			"destination": "/portfolio",
+			"type": 301
+		},
+		{
+			"source": "/blogs",
+			"destination": "/posts",
+			"type": 301
+		}
+	],
+	"widgetAreas": [
+		{
+			"name": "footer",
+			"label": "Footer widgets",
+			"description": "Rendered in the footer's contact column.",
+			"widgets": [
+				{
+					"type": "content",
+					"title": "Get in touch",
+					"content": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "contact@saastemly.com · Copenhagen, Denmark"
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Mon – Fri, 9am – 6pm CET. We reply within one working day."
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	],
+	"retire": [],
+	"plugins": {
+		"premium-site-kit": {
+			"settings": {
+				"businessType": "ProfessionalService",
+				"businessName": "SaaSTEMLY",
+				"email": "contact@saastemly.com",
+				"locality": "Copenhagen",
+				"country": "DK",
+				"openingHours": "Mo-Fr 09:00-18:00",
+				"consentEnabled": true,
+				"consentTitle": "We use cookies",
+				"consentText": "Essential cookies keep the site working. With your consent we also use analytics cookies to understand how the site is used.",
+				"privacyUrl": "/privacy"
+			}
+		},
+		"premium-forms": {
+			"calls": [
+				{
+					"route": "forms/create",
+					"ignoreErrors": true,
+					"body": {
+						"name": "Contact",
+						"slug": "contact",
+						"status": "published",
+						"pages": [
+							{
+								"title": "",
+								"fields": [
+									{
+										"id": "name",
+										"name": "name",
+										"type": "text",
+										"label": "Name",
+										"placeholder": "John Doe",
+										"required": true,
+										"width": "half"
+									},
+									{
+										"id": "email",
+										"name": "email",
+										"type": "email",
+										"label": "Email",
+										"placeholder": "john@example.com",
+										"required": true,
+										"width": "half"
+									},
+									{
+										"id": "subject",
+										"name": "subject",
+										"type": "text",
+										"label": "Subject",
+										"placeholder": "How can we help?",
+										"required": true
+									},
+									{
+										"id": "budget",
+										"name": "budget",
+										"type": "select",
+										"label": "Indicative budget",
+										"required": false,
+										"width": "half",
+										"options": [
+											{
+												"value": "under-1k",
+												"label": "Under $1,000"
+											},
+											{
+												"value": "1k-5k",
+												"label": "$1,000 – $5,000"
+											},
+											{
+												"value": "5k-25k",
+												"label": "$5,000 – $25,000"
+											},
+											{
+												"value": "25k-plus",
+												"label": "$25,000+"
+											},
+											{
+												"value": "unsure",
+												"label": "Not sure yet"
+											}
+										]
+									},
+									{
+										"id": "engagement",
+										"name": "engagement",
+										"type": "select",
+										"label": "Engagement model",
+										"required": false,
+										"width": "half",
+										"options": [
+											{
+												"value": "project",
+												"label": "Project-based"
+											},
+											{
+												"value": "retainer",
+												"label": "Monthly retainer"
+											},
+											{
+												"value": "augmentation",
+												"label": "Team augmentation"
+											},
+											{
+												"value": "unsure",
+												"label": "Not sure yet"
+											}
+										]
+									},
+									{
+										"id": "message",
+										"name": "message",
+										"type": "textarea",
+										"label": "Message",
+										"placeholder": "Tell us more about your question or project…",
+										"required": true
+									}
+								]
+							}
+						],
+						"settings": {
+							"submitLabel": "Send message",
+							"successMessage": "Thank you for reaching out. We'll get back to you within 24 hours.",
+							"notifyEmails": []
+						}
+					}
+				}
+			]
+		}
+	}
+}

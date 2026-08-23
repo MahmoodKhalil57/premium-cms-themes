@@ -1,0 +1,156 @@
+{
+	"$schema": "../../schemas/entry.schema.json",
+	"id": "post-ai-features-that-earn-their-keep",
+	"status": "published",
+	"data": {
+		"title": "AI features that earn their keep",
+		"excerpt": "Retrieval, fine-tuning, or nothing at all — how we decide whether an AI feature belongs in a product, and what it costs to run once it does.",
+		"featured_image": {
+			"$media": {
+				"url": "https://images.unsplash.com/photo-1549692520-acc6669e2f0c?crop=entropy&cs=srgb&fm=jpg&q=85&w=1600",
+				"alt": "A developer working at a computer"
+			}
+		},
+		"content": [
+			{
+				"_type": "block",
+				"style": "normal",
+				"_key": "b42",
+				"markDefs": [],
+				"children": [
+					{
+						"_type": "span",
+						"_key": "s43",
+						"text": "Most requests that arrive as \"can you add AI to this\" resolve into one of three things: a search problem, a classification problem, or a drafting problem. Naming which one you have decides the architecture, the cost and whether the feature is worth building at all."
+					}
+				]
+			},
+			{
+				"_type": "block",
+				"style": "h2",
+				"_key": "b44",
+				"markDefs": [],
+				"children": [
+					{
+						"_type": "span",
+						"_key": "s45",
+						"text": "Search problems want retrieval"
+					}
+				]
+			},
+			{
+				"_type": "block",
+				"style": "normal",
+				"_key": "b46",
+				"markDefs": [],
+				"children": [
+					{
+						"_type": "span",
+						"_key": "s47",
+						"text": "If the answer already exists somewhere in your documents, tickets or catalogue, you want retrieval — chunking, embeddings and a vector store, with the model summarising what was retrieved rather than recalling it. This is the cheapest and most defensible category, because you can always show a user where an answer came from."
+					}
+				]
+			},
+			{
+				"_type": "block",
+				"style": "h2",
+				"_key": "b48",
+				"markDefs": [],
+				"children": [
+					{
+						"_type": "span",
+						"_key": "s49",
+						"text": "Classification problems rarely need a large model"
+					}
+				]
+			},
+			{
+				"_type": "block",
+				"style": "normal",
+				"_key": "b50",
+				"markDefs": [],
+				"children": [
+					{
+						"_type": "span",
+						"_key": "s51",
+						"text": "Routing a support ticket, flagging a risky transaction, tagging a listing: these are classification tasks with labelled data sitting in your database already. A small fine-tuned model, or sometimes plain gradient boosting, will beat a general-purpose model on latency, cost and consistency — and it will not surprise you at three in the morning."
+					}
+				]
+			},
+			{
+				"_type": "block",
+				"style": "h2",
+				"_key": "b52",
+				"markDefs": [],
+				"children": [
+					{
+						"_type": "span",
+						"_key": "s53",
+						"text": "Drafting problems need guardrails, not accuracy"
+					}
+				]
+			},
+			{
+				"_type": "block",
+				"style": "normal",
+				"_key": "b54",
+				"markDefs": [],
+				"children": [
+					{
+						"_type": "span",
+						"_key": "s55",
+						"text": "When the model writes something a human will edit — a reply, a description, a first-pass report — accuracy matters less than making the edit path obvious. The feature is a good one if the human is faster with it than without it, and that is measurable."
+					}
+				]
+			},
+			{
+				"_type": "block",
+				"style": "h2",
+				"_key": "b56",
+				"markDefs": [],
+				"children": [
+					{
+						"_type": "span",
+						"_key": "s57",
+						"text": "The part nobody budgets for"
+					}
+				]
+			},
+			{
+				"_type": "block",
+				"style": "normal",
+				"_key": "b58",
+				"markDefs": [],
+				"children": [
+					{
+						"_type": "span",
+						"_key": "s59",
+						"text": "Evaluation. An AI feature without a test set is a feature you cannot change. Before we ship one we build a small, honest evaluation set from real inputs, so that a prompt change, a model upgrade or a cheaper provider can be assessed in an afternoon instead of argued about for a week."
+					}
+				]
+			},
+			{
+				"_type": "block",
+				"style": "normal",
+				"_key": "b60",
+				"markDefs": [],
+				"children": [
+					{
+						"_type": "span",
+						"_key": "s61",
+						"text": "It is also where the ongoing cost lives. Inference is a line item that scales with usage, and privacy constraints often push work on-premise. Both are cheaper to plan for at the start than to discover after launch."
+					}
+				]
+			}
+		]
+	},
+	"taxonomies": {
+		"category": [
+			"engineering"
+		],
+		"tag": [
+			"ai",
+			"architecture"
+		]
+	}
+}

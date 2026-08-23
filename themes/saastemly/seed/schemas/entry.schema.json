@@ -1,0 +1,322 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"$id": "premiumcms-seed-entry",
+	"title": "PremiumCMS seed content entry",
+	"description": "One content entry, applied to the CMS with update-on-conflict (matched by slug). Lives in seed/content/<collection>/<slug>.json; the apply script defaults `slug` to the filename and `id` to <collection>-<slug> when omitted.",
+	"type": "object",
+	"additionalProperties": false,
+	"properties": {
+		"$schema": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string",
+			"description": "Seed-local id, used only for $ref resolution between entries. Defaults to <collection>-<slug>."
+		},
+		"slug": {
+			"type": "string",
+			"pattern": "^[a-z0-9][a-z0-9-]*$",
+			"description": "URL slug — the upsert key. Defaults to the filename (without .json)."
+		},
+		"status": {
+			"enum": [
+				"published",
+				"draft"
+			],
+			"default": "published"
+		},
+		"locale": {
+			"type": "string",
+			"description": "BCP 47 locale code; defaults to the site's default locale."
+		},
+		"translationOf": {
+			"type": "string",
+			"description": "Seed-local id of the entry this translates."
+		},
+		"data": {
+			"type": "object",
+			"description": "Field slug → value. `content` is Portable Text; `title` and `excerpt` are plain strings.",
+			"properties": {
+				"title": {
+					"$ref": "#/definitions/stringOrEnv"
+				},
+				"excerpt": {
+					"$ref": "#/definitions/stringOrEnv"
+				},
+				"content": {
+					"type": "array",
+					"items": {
+						"anyOf": [
+							{
+								"$ref": "#/definitions/portableTextBlock"
+							},
+							{
+								"$ref": "#/definitions/htmlBlock"
+							},
+							{
+								"$ref": "#/definitions/grapesBlock"
+							},
+							{
+								"$ref": "#/definitions/otherBlock"
+							}
+						]
+					}
+				},
+				"featured_image": {
+					"$ref": "#/definitions/mediaRef"
+				}
+			},
+			"additionalProperties": true
+		},
+		"taxonomies": {
+			"type": "object",
+			"description": "Taxonomy name → term slugs.",
+			"additionalProperties": {
+				"type": "array",
+				"items": {
+					"type": "string"
+				}
+			}
+		},
+		"bylines": {
+			"type": "array",
+			"items": {
+				"type": "object",
+				"required": [
+					"byline"
+				],
+				"properties": {
+					"byline": {
+						"type": "string",
+						"description": "Seed byline id from the root document's bylines[]."
+					},
+					"roleLabel": {
+						"type": "string"
+					}
+				},
+				"additionalProperties": false
+			}
+		}
+	},
+	"required": [
+		"data"
+	],
+	"definitions": {
+		"stringOrEnv": {
+			"oneOf": [
+				{
+					"type": "string"
+				},
+				{
+					"$ref": "#/definitions/envRef"
+				}
+			]
+		},
+		"envRef": {
+			"type": "object",
+			"description": "Resolved from a workflow environment variable at apply time — for values that must not live in the repo.",
+			"required": [
+				"$env"
+			],
+			"properties": {
+				"$env": {
+					"type": "string",
+					"minLength": 1
+				}
+			},
+			"additionalProperties": false
+		},
+		"mediaRef": {
+			"type": "object",
+			"required": [
+				"$media"
+			],
+			"properties": {
+				"$media": {
+					"type": "object",
+					"required": [
+						"url"
+					],
+					"properties": {
+						"url": {
+							"type": "string",
+							"format": "uri"
+						},
+						"alt": {
+							"type": "string"
+						},
+						"filename": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": true
+				}
+			},
+			"additionalProperties": false
+		},
+		"portableTextSpan": {
+			"type": "object",
+			"required": [
+				"_type",
+				"text"
+			],
+			"properties": {
+				"_type": {
+					"const": "span"
+				},
+				"text": {
+					"type": "string"
+				},
+				"marks": {
+					"type": "array",
+					"items": {
+						"type": "string"
+					},
+					"description": "strong, em, code, or a markDef _key"
+				},
+				"_key": {
+					"type": "string"
+				}
+			},
+			"additionalProperties": false
+		},
+		"portableTextBlock": {
+			"type": "object",
+			"required": [
+				"_type",
+				"children"
+			],
+			"properties": {
+				"_type": {
+					"const": "block"
+				},
+				"style": {
+					"enum": [
+						"normal",
+						"h2",
+						"h3",
+						"h4",
+						"blockquote"
+					],
+					"default": "normal"
+				},
+				"listItem": {
+					"enum": [
+						"bullet",
+						"number"
+					]
+				},
+				"level": {
+					"type": "integer",
+					"minimum": 1
+				},
+				"children": {
+					"type": "array",
+					"items": {
+						"$ref": "#/definitions/portableTextSpan"
+					},
+					"minItems": 1
+				},
+				"markDefs": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"required": [
+							"_key",
+							"_type"
+						],
+						"properties": {
+							"_key": {
+								"type": "string"
+							},
+							"_type": {
+								"type": "string"
+							},
+							"href": {
+								"type": "string"
+							}
+						},
+						"additionalProperties": true
+					}
+				},
+				"_key": {
+					"type": "string"
+				}
+			},
+			"additionalProperties": false
+		},
+		"htmlBlock": {
+			"type": "object",
+			"description": "A raw HTML block.",
+			"required": [
+				"_type",
+				"html"
+			],
+			"properties": {
+				"_type": {
+					"const": "htmlBlock"
+				},
+				"html": {
+					"type": "string"
+				},
+				"_key": {
+					"type": "string"
+				}
+			},
+			"additionalProperties": false
+		},
+		"grapesBlock": {
+			"type": "object",
+			"description": "A section designed with the admin page builder (GrapesJS): rendered html + css, plus the builder's project state for re-editing.",
+			"required": [
+				"_type",
+				"html"
+			],
+			"properties": {
+				"_type": {
+					"const": "grapesBlock"
+				},
+				"html": {
+					"type": "string"
+				},
+				"css": {
+					"type": "string"
+				},
+				"editCss": {
+					"type": "string",
+					"description": "Builder-authored style overrides, rendered after css."
+				},
+				"project": {
+					"type": [
+						"object",
+						"null"
+					]
+				},
+				"_key": {
+					"type": "string"
+				}
+			},
+			"additionalProperties": false
+		},
+		"otherBlock": {
+			"type": "object",
+			"description": "Any other block type (plugin blocks, images, code, tables...). Typed loosely; the CMS validates on apply.",
+			"required": [
+				"_type"
+			],
+			"properties": {
+				"_type": {
+					"type": "string",
+					"not": {
+						"enum": [
+							"block",
+							"htmlBlock",
+							"grapesBlock"
+						]
+					}
+				}
+			},
+			"additionalProperties": true
+		}
+	}
+}
