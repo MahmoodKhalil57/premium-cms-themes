@@ -15,6 +15,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: MahmoodKhalil57/premium-cms-plugins
+          path: plugins-src
       - uses: oven-sh/setup-bun@v2
       - name: Typecheck the composed frontend (template + every plugin frontend)
         env:
