@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/page.schema.json",
+	"id": "page-about",
+	"status": "published",
+	"data": {
+		"title": "About",
+		"content": [
+			{
+				"_type": "grapesBlock",
+				"_key": "about-design",
+				"html": "<div class=\"pf-page pf-prose\">\n  <h1>About PremiumCMS</h1>\n  <p>PremiumCMS is a hosted platform built on <a href=\"https://emdash.dev\" rel=\"noopener\">EmDash</a>, the Astro-native CMS, and Cloudflare's edge. We run one thing well: giving each customer a fully isolated site — worker, database, storage, domain and email of its own — with themes that are complete products rather than starting points.</p>\n  <h2>Principles</h2>\n  <p><strong>Isolation.</strong> Your data lives in your own database and bucket. Deleting your site deletes everything, instantly and for good.</p>\n  <p><strong>Honest pricing.</strong> Usage is metered at our cost times a published markup; every unit is itemised in your admin. Credits never turn into a bill.</p>\n  <p><strong>Content as code.</strong> Themes carry their seed (pages, sections, settings) as files, so a site can be rebuilt from its repository and updated with one click.</p>\n  <p><strong>Open.</strong> Themes and plugins are open source; you can fork the frontend to GitHub Pages at any time.</p>\n  <h2>Contact</h2>\n  <p>Email <a href=\"mailto:hello@premium-cms.com\">hello@premium-cms.com</a>. For anything about your account or billing, sign in and use your dashboard.</p>\n</div>",
+				"css": ".pf-page{max-width:var(--wide-width,1100px);margin:0 auto;padding:2rem 1.5rem 4rem}.pf-prose{max-width:46rem}.pf-prose h2{margin-top:2rem}",
+				"project": null
+			}
+		]
+	}
+}

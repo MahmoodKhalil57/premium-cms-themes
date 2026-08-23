@@ -52,6 +52,7 @@ jobs:
       - uses: oven-sh/setup-bun@v2
       - name: Push template + themes into their template repositories
         env:
+          TEMPLATE_KEY_BASE: ${{ secrets.TEMPLATE_KEY_BASE }}
           TEMPLATE_KEY_PREMIUMCMS: ${{ secrets.TEMPLATE_KEY_PREMIUMCMS }}
           TEMPLATE_KEY_ECOM: ${{ secrets.TEMPLATE_KEY_ECOM }}
           TEMPLATE_KEY_DENTAL: ${{ secrets.TEMPLATE_KEY_DENTAL }}

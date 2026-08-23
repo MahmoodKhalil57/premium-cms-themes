@@ -2,8 +2,8 @@
 	"$schema": "./schemas/seed.schema.json",
 	"version": "1",
 	"meta": {
-		"name": "Starter site seed",
-		"description": "Content-as-code for this site, applied on every deploy (update-on-conflict). Root settings live here; content entries live one-per-file under seed/content/<collection>/<slug>.json."
+		"name": "PremiumCMS site seed",
+		"description": "The PremiumCMS product site: landing, pricing, about, legal, sign-up / sign-in and the customer dashboard (powered by the Platform plugin frontend), plus the blog. Applied on every deploy (update-on-conflict)."
 	},
 	"collections": [],
 	"menus": [
@@ -18,8 +18,44 @@
 				},
 				{
 					"type": "custom",
+					"label": "Pricing",
+					"url": "/pricing"
+				},
+				{
+					"type": "custom",
 					"label": "Blog",
 					"url": "/posts"
+				},
+				{
+					"type": "custom",
+					"label": "About",
+					"url": "/about"
+				},
+				{
+					"type": "custom",
+					"label": "Sign in",
+					"url": "/signin"
+				}
+			]
+		},
+		{
+			"name": "social",
+			"label": "Social",
+			"items": []
+		},
+		{
+			"name": "legal",
+			"label": "Legal",
+			"items": [
+				{
+					"type": "custom",
+					"label": "Terms",
+					"url": "/terms"
+				},
+				{
+					"type": "custom",
+					"label": "Privacy",
+					"url": "/privacy"
 				},
 				{
 					"type": "custom",
@@ -60,6 +96,11 @@
 							]
 						}
 					]
+				},
+				{
+					"type": "menu",
+					"title": "Legal",
+					"menuName": "legal"
 				}
 			]
 		}

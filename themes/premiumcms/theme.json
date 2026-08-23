@@ -18,12 +18,12 @@
 	],
 	"previewUrl": "https://premium-cms.com/",
 	"demoUrl": "https://premium-cms.com/",
-	"repositoryUrl": "https://github.com/MahmoodKhalil57/premium-cms-frontend-template",
+	"repositoryUrl": "https://github.com/MahmoodKhalil57/premium-cms-premiumcms-theme",
 	"homepageUrl": "https://premium-cms.com",
 	"license": "MIT",
 	"premiumcms": {
 		"official": true,
-		"templateRepo": "MahmoodKhalil57/premium-cms-frontend-template",
+		"templateRepo": "MahmoodKhalil57/premium-cms-premiumcms-theme",
 		"hosting": [
 			"platform",
 			"github"
