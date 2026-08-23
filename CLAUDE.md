@@ -10,8 +10,13 @@ frontends in the plugins repo; **theme work should not touch those**.
 ## The fast loop — changes go live in seconds
 
 ```bash
-bin/dev-theme.sh <theme-id> [--watch]     # local seed → the theme's live demo, no CI
+bin/dev-theme.sh <theme-id> [--watch] [--full]   # local seed → the theme's live demo, no CI
 ```
+
+Applies are **deltas**: only files changed since the last successful apply to
+that project are sent (~2-3s; a full first apply takes ~1 min). `--full`
+resends everything; deleting a seed file needs `retire` in seed.json or a
+push — deltas can't unpublish.
 
 Content, menus, sections, widget areas, plugin settings and plugin calls are
 all db-backed: `dev-theme.sh` composes the seed dir and applies it straight to
