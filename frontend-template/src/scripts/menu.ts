@@ -3,20 +3,23 @@
  * modifiers (the product option model), add to the bag, and the table context
  * from a QR code (?table=CODE) that the checkout turns into a dine-in order.
  * Also the order tracking page ([data-track]) and the reservation widget
- * ([data-reservation]).
+ * ([data-reservation]) — reservations are bookings on the Bookings plugin
+ * against the restaurant's "Table reservation" service.
  */
 import { API } from "./account";
 import { addToCart } from "./shop";
 import { collectOptions, mountProductOptions, setBasePrice } from "./product-options";
 import { show as showDrawer } from "./cart-drawer";
 
-const BASE = `${API}/_emdash/api/plugins/premium-commerce`;
+const BASE = `${API}/_emdash/api/plugins/premium-restaurant`;
+const BOOKINGS = `${API}/_emdash/api/plugins/premium-bookings`;
+const COMMERCE = `${API}/_emdash/api/plugins/premium-commerce`;
 export const TABLE_KEY = "pcx-table";
 const esc = (s: unknown) => String(s ?? "").replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
 
 interface MenuItem { id: string; slug: string; title: string; unitAmount: number; summary: string | null; description: string | null; image: unknown; tags: string[]; popular: boolean; options: unknown[]; station: string | null }
 interface Menu { currency: string; categories: Array<{ name: string; items: MenuItem[] }> }
-export interface RestaurantConfig { enabled: boolean; storeName: string; currency: string; modes: string[]; openNow: boolean; openingHours: string; timezone: string; prepTimeMin: number; tipPresets: number[]; serviceChargePct: number; payAtTable: boolean; payOnCollection: boolean; qrOrdering: boolean; reservations: boolean; maxPartySize: number; zones: Array<{ id: string; name: string; fee: number; minimum: number; etaMin: number }> }
+export interface RestaurantConfig { enabled: boolean; storeName: string; modes: string[]; reservationServiceId: string | null; openNow: boolean; openingHours: string; timezone: string; prepTimeMin: number; tipPresets: number[]; serviceChargePct: number; payAtTable: boolean; payOnCollection: boolean; qrOrdering: boolean; reservations: boolean; maxPartySize: number; zones: Array<{ id: string; name: string; fee: number; minimum: number; etaMin: number }> }
 
 const ZERO_DECIMAL = new Set(["bif", "clp", "djf", "gnf", "jpy", "kmf", "krw", "mga", "pyg", "rwf", "ugx", "vnd", "vuv", "xaf", "xof", "xpf"]);
 export function money(minor: number, currency: string): string {
@@ -34,8 +37,8 @@ const imageUrl = (img: unknown): string | null => {
 	return o.url ?? o.src ?? null;
 };
 
-export async function api<T>(path: string, body?: unknown): Promise<T> {
-	const res = await fetch(`${BASE}/${path}`, body === undefined ? {} : { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+export async function api<T>(path: string, body?: unknown, base = BASE): Promise<T> {
+	const res = await fetch(`${base}/${path}`, body === undefined ? {} : { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
 	const json = (await res.json().catch(() => ({}))) as { success?: boolean; data?: T; error?: { message?: string } };
 	if (!res.ok || json.success === false) throw new Error(json.error?.message || `Request failed (${res.status})`);
 	return json.data as T;
@@ -43,7 +46,7 @@ export async function api<T>(path: string, body?: unknown): Promise<T> {
 
 let configPromise: Promise<RestaurantConfig | null> | null = null;
 export function restaurantConfig(): Promise<RestaurantConfig | null> {
-	if (!configPromise) configPromise = api<RestaurantConfig>("restaurant/config").catch(() => null);
+	if (!configPromise) configPromise = api<RestaurantConfig>("config").catch(() => null);
 	return configPromise;
 }
 
@@ -67,7 +70,7 @@ async function adoptTableFromUrl(): Promise<void> {
 	const code = new URLSearchParams(location.search).get("table");
 	if (!code) return;
 	try {
-		const { table } = await api<{ table: { code: string; name: string; seats: number } }>("restaurant/table", { code });
+		const { table } = await api<{ table: { code: string; name: string; seats: number } }>("table", { code });
 		localStorage.setItem(TABLE_KEY, JSON.stringify({ code: table.code, name: table.name, seats: table.seats }));
 		document.dispatchEvent(new CustomEvent("pcx:table"));
 	} catch {}
@@ -87,7 +90,7 @@ function renderTableBanner(): void {
 async function renderMenu(root: HTMLElement): Promise<void> {
 	let menu: Menu;
 	try {
-		menu = await api<Menu>("restaurant/menu");
+		menu = await api<Menu>("menu");
 	} catch (err) {
 		root.innerHTML = `<p class="ec-form-status--error">${esc(err instanceof Error ? err.message : "Could not load the menu")}</p>`;
 		return;
@@ -135,7 +138,7 @@ async function renderMenu(root: HTMLElement): Promise<void> {
 			panel.querySelector("[data-modal-close]")!.addEventListener("click", close);
 			const host = panel.querySelector<HTMLElement>("[data-product-options]")!;
 			setBasePrice(it.slug, ZERO_DECIMAL.has(menu.currency) ? it.unitAmount : it.unitAmount / 100);
-			mountProductOptions(host, `${BASE}/upload`);
+			mountProductOptions(host, `${COMMERCE}/upload`);
 			let qty = 1;
 			const total = () => {
 				const c = collectOptions(it.slug);
@@ -183,7 +186,7 @@ async function renderTrack(root: HTMLElement): Promise<void> {
 	}
 	const draw = async () => {
 		try {
-			const o = await api<{ number: number; status: string; currency: string; total: number; fulfilment: { mode: string; when: string; table: string | null; kitchen: string; driverName: string | null } | null; items: Array<{ title: string; quantity: number }> }>("restaurant/track", { order: number, token });
+			const o = await api<{ number: number; status: string; currency: string; total: number; fulfilment: { mode: string; when: string; table: string | null; kitchen: string; driverName: string | null } | null; items: Array<{ title: string; quantity: number }> }>("track", { order: number, token });
 			const steps = o.fulfilment?.mode === "delivery" ? ["new", "preparing", "ready", "out_for_delivery", "delivered"] : o.fulfilment?.mode === "dine_in" ? ["new", "preparing", "ready", "served"] : ["new", "preparing", "ready", "completed"];
 			const k = o.fulfilment?.kitchen ?? "new";
 			const idx = Math.max(0, steps.indexOf(k === "completed" && steps.includes("served") ? "served" : k));
@@ -207,11 +210,11 @@ async function renderReservation(root: HTMLElement): Promise<void> {
 	const p = new URLSearchParams(location.search);
 	if (p.get("reservation") && p.get("token")) {
 		try {
-			const { reservation: r } = await api<{ reservation: { id: string; name: string; partySize: number; when: string; table: string | null; status: string } }>("reservations/lookup", { id: p.get("reservation"), token: p.get("token") });
-			root.innerHTML = `<div class="rs-confirm"><h2>${r.status === "cancelled" ? "Reservation cancelled" : "Table booked"}</h2><p>${esc(r.name)} · party of ${r.partySize} · <strong>${esc(r.when)}</strong></p>${r.status === "confirmed" ? `<button type="button" class="rs-link" data-cancel>Cancel this reservation</button>` : ""}</div>`;
+			const { booking: r } = await api<{ booking: { id: string; customer: { name: string }; partySize: number | null; when: string; resource: string | null; status: string } }>("lookup", { id: p.get("reservation"), token: p.get("token") }, BOOKINGS);
+			root.innerHTML = `<div class="rs-confirm"><h2>${r.status === "cancelled" ? "Reservation cancelled" : "Table booked"}</h2><p>${esc(r.customer.name)} · party of ${r.partySize ?? ""} · <strong>${esc(r.when)}</strong></p>${r.status === "confirmed" ? `<button type="button" class="rs-link" data-cancel>Cancel this reservation</button>` : ""}</div>`;
 			root.querySelector("[data-cancel]")?.addEventListener("click", async () => {
 				if (!confirm("Cancel your reservation?")) return;
-				await api("reservations/cancel", { id: p.get("reservation"), token: p.get("token") });
+				await api("cancel", { id: p.get("reservation"), token: p.get("token") }, BOOKINGS);
 				location.reload();
 			});
 		} catch (err) {
@@ -220,7 +223,7 @@ async function renderReservation(root: HTMLElement): Promise<void> {
 		return;
 	}
 	const cfg = await restaurantConfig();
-	if (!cfg?.reservations) {
+	if (!cfg?.reservations || !cfg.reservationServiceId) {
 		root.innerHTML = `<p>Online reservations are not open yet — please call us.</p>`;
 		return;
 	}
@@ -247,8 +250,8 @@ async function renderReservation(root: HTMLElement): Promise<void> {
 		submit.disabled = true;
 		times.innerHTML = `<p class="ec-form-help">Checking tables…</p>`;
 		try {
-			const r = await api<{ slots: Array<{ at: string; label: string }> }>("reservations/availability", { date, partySize: party });
-			times.innerHTML = r.slots.length ? r.slots.map((s) => `<button type="button" class="rs-time" data-at="${s.at}">${s.label}</button>`).join("") : `<p class="ec-form-help">No tables for ${party} on that day — try another date or a smaller party.</p>`;
+			const r = await api<{ slots: Array<{ startsAt: string; label: string }> }>("availability", { serviceId: cfg.reservationServiceId, date, partySize: party }, BOOKINGS);
+			times.innerHTML = r.slots.length ? r.slots.map((s) => `<button type="button" class="rs-time" data-at="${s.startsAt}">${s.label}</button>`).join("") : `<p class="ec-form-help">No tables for ${party} on that day — try another date or a smaller party.</p>`;
 			times.querySelectorAll<HTMLButtonElement>("[data-at]").forEach((b) =>
 				b.addEventListener("click", () => {
 					times.querySelectorAll(".is-selected").forEach((x) => x.classList.remove("is-selected"));
@@ -272,8 +275,8 @@ async function renderReservation(root: HTMLElement): Promise<void> {
 		submit.disabled = true;
 		status.textContent = "Booking…";
 		try {
-			const r = await api<{ reservation: { id: string; when: string }; token: string }>("reservations/create", { name: (form.elements.namedItem("name") as HTMLInputElement).value, email: (form.elements.namedItem("email") as HTMLInputElement).value, phone: (form.elements.namedItem("phone") as HTMLInputElement).value || undefined, partySize: Number((form.elements.namedItem("party") as HTMLSelectElement).value), at: at.value, notes: (form.elements.namedItem("notes") as HTMLInputElement).value || undefined });
-			location.assign(`${location.pathname}?reservation=${r.reservation.id}&token=${r.token}`);
+			const r = await api<{ booking: { id: string; when: string }; token: string }>("hold", { serviceId: cfg.reservationServiceId, startsAt: at.value, partySize: Number((form.elements.namedItem("party") as HTMLSelectElement).value), customer: { name: (form.elements.namedItem("name") as HTMLInputElement).value, email: (form.elements.namedItem("email") as HTMLInputElement).value, phone: (form.elements.namedItem("phone") as HTMLInputElement).value || undefined }, notes: (form.elements.namedItem("notes") as HTMLInputElement).value || undefined }, BOOKINGS);
+			location.assign(`${location.pathname}?reservation=${r.booking.id}&token=${r.token}`);
 		} catch (err) {
 			status.textContent = err instanceof Error ? err.message : "Could not book";
 			status.classList.add("ec-form-status--error");

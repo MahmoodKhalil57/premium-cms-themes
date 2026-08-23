@@ -13,7 +13,7 @@
  */
 
 import { initBooking } from "./booking";
-import { currentTable, initRestaurant, restaurantConfig, type RestaurantConfig } from "./menu";
+import { api as restaurantApi, currentTable, initRestaurant, restaurantConfig, type RestaurantConfig } from "./menu";
 import { initStaffApp } from "./staff";
 import { initCartDrawer, show as showDrawer } from "./cart-drawer";
 import { collectOptions, initProductOptions, setBasePrice } from "./product-options";
@@ -414,7 +414,8 @@ interface PublicOrder {
 	email: string;
 	customerName?: string;
 	tracking?: string;
-	fulfilment?: { mode: string; payLater: boolean; kitchen: string; table: string | null } | null;
+	adjustments?: Array<{ label: string; amount: number }>;
+	extensions?: { "premium-restaurant"?: { mode: string; table: string | null; payLater: boolean } };
 }
 
 async function renderOrder(): Promise<void> {
@@ -441,12 +442,13 @@ async function renderOrder(): Promise<void> {
 		root.innerHTML = `
 			<h2>${heading}</h2>
 			<p class="ec-order__meta">Order <strong>#${order.number}</strong>${order.email ? ` · confirmation sent to ${esc(order.email)}` : ""}</p>
-			${order.status === "awaiting_payment" ? (order.fulfilment ? `<p>${order.fulfilment.mode === "dine_in" ? `Sent to the kitchen — pay at the table or the counter when you're done.` : order.fulfilment.mode === "pickup" ? "Pay when you collect." : "Pay the driver on delivery."}</p>` : `<p>We will contact you with payment details.</p>`) : ""}
+			${order.status === "awaiting_payment" ? (order.extensions?.["premium-restaurant"] ? `<p>${order.extensions["premium-restaurant"].mode === "dine_in" ? `Sent to the kitchen — pay at the table or the counter when you're done.` : order.extensions["premium-restaurant"].mode === "pickup" ? "Pay when you collect." : "Pay the driver on delivery."}</p>` : `<p>We will contact you with payment details.</p>`) : ""}
 			<table class="ec-cart__table">
 				<tbody>${order.items.map((i) => `<tr><td>${i.quantity} × ${esc(i.title)}</td><td>${money(i.unitAmount * i.quantity)}</td></tr>`).join("")}</tbody>
 				<tfoot>
 					<tr><th>Subtotal</th><td>${money(order.subtotal)}</td></tr>
 					${order.shipping ? `<tr><th>Shipping</th><td>${money(order.shipping)}</td></tr>` : ""}
+					${(order.adjustments ?? []).map((a) => `<tr><th>${esc(a.label)}</th><td>${money(a.amount)}</td></tr>`).join("")}
 					${order.tax ? `<tr><th>Tax</th><td>${money(order.tax)}</td></tr>` : ""}
 					${order.discount ? `<tr><th>Discount</th><td>−${money(order.discount)}</td></tr>` : ""}
 					<tr><th>Total</th><th>${money(order.total)}</th></tr>
@@ -564,7 +566,7 @@ async function renderCheckoutForm(root: HTMLElement): Promise<void> {
 			savePaymentMethod: (form.elements.namedItem("savePaymentMethod") as HTMLInputElement | null)?.checked ?? false,
 			cartToken: me ? undefined : cartToken(),
 			couponCode: couponCode() || undefined,
-			...(rs ? { fulfilment: readFulfilment(form), name: (form.elements.namedItem("rs.name") as HTMLInputElement | null)?.value.trim() || undefined, phone: (form.elements.namedItem("rs.phone") as HTMLInputElement | null)?.value.trim() || undefined, note: (form.elements.namedItem("rs.note") as HTMLInputElement | null)?.value.trim() || undefined } : {}),
+			...(rs ? { extensions: { "premium-restaurant": readFulfilment(form) }, name: (form.elements.namedItem("rs.name") as HTMLInputElement | null)?.value.trim() || undefined, phone: (form.elements.namedItem("rs.phone") as HTMLInputElement | null)?.value.trim() || undefined, note: (form.elements.namedItem("rs.note") as HTMLInputElement | null)?.value.trim() || undefined } : {}),
 		};
 		try {
 			const result = me ? await accountApi<{ url: string; orderId: string; number: number; paid?: boolean }>("checkout/account", body) : await api<{ url: string; orderId: string; number: number }>("checkout", { method: "POST", body: JSON.stringify(body) });
@@ -667,7 +669,7 @@ function wireFulfilment(form: HTMLFormElement, rs: RestaurantConfig, table: { co
 	const loadSlots = async () => {
 		const date = (form.elements.namedItem("rs.date") as HTMLInputElement).value || new Date().toISOString().slice(0, 10);
 		try {
-			const r = await api<{ asap: { at: string; label: string } | null; slots: Array<{ at: string; label: string; full?: boolean }> }>("restaurant/slots", { method: "POST", body: JSON.stringify({ mode: mode(), date }) });
+			const r = await restaurantApi<{ asap: { at: string; label: string } | null; slots: Array<{ at: string; label: string; full?: boolean }> }>("slots", { mode: mode(), date });
 			const opts = [...(r.asap ? [{ at: "asap", label: r.asap.label }] : []), ...r.slots.filter((s) => !s.full).slice(0, 40)];
 			slotsEl.innerHTML = opts.length ? opts.map((s, i) => `<label class="rs-time${i === 0 ? " is-selected" : ""}"><input type="radio" name="rs.at" value="${s.at}"${i === 0 ? " checked" : ""} hidden>${esc(s.label)}</label>`).join("") : `<p class="ec-form-help">No times available that day.</p>`;
 			slotsEl.querySelectorAll("input").forEach((i) => i.addEventListener("change", () => { slotsEl.querySelectorAll(".is-selected").forEach((x) => x.classList.remove("is-selected")); i.parentElement!.classList.add("is-selected"); }));
@@ -685,7 +687,7 @@ function wireFulfilment(form: HTMLFormElement, rs: RestaurantConfig, table: { co
 		const out = form.querySelector<HTMLElement>("[data-rs-zone]")!;
 		if (!pc.value.trim()) return;
 		try {
-			const r = await api<{ zone: { name: string; fee: number; minimum: number; etaMin: number } | null; message?: string }>("restaurant/zone", { method: "POST", body: JSON.stringify({ postcode: pc.value }) });
+			const r = await restaurantApi<{ zone: { name: string; fee: number; minimum: number; etaMin: number } | null; message?: string }>("zone", { postcode: pc.value });
 			out.textContent = r.zone ? `${r.zone.name}: delivery ${money(Math.round(r.zone.fee * 100))}${r.zone.minimum ? ` · min. order ${money(Math.round(r.zone.minimum * 100))}` : ""}${r.zone.etaMin ? ` · about ${r.zone.etaMin} min` : ""}` : (r.message ?? "We do not deliver there.");
 			const postal = form.querySelector<HTMLInputElement>('[name="shipping.postalCode"]');
 			if (postal && !postal.value) postal.value = pc.value;

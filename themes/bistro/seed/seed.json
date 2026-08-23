@@ -214,7 +214,7 @@
 												"value": {
 													"type": "string",
 													"title": "Value",
-													"description": "Stored key \u2014 letters, numbers, dashes",
+													"description": "Stored key — letters, numbers, dashes",
 													"x-ui": {
 														"order": 1
 													}
@@ -320,7 +320,7 @@
 									},
 									"condition": {
 										"type": "object",
-										"title": "Show only when\u2026",
+										"title": "Show only when…",
 										"x-ui": {
 											"collapsed": true
 										},
@@ -503,7 +503,7 @@
 												},
 												"x-ui": {
 													"widget": "chips",
-													"placeholder": "Inter, Arial, Impact\u2026"
+													"placeholder": "Inter, Arial, Impact…"
 												}
 											},
 											"colors": {
@@ -514,7 +514,7 @@
 												},
 												"x-ui": {
 													"widget": "chips",
-													"placeholder": "#111111, #ffffff\u2026"
+													"placeholder": "#111111, #ffffff…"
 												}
 											},
 											"maxLayers": {
@@ -665,7 +665,7 @@
 							"children": [
 								{
 									"_type": "span",
-									"text": "Mon\u2013Thu 11:30\u201322:00 \u00b7 Fri\u2013Sat 11:30\u201323:30 \u00b7 Sun 12:00\u201321:00. Kitchen closes 30 min earlier."
+									"text": "Mon–Thu 11:30–22:00 · Fri–Sat 11:30–23:30 · Sun 12:00–21:00. Kitchen closes 30 min earlier."
 								}
 							]
 						}
@@ -695,7 +695,7 @@
 				"latitude": "51.5136",
 				"longitude": "-0.1321",
 				"openingHours": "Mo-Th 11:30-22:00, Fr-Sa 11:30-23:30, Su 12:00-21:00",
-				"priceRange": "\u00a3\u00a3",
+				"priceRange": "££",
 				"consentEnabled": true,
 				"consentTitle": "We use cookies",
 				"consentText": "Essential cookies keep your basket and table working. With your consent we also use analytics cookies.",
@@ -707,9 +707,14 @@
 			"settings": {
 				"currency": "gbp",
 				"storeName": "Dean Street Bistro",
-				"bookingTimezone": "Europe/London",
 				"customerAccounts": true,
-				"restaurantMode": true,
+				"allowManualPayment": false
+			}
+		},
+		"premium-restaurant": {
+			"settings": {
+				"timezone": "Europe/London",
+				"storeName": "Dean Street Bistro",
 				"fulfilmentModes": "delivery, pickup, dine_in",
 				"openingHours": "mon-thu 11:30-22:00; fri-sat 11:30-23:30; sun 12:00-21:00",
 				"prepTimeMin": 25,
@@ -724,13 +729,17 @@
 				"qrOrdering": true,
 				"kdsStations": "kitchen, pizza, bar",
 				"receiptHeader": "24 Dean Street, London W1D 3SG\nVAT GB 123 4567 89",
-				"receiptFooter": "Thanks for eating with us \u2014 see you soon!",
+				"receiptFooter": "Thanks for eating with us — see you soon!",
 				"reservationsEnabled": true,
 				"turnTimeMin": 90,
 				"maxPartySize": 8,
 				"reservationLeadMin": 60
 			},
 			"calls": [
+				{
+					"route": "migrate/commerce",
+					"ignoreErrors": true
+				},
 				{
 					"route": "tables/save",
 					"body": {
@@ -978,9 +987,7 @@
 								"kitchen",
 								"driver"
 							],
-							"pin": "1234",
-							"availability": [],
-							"timeOff": []
+							"pin": "1234"
 						}
 					}
 				},
@@ -994,9 +1001,7 @@
 							"roles": [
 								"server"
 							],
-							"pin": "2345",
-							"availability": [],
-							"timeOff": []
+							"pin": "2345"
 						}
 					}
 				},
@@ -1010,9 +1015,7 @@
 							"roles": [
 								"kitchen"
 							],
-							"pin": "3456",
-							"availability": [],
-							"timeOff": []
+							"pin": "3456"
 						}
 					}
 				},
@@ -1027,21 +1030,36 @@
 								"driver",
 								"server"
 							],
-							"pin": "4567",
-							"availability": [],
-							"timeOff": []
+							"pin": "4567"
 						}
 					}
+				}
+			]
+		},
+		"premium-bookings": {
+			"settings": {
+				"timezone": "Europe/London",
+				"businessName": "Dean Street Bistro",
+				"currency": "gbp",
+				"managePath": "/reserve",
+				"slotIntervalMin": 30,
+				"leadTimeHours": 1,
+				"horizonDays": 45
+			},
+			"calls": [
+				{
+					"route": "migrate/commerce",
+					"ignoreErrors": true
 				},
 				{
 					"route": "automations/save",
 					"body": {
 						"record": {
 							"title": "Reservation confirmation",
-							"trigger": "reservation_confirmed",
+							"trigger": "booking_confirmed",
 							"offset": 0,
-							"subject": "Your table at {{store}} \u2014 {{when}}",
-							"body": "Hi {{first_name}},\n\nYour {{service}} is booked for {{when}}.\n\nChange of plans? Manage it here: {{manage_url}}\n\nSee you soon,\n{{store}}",
+							"subject": "Your table at {{store}} — {{when}}",
+							"body": "Hi {{first_name}},\n\nYour table for {{party_size}} is booked for {{when}}.\n\nChange of plans? Manage it here: {{manage_url}}\n\nSee you soon,\n{{store}}",
 							"active": true
 						}
 					}
@@ -1051,23 +1069,10 @@
 					"body": {
 						"record": {
 							"title": "Reservation reminder",
-							"trigger": "reservation_reminder",
+							"trigger": "booking_reminder",
 							"offset": 3,
 							"subject": "See you at {{when}}",
-							"body": "Hi {{first_name}},\n\nA quick reminder of your {{service}} at {{store}} today at {{when}}. Running late? Call us and we'll hold the table.\n\n{{store}}",
-							"active": true
-						}
-					}
-				},
-				{
-					"route": "automations/save",
-					"body": {
-						"record": {
-							"title": "Thanks for your order",
-							"trigger": "order_paid",
-							"offset": 0,
-							"subject": "Thanks for your order #{{order_number}}",
-							"body": "Hi {{first_name}},\n\nThanks for ordering from {{store}}. Track it here: {{manage_url}}\n\nEnjoy!",
+							"body": "Hi {{first_name}},\n\nA quick reminder of your table for {{party_size}} at {{store}} today at {{when}}. Running late? Call us and we'll hold the table.\n\n{{store}}",
 							"active": true
 						}
 					}
@@ -1140,7 +1145,7 @@
 						],
 						"settings": {
 							"submitLabel": "Send",
-							"successMessage": "Thanks \u2014 we'll reply within a day.",
+							"successMessage": "Thanks — we'll reply within a day.",
 							"notifyEmails": []
 						}
 					}

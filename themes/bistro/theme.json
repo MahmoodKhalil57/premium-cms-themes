@@ -1,7 +1,7 @@
 {
 	"id": "bistro",
-	"name": "Bistro \u2014 Restaurant",
-	"description": "Restaurant for PremiumCMS: a menu with modifiers and kitchen stations, delivery with postcode zones, pickup and dine-in with QR table cards, reservations, and a staff app with PIN sign-in \u2014 POS with cash/card and open tabs, cash drawer with Z reports, kitchen display per station and automatic ticket/receipt printing (browser agent or PrintNode). Seeds dishes, tables, printers, staff PINs, opening hours and delivery zones.",
+	"name": "Bistro — Restaurant",
+	"description": "Restaurant for PremiumCMS (Commerce + Bookings + Restaurant plugins): a menu with modifiers and kitchen stations, delivery with postcode zones, pickup and dine-in with QR table cards, reservations, and a staff app with PIN sign-in — POS with cash/card and open tabs, cash drawer with Z reports, kitchen display per station and automatic ticket/receipt printing (browser agent or PrintNode). Seeds dishes, tables, printers, staff PINs, opening hours and delivery zones.",
 	"author": {
 		"name": "PremiumCMS",
 		"verified": true,
@@ -36,6 +36,8 @@
 		],
 		"plugins": [
 			"premium-commerce",
+			"premium-bookings",
+			"premium-restaurant",
 			"premium-forms",
 			"premium-site-kit"
 		],

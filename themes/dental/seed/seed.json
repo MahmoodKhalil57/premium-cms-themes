@@ -43,7 +43,7 @@
 				},
 				{
 					"slug": "sizes",
-					"label": "Sizes (comma-separated, e.g. S, M, L, XL \u2014 leave empty for one-size products)",
+					"label": "Sizes (comma-separated, e.g. S, M, L, XL — leave empty for one-size products)",
 					"type": "string"
 				},
 				{
@@ -187,7 +187,7 @@
 												"value": {
 													"type": "string",
 													"title": "Value",
-													"description": "Stored key \u2014 letters, numbers, dashes",
+													"description": "Stored key — letters, numbers, dashes",
 													"x-ui": {
 														"order": 1
 													}
@@ -293,7 +293,7 @@
 									},
 									"condition": {
 										"type": "object",
-										"title": "Show only when\u2026",
+										"title": "Show only when…",
 										"x-ui": {
 											"collapsed": true
 										},
@@ -476,7 +476,7 @@
 												},
 												"x-ui": {
 													"widget": "chips",
-													"placeholder": "Inter, Arial, Impact\u2026"
+													"placeholder": "Inter, Arial, Impact…"
 												}
 											},
 											"colors": {
@@ -487,7 +487,7 @@
 												},
 												"x-ui": {
 													"widget": "chips",
-													"placeholder": "#111111, #ffffff\u2026"
+													"placeholder": "#111111, #ffffff…"
 												}
 											},
 											"maxLayers": {
@@ -651,7 +651,7 @@
 							"children": [
 								{
 									"_type": "span",
-									"text": "Mon\u2013Fri 8:30\u201318:00 \u00b7 Sat 9:00\u201313:00. Emergencies seen same day \u2014 call 020 7946 0000."
+									"text": "Mon–Fri 8:30–18:00 · Sat 9:00–13:00. Emergencies seen same day — call 020 7946 0000."
 								}
 							]
 						}
@@ -677,7 +677,7 @@
 				"latitude": "51.5186",
 				"longitude": "-0.1469",
 				"openingHours": "Mo-Fr 08:30-18:00, Sa 09:00-13:00",
-				"priceRange": "\u00a3\u00a3",
+				"priceRange": "££",
 				"consentEnabled": true,
 				"consentTitle": "We use cookies",
 				"consentText": "Essential cookies keep the site working. With your consent we also use analytics cookies to understand how the site is used.",
@@ -687,20 +687,33 @@
 		},
 		"premium-commerce": {
 			"settings": {
-				"bookingTimezone": "Europe/London",
+				"currency": "gbp",
+				"storeName": "Harley Smile Studio",
+				"customerAccounts": true
+			}
+		},
+		"premium-bookings": {
+			"settings": {
+				"timezone": "Europe/London",
 				"slotIntervalMin": 15,
 				"leadTimeHours": 2,
 				"horizonDays": 45,
 				"holdMinutes": 15,
-				"customerAccounts": true,
+				"cancelHours": 2,
 				"currency": "gbp",
-				"storeName": "Harley Smile Studio"
+				"businessName": "Harley Smile Studio",
+				"managePath": "/book"
 			},
 			"calls": [
 				{
-					"route": "staff/save",
+					"route": "migrate/commerce",
+					"ignoreErrors": true
+				},
+				{
+					"route": "resources/save",
 					"body": {
 						"record": {
+							"kind": "staff",
 							"name": "Dr Amira Khan",
 							"title": "Principal dentist",
 							"active": true,
@@ -741,9 +754,10 @@
 					}
 				},
 				{
-					"route": "staff/save",
+					"route": "resources/save",
 					"body": {
 						"record": {
+							"kind": "staff",
 							"name": "Dr Tom Okafor",
 							"title": "Implant surgeon",
 							"active": true,
@@ -769,9 +783,10 @@
 					}
 				},
 				{
-					"route": "staff/save",
+					"route": "resources/save",
 					"body": {
 						"record": {
+							"kind": "staff",
 							"name": "Sam Lee",
 							"title": "Hygienist",
 							"active": true,
@@ -823,9 +838,11 @@
 							"price": 85,
 							"depositType": "fixed",
 							"depositAmount": 25,
-							"staffIds": [],
 							"intakeFormId": "new-patient-intake",
-							"active": true
+							"active": true,
+							"kind": "appointment",
+							"resourceKind": "staff",
+							"resourceIds": []
 						}
 					}
 				},
@@ -841,9 +858,11 @@
 							"price": 395,
 							"depositType": "fixed",
 							"depositAmount": 95,
-							"staffIds": [],
 							"intakeFormId": "new-patient-intake",
-							"active": true
+							"active": true,
+							"kind": "appointment",
+							"resourceKind": "staff",
+							"resourceIds": []
 						}
 					}
 				},
@@ -853,15 +872,17 @@
 						"record": {
 							"slug": "composite-bonding",
 							"title": "Composite bonding consultation",
-							"description": "Reshape chips and gaps in a single visit \u2014 consultation first.",
+							"description": "Reshape chips and gaps in a single visit — consultation first.",
 							"durationMin": 30,
 							"bufferMin": 10,
 							"price": 0,
 							"depositType": "none",
 							"depositAmount": 0,
-							"staffIds": [],
 							"intakeFormId": "new-patient-intake",
-							"active": true
+							"active": true,
+							"kind": "appointment",
+							"resourceKind": "staff",
+							"resourceIds": []
 						}
 					}
 				},
@@ -877,9 +898,11 @@
 							"price": 0,
 							"depositType": "none",
 							"depositAmount": 0,
-							"staffIds": [],
 							"intakeFormId": "new-patient-intake",
-							"active": true
+							"active": true,
+							"kind": "appointment",
+							"resourceKind": "staff",
+							"resourceIds": []
 						}
 					}
 				},
@@ -895,9 +918,11 @@
 							"price": 0,
 							"depositType": "none",
 							"depositAmount": 0,
-							"staffIds": [],
 							"intakeFormId": "new-patient-intake",
-							"active": true
+							"active": true,
+							"kind": "appointment",
+							"resourceKind": "staff",
+							"resourceIds": []
 						}
 					}
 				},
@@ -907,15 +932,17 @@
 						"record": {
 							"slug": "emergency-appointment",
 							"title": "Same-day emergency",
-							"description": "Pain, swelling or a broken tooth \u2014 seen today.",
+							"description": "Pain, swelling or a broken tooth — seen today.",
 							"durationMin": 30,
 							"bufferMin": 0,
 							"price": 95,
 							"depositType": "fixed",
 							"depositAmount": 95,
-							"staffIds": [],
 							"intakeFormId": "new-patient-intake",
-							"active": true
+							"active": true,
+							"kind": "appointment",
+							"resourceKind": "staff",
+							"resourceIds": []
 						}
 					}
 				},
@@ -925,7 +952,7 @@
 						"record": {
 							"trigger": "booking_confirmed",
 							"subject": "You're booked: {{service}} on {{when}}",
-							"body": "Hi {{first_name}},\n\nYour {{service}} with {{staff}} is confirmed for {{when}}.\n\nAddress: 12 Harley Street, London W1G 9PF. Please arrive 5 minutes early.\n\nNeed to change it? Manage your booking: {{manage_url}}\n\n{{store}}",
+							"body": "Hi {{first_name}},\n\nYour {{service}} with {{resource}} is confirmed for {{when}}.\n\nAddress: 12 Harley Street, London W1G 9PF. Please arrive 5 minutes early.\n\nNeed to change it? Manage your booking: {{manage_url}}\n\n{{store}}",
 							"active": true,
 							"offset": 0,
 							"title": "Booking confirmation"
@@ -938,7 +965,7 @@
 						"record": {
 							"trigger": "booking_reminder",
 							"subject": "Reminder: {{service}} tomorrow at {{when}}",
-							"body": "Hi {{first_name}},\n\nJust a reminder of your {{service}} tomorrow, {{when}}, with {{staff}}.\n\nIf you can't make it, let us know today so we can offer the slot to someone else: {{manage_url}}\n\nSee you soon,\n{{store}}",
+							"body": "Hi {{first_name}},\n\nJust a reminder of your {{service}} tomorrow, {{when}}, with {{resource}}.\n\nIf you can't make it, let us know today so we can offer the slot to someone else: {{manage_url}}\n\nSee you soon,\n{{store}}",
 							"active": true,
 							"offset": 24,
 							"title": "24-hour reminder"
@@ -951,7 +978,7 @@
 						"record": {
 							"trigger": "booking_recall",
 							"subject": "Time for your next check-up, {{first_name}}",
-							"body": "Hi {{first_name}},\n\nIt's been six months since your last visit \u2014 time for a check-up and clean to keep everything healthy.\n\nBook online in a minute: {{site_url}}/book\n\n{{store}}",
+							"body": "Hi {{first_name}},\n\nIt's been six months since your last visit — time for a check-up and clean to keep everything healthy.\n\nBook online in a minute: {{site_url}}/book\n\n{{store}}",
 							"active": true,
 							"offset": 180,
 							"title": "6-month recall"
@@ -964,7 +991,7 @@
 						"record": {
 							"trigger": "booking_no_show",
 							"subject": "We missed you today",
-							"body": "Hi {{first_name}},\n\nWe're sorry we missed you for your {{service}} today. Everything okay?\n\nYou can rebook any time: {{site_url}}/book \u2014 or reply to this email and we'll find you a slot.\n\n{{store}}",
+							"body": "Hi {{first_name}},\n\nWe're sorry we missed you for your {{service}} today. Everything okay?\n\nYou can rebook any time: {{site_url}}/book — or reply to this email and we'll find you a slot.\n\n{{store}}",
 							"active": true,
 							"offset": 2,
 							"title": "Missed appointment follow-up"
@@ -1048,7 +1075,7 @@
 						],
 						"settings": {
 							"submitLabel": "Send message",
-							"successMessage": "Thanks \u2014 we'll reply within one working day.",
+							"successMessage": "Thanks — we'll reply within one working day.",
 							"notifyEmails": []
 						}
 					}
@@ -1167,7 +1194,7 @@
 						],
 						"settings": {
 							"submitLabel": "Save my details",
-							"successMessage": "Thanks \u2014 your details are saved securely for your visit.",
+							"successMessage": "Thanks — your details are saved securely for your visit.",
 							"notifyEmails": []
 						}
 					}

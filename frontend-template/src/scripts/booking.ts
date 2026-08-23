@@ -1,12 +1,13 @@
 /**
- * Booking widget ([data-booking]): treatment → day → time (and who) →
- * your details (+ intake form when the treatment has one) → hold the slot →
- * pay through the normal checkout, or confirm straight away when free.
+ * Booking widget ([data-booking], Bookings plugin): service → day → time (and
+ * who) → your details (+ intake form when the service has one) → hold the
+ * slot → pay through the Commerce checkout, or confirm straight away when free.
  * Also renders a booking's confirmation page (?booking=<id>&token=…).
  */
 import { API, api as sessionApi, whoAmI } from "./account";
 
-const BASE = `${API}/_emdash/api/plugins/premium-commerce`;
+const BASE = `${API}/_emdash/api/plugins/premium-bookings`;
+const COMMERCE = `${API}/_emdash/api/plugins/premium-commerce`;
 const FORMS = `${API}/_emdash/api/plugins/premium-forms`;
 const esc = (s: unknown) => String(s ?? "").replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
 
@@ -29,8 +30,8 @@ interface Slot {
 	staffName: string;
 }
 
-async function pub<T>(route: string, body: unknown = {}): Promise<T> {
-	const r = await fetch(`${BASE}/${route}`, { method: "POST", credentials: "include", headers: { "Content-Type": "application/json", "X-EmDash-Request": "1" }, body: JSON.stringify(body) });
+async function pub<T>(route: string, body: unknown = {}, base = BASE): Promise<T> {
+	const r = await fetch(`${base}/${route}`, { method: "POST", credentials: "include", headers: { "Content-Type": "application/json", "X-EmDash-Request": "1" }, body: JSON.stringify(body) });
 	const j = (await r.json().catch(() => ({}))) as { success?: boolean; data?: T; error?: { message?: string } };
 	if (!r.ok || j.success === false) throw new Error(j.error?.message ?? `Request failed (${r.status})`);
 	return j.data as T;
@@ -45,7 +46,7 @@ export async function renderBooking(root: HTMLElement): Promise<void> {
 	if (params.get("booking")) return renderConfirmation(root, params.get("booking")!, params.get("token") ?? "");
 	let data: { currency: string; timezone: string; horizonDays: number; services: Service[] };
 	try {
-		data = await pub("bookings/services");
+		data = await pub("services", { kind: "appointment" });
 	} catch (err) {
 		root.innerHTML = `<p class="ec-form-status--error">${esc(err instanceof Error ? err.message : "Booking is unavailable")}</p>`;
 		return;
@@ -103,7 +104,7 @@ export async function renderBooking(root: HTMLElement): Promise<void> {
 		state.days = [];
 		draw();
 		try {
-			const r = await pub<{ days: string[] }>("bookings/days", { serviceId: state.service.id, days: Math.min(31, data.horizonDays) });
+			const r = await pub<{ days: string[] }>("days", { serviceId: state.service.id, days: Math.min(31, data.horizonDays) });
 			state.days = r.days;
 			if (!state.day || !state.days.includes(state.day)) state.day = state.days[0] ?? "";
 		} catch {
@@ -114,7 +115,7 @@ export async function renderBooking(root: HTMLElement): Promise<void> {
 	const loadSlots = async () => {
 		if (!state.service || !state.day) return draw();
 		try {
-			const r = await pub<{ slots: Slot[] }>("bookings/availability", { serviceId: state.service.id, date: state.day, staffId: state.staffId || undefined });
+			const r = await pub<{ slots: Slot[] }>("availability", { serviceId: state.service.id, date: state.day, resourceId: state.staffId || undefined });
 			state.slots = r.slots;
 		} catch {
 			state.slots = [];
@@ -173,14 +174,14 @@ export async function renderBooking(root: HTMLElement): Promise<void> {
 				intakeSubmissionId = res.submissionId;
 			}
 			const customer = { name: (form.elements.namedItem("name") as HTMLInputElement).value.trim(), email: (form.elements.namedItem("email") as HTMLInputElement).value.trim(), phone: (form.elements.namedItem("phone") as HTMLInputElement).value.trim() || undefined };
-			const held = await pub<{ booking: { id: string; status: string; price: number }; token: string; checkoutItem: { productId: string; quantity: number } | null }>("bookings/hold", { serviceId: state.service.id, staffId: state.slot.staffId, startsAt: state.slot.startsAt, customer, notes: (form.elements.namedItem("notes") as HTMLInputElement).value.trim() || undefined, intakeSubmissionId });
+			const held = await pub<{ booking: { id: string; status: string; price: number }; token: string; checkoutItem: { productId: string; quantity: number } | null }>("hold", { serviceId: state.service.id, resourceId: state.slot.staffId, startsAt: state.slot.startsAt, customer, notes: (form.elements.namedItem("notes") as HTMLInputElement).value.trim() || undefined, intakeSubmissionId });
 			if (!held.checkoutItem) {
 				location.assign(`${location.pathname}?booking=${held.booking.id}&token=${held.token}`);
 				return;
 			}
 			status.textContent = "Slot held — taking you to payment…";
 			const body = { items: [held.checkoutItem], method: "online", email: customer.email, name: customer.name, phone: customer.phone, successUrl: `${location.origin}${location.pathname}?booking=${held.booking.id}&token=${held.token}`, cancelUrl: `${location.origin}${location.pathname}` };
-			const result = me ? await sessionApi<{ url: string; paid?: boolean }>("checkout/account", body) : await pub<{ url: string }>("checkout", body);
+			const result = me ? await sessionApi<{ url: string; paid?: boolean }>("checkout/account", body) : await pub<{ url: string }>("checkout", body, COMMERCE);
 			location.assign(result.url);
 		} catch (err) {
 			status.textContent = err instanceof Error ? err.message : "Could not book";
@@ -234,7 +235,7 @@ function intakeData(host: HTMLElement): Record<string, unknown> {
 
 async function renderConfirmation(root: HTMLElement, id: string, token: string): Promise<void> {
 	try {
-		const { booking } = await pub<{ booking: { service: string; staff: string; when: string; status: string; price: number; deposit: number; customer: { name: string; email: string } } }>("bookings/lookup", { id, token });
+		const { booking } = await pub<{ booking: { service: string; staff: string; when: string; status: string; price: number; deposit: number; customer: { name: string; email: string } } }>("lookup", { id, token });
 		const pendingPay = booking.status === "held" || booking.status === "pending_payment";
 		root.innerHTML = `<div class="bk bk--confirm">
 			<h2>${booking.status === "confirmed" ? "You're booked" : pendingPay ? "Finishing your booking…" : booking.status === "cancelled" ? "This booking was cancelled" : "Booking"}</h2>
@@ -247,7 +248,7 @@ async function renderConfirmation(root: HTMLElement, id: string, token: string):
 		root.querySelector("[data-cancel-booking]")?.addEventListener("click", async () => {
 			if (!confirm("Cancel this appointment?")) return;
 			try {
-				await pub("bookings/cancel", { id, token });
+				await pub("cancel", { id, token });
 				void renderConfirmation(root, id, token);
 			} catch (err) {
 				alert(err instanceof Error ? err.message : "Could not cancel");

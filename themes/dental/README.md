@@ -6,10 +6,11 @@ Served by PremiumCMS as is, or forked to your GitHub and hosted on GitHub Pages 
 
 ## Plugins
 
-- `premium-commerce` — bookings, deposits, automations, shop
+- `premium-bookings` — treatments, clinicians (CMS users), online booking, reminders and recalls
+- `premium-commerce` — deposits and the shop (bookings are paid through its checkout)
 - `premium-forms` — contact + signed intake forms
 - `premium-site-kit` — schema.org Dentist profile, analytics, consent, Google reviews
 
 ## Customise
 
-Admin → Pages (copy & layout), Commerce → Treatments & staff (fees, deposits, hours), Plugins → Site Kit → Settings (address, opening hours, GA4, Google Place ID).
+Admin → Pages (copy & layout), Plugins → Bookings → Services and Staff & resources (fees, deposits, hours), Plugins → Site Kit → Settings (address, opening hours, GA4, Google Place ID).

@@ -7,7 +7,7 @@
 import { API } from "./account";
 import { money } from "./menu";
 
-const BASE = `${API}/_emdash/api/plugins/premium-commerce`;
+const BASE = `${API}/_emdash/api/plugins/premium-restaurant`;
 const TOKEN_KEY = "pcx-staff-token";
 const esc = (s: unknown) => String(s ?? "").replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
 
@@ -317,7 +317,7 @@ async function renderPrinter(main: HTMLElement): Promise<void> {
 	const draw = async () => {
 		const { jobs, printers } = await api<{ jobs: PrintJob[]; printers: Printer[] }>("print/jobs", { printerId: printerFilter || undefined });
 		const agents = printers.filter((p) => p.target === "agent" && p.active);
-		main.innerHTML = `<div class="st-printer"><h2>Printer agent</h2><p class="ec-form-help">Leave this tab open on the till PC. Queued tickets and receipts for browser printers are printed here automatically — use a kiosk browser with silent printing (Chrome: <code>--kiosk-printing</code>) so no dialog appears.</p><div class="st-pay"><select class="ec-form-input" data-printer><option value="">All browser printers</option>${agents.map((p) => `<option value="${p.id}"${p.id === printerFilter ? " selected" : ""}>${esc(p.name)}</option>`).join("")}</select><button type="button" class="st-btn ${agentOn ? "st-btn--cash" : ""}" data-toggle>${agentOn ? "Agent running — stop" : "Start printing"}</button></div><p class="ec-form-help">${jobs.length} job(s) queued${agents.length ? "" : " · no browser printers configured (Admin → Commerce → Restaurant → Printers)"}.</p><ul class="st-jobs">${jobs.slice(0, 20).map((j) => `<li><span class="st-chip">${esc(j.kind)}</span> ${esc(j.title)} <button type="button" class="rs-link" data-print-now="${j.id}">print now</button></li>`).join("")}</ul></div>`;
+		main.innerHTML = `<div class="st-printer"><h2>Printer agent</h2><p class="ec-form-help">Leave this tab open on the till PC. Queued tickets and receipts for browser printers are printed here automatically — use a kiosk browser with silent printing (Chrome: <code>--kiosk-printing</code>) so no dialog appears.</p><div class="st-pay"><select class="ec-form-input" data-printer><option value="">All browser printers</option>${agents.map((p) => `<option value="${p.id}"${p.id === printerFilter ? " selected" : ""}>${esc(p.name)}</option>`).join("")}</select><button type="button" class="st-btn ${agentOn ? "st-btn--cash" : ""}" data-toggle>${agentOn ? "Agent running — stop" : "Start printing"}</button></div><p class="ec-form-help">${jobs.length} job(s) queued${agents.length ? "" : " · no browser printers configured (Admin → Plugins → Restaurant → Printers)"}.</p><ul class="st-jobs">${jobs.slice(0, 20).map((j) => `<li><span class="st-chip">${esc(j.kind)}</span> ${esc(j.title)} <button type="button" class="rs-link" data-print-now="${j.id}">print now</button></li>`).join("")}</ul></div>`;
 		main.querySelector<HTMLSelectElement>("[data-printer]")!.addEventListener("change", (e) => { printerFilter = (e.target as HTMLSelectElement).value; void draw(); });
 		main.querySelector("[data-toggle]")!.addEventListener("click", () => { agentOn = !agentOn; void draw(); });
 		main.querySelectorAll<HTMLButtonElement>("[data-print-now]").forEach((b) => b.addEventListener("click", async () => { const j = jobs.find((x) => x.id === b.dataset.printNow)!; const ok = await printText(j); await api("print/ack", { id: j.id, status: ok ? "printed" : "failed" }); await draw(); }));

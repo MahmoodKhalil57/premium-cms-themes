@@ -10,4 +10,4 @@ Served by PremiumCMS as is, or forked to GitHub Pages with one-click theme updat
 
 ## Plugins
 
-`premium-commerce` (restaurant mode), `premium-forms`, `premium-site-kit`.
+`premium-commerce` (orders, menu = products), `premium-bookings` (table reservations), `premium-restaurant` (delivery zones, QR dine-in, POS, kitchen display, printing), `premium-forms`, `premium-site-kit`.

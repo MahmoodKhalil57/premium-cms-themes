@@ -155,14 +155,16 @@ export async function renderAccount(root: HTMLElement): Promise<void> {
 	}
 	const ordersRes = await api<{ orders: Array<{ number: number; status: string; total: number; currency: string; createdAt: string; items: Array<{ title: string; quantity: number }> }> }>("account/orders").catch(() => ({ orders: [] }));
 	const money = (n: number, c: string) => new Intl.NumberFormat(undefined, { style: "currency", currency: c.toUpperCase() }).format(n / 100);
-	const appts = await api<{ bookings: Array<{ id: string; service: string; staff: string; when: string; status: string }> }>("account/bookings").catch(() => ({ bookings: [] }));
+	const appts = await fetch(`${API}/_emdash/api/plugins/premium-bookings/account/bookings`, { method: "POST", credentials: "include", headers: { "Content-Type": "application/json", "X-EmDash-Request": "1" }, body: "{}" })
+		.then(async (r) => ((await r.json()) as { data?: { bookings: Array<{ id: string; service: string; staff: string; when: string; status: string }> } }).data ?? { bookings: [] })
+		.catch(() => ({ bookings: [] as Array<{ id: string; service: string; staff: string; when: string; status: string }> }));
 	root.innerHTML = `
 		<header class="ec-account__head"><h1>Your account</h1><p>${esc(me.email)} · <button type="button" class="ec-link" data-signout>Sign out</button></p></header>
 		<section class="ec-account__section">
 			<h2>Orders</h2>
 			${ordersRes.orders.length ? `<table class="ec-cart__table"><thead><tr><th>Order</th><th>Items</th><th>Status</th><th>Total</th></tr></thead><tbody>${ordersRes.orders.map((o) => `<tr><td>#${o.number}<br><small>${new Date(o.createdAt).toLocaleDateString()}</small></td><td>${esc(o.items.map((i) => `${i.quantity}× ${i.title}`).join(", "))}</td><td>${esc(o.status.replace("_", " "))}</td><td>${money(o.total, o.currency)}</td></tr>`).join("")}</tbody></table>` : `<p>No orders yet.</p>`}
 		</section>
-		${appts.bookings.length ? `<section class="ec-account__section"><h2>Appointments</h2><table class="ec-cart__table"><thead><tr><th>Treatment</th><th>When</th><th>With</th><th>Status</th></tr></thead><tbody>${appts.bookings.map((b) => `<tr><td>${esc(b.service)}</td><td>${esc(b.when)}</td><td>${esc(b.staff)}</td><td>${esc(b.status.replace("_", " "))}</td></tr>`).join("")}</tbody></table></section>` : ""}
+		${appts.bookings.length ? `<section class="ec-account__section"><h2>Appointments</h2><table class="ec-cart__table"><thead><tr><th>Service</th><th>When</th><th>With</th><th>Status</th></tr></thead><tbody>${appts.bookings.map((b) => `<tr><td>${esc(b.service)}</td><td>${esc(b.when)}</td><td>${esc(b.staff)}</td><td>${esc(b.status.replace("_", " "))}</td></tr>`).join("")}</tbody></table></section>` : ""}
 		<section class="ec-account__section">
 			<h2>Addresses</h2>
 			<div class="ec-address-list" data-addresses>${account.addresses.map((a) => `<div class="ec-address-card"><strong>${esc(a.label || "Address")}${a.isDefault ? " · default" : ""}</strong><p>${esc(formatAddress(a))}</p><p><button type="button" class="ec-link" data-edit-address="${esc(a.id)}">Edit</button> · <button type="button" class="ec-link" data-delete-address="${esc(a.id)}">Delete</button></p></div>`).join("") || "<p>No saved addresses.</p>"}</div>

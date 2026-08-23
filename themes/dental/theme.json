@@ -1,7 +1,7 @@
 {
 	"id": "dental",
-	"name": "Dental \u2014 Private practice",
-	"description": "A complete private-practice website for PremiumCMS: treatments with fees and online deposits, one-minute booking against clinician availability, signed new-patient intake forms, a before/after smile gallery, live Google reviews, FAQ structured data, a cookie-consent banner and a small dental shop. Seeds the booking plugin (treatments, team, reminders, 6-month recalls), the forms and the Site Kit Dentist profile. Served by PremiumCMS as is, or forked to GitHub Pages with one-click theme updates.",
+	"name": "Dental — Private practice",
+	"description": "A complete private-practice website for PremiumCMS: treatments with fees and online deposits, one-minute booking against clinician availability, signed new-patient intake forms, a before/after smile gallery, live Google reviews, FAQ structured data, a cookie-consent banner and a small dental shop. Seeds the Bookings plugin (treatments, team, reminders, 6-month recalls) and Commerce (deposits), the forms and the Site Kit Dentist profile. Served by PremiumCMS as is, or forked to GitHub Pages with one-click theme updates.",
 	"author": {
 		"name": "PremiumCMS",
 		"verified": true,
@@ -35,6 +35,7 @@
 		],
 		"plugins": [
 			"premium-commerce",
+			"premium-bookings",
 			"premium-forms",
 			"premium-site-kit"
 		],
