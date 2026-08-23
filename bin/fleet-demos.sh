@@ -11,7 +11,7 @@ while :; do
   attempt=0
   while :; do
     res=$(curl -sS --max-time 300 -X POST "$URL" -H "Content-Type: application/json" -H "X-EmDash-Request: 1" -d "$body")
-    if echo "$res" | grep -q "wall-time limit" && [ $attempt -lt 3 ]; then attempt=$((attempt+1)); echo "  wall-time hit — retrying ($attempt)"; sleep 15; continue; fi
+    if echo "$res" | grep -qE "wall-time limit|Authentication required|Plugin route not found|Plugin not enabled" && [ $attempt -lt 4 ]; then attempt=$((attempt+1)); echo "  transient platform error — retrying ($attempt)"; sleep 15; continue; fi
     break
   done
   python3 -c "
