@@ -37,9 +37,9 @@ export function extractText(blocks: PortableTextBlock[] | undefined): string {
 	return blocks
 		.filter(isTextBlock)
 		.map((block) =>
-			block.children
+			(block.children as Array<{ _type?: string; text?: string }>)
 				.filter((child) => child._type === "span" && typeof child.text === "string")
-				.map((span) => span.text)
+				.map((span) => span.text ?? "")
 				.join(""),
 		)
 		.join(" ");
