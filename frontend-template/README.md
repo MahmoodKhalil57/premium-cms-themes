@@ -40,6 +40,31 @@ page-builder blocks you edit visually in the admin.
 - **Fail-soft builds.** If the CMS is unreachable at build time, the build
   still succeeds with empty content — a deploy never breaks on a blip.
 
+## Modular: the core and the plugin frontends
+
+This template is the **core** — layouts, the blog/pages routes, the page-builder
+markers, styles and the seed format. Everything a plugin needs in the browser
+ships with the plugin instead (`plugins/<id>/frontend/` in the plugins repo):
+Commerce brings the shop pages, cart drawer and checkout; Forms the field
+renderer; Bookings the booking widget; Restaurant the menu, tracking and staff
+app; Site Kit the consent banner and analytics tags. A site's repository is the
+core *composed* with the frontends of the plugins its theme lists
+(`bin/compose-frontend.sh` in the themes repo): plugin code lands under
+`src/plugins/<id>/`, plugin pages under `src/pages/`, and two generated files tie
+it together — `src/plugins/index.ts` (client entry, imported once by
+`Base.astro`) and `src/plugins/server.ts` (build-time hooks: `<head>`
+contributions and page-builder markers). `template.json` records the template
+version and every plugin frontend version the repo was composed from; "Theme
+updates" in the admin compares it against the official theme.
+
+Writing a plugin frontend: a `frontend.json` (`id`, `dependsOn`), an
+`index.ts` that imports the plugin's `styles.css` and boots on `DOMContentLoaded`,
+optional `server.ts` exporting `head(ctx)` and/or `fillSlots(html)`, and any
+pages/components under `src/`. Import core helpers from `../../lib/*` and other
+plugins from `../<plugin-id>/*` (declare them in `dependsOn`). Commerce exposes a
+*checkout extension* registry (`registerCheckoutExtension`) so a plugin can add a
+step to the checkout without Commerce knowing it.
+
 ## Forms
 
 Install **Forms** from the admin Marketplace, design a form in **Builder**

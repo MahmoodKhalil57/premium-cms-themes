@@ -3,7 +3,8 @@
 Everything a PremiumCMS site looks like: the shared **frontend template** (Astro, served by the platform or built on GitHub Pages) and the **themes** built on it — each a seed of pages, sections, menus, plugin settings and demo content.
 
 ```
-frontend-template/   the base theme: layouts, scripts (shop, bookings, restaurant, forms…), styles, default seed
+frontend-template/   the shared template core (version in package.json): layouts, core pages, libs, styles, default seed
+bin/compose-frontend.sh  core + the plugin frontends a theme lists (plugins/<id>/frontend/ in the plugins repo) → one site frontend
 themes/<id>/         one theme: seed/ (content-as-code), README.md, public/, theme.json, thumbnail + screenshots
 demos.json           the demo project for each theme — CI provisions, themes and destroys them to match
 ```
@@ -12,7 +13,7 @@ demos.json           the demo project for each theme — CI provisions, themes a
 
 Merge to `main` and CI will:
 
-1. Mirror `frontend-template` + each theme's own files into that theme's **template repository** (`premiumcms.templateRepo` in `theme.json`) — the repo projects are generated from and the theme seed is read from.
+1. Compose each theme's frontend (`bin/compose-frontend.sh`: the shared core + the frontends of the plugins in `theme.json → premiumcms.plugins`, dependencies included) and mirror it + the theme's own files into that theme's **template repository** (`premiumcms.templateRepo`) — the repo projects are generated from and the theme seed is read from. `template.json` in the repo records the template and plugin frontend versions; `theme.json` gets `premiumcms.template` / `requires` stamped at publish time.
 2. Publish every `theme.json` + screenshots to the marketplace catalogue (and drop removed themes).
 3. Reconcile demo projects with `demos.json` (`fleet/demos`: provision + bind theme + plugins + colour scheme for new entries, destroy removed ones), then re-apply every theme's seed (`fleet/sync themes`), so demos always show `main`.
 4. If `frontend-template/` changed, ask the image repo to rebuild the platform bundle (optional `IMAGE_DISPATCH_TOKEN`).

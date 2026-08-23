@@ -16,9 +16,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
-      - name: Typecheck the frontend template
-        working-directory: frontend-template
-        run: bun install && (bunx tsc --noEmit -p tsconfig.json || true)
+      - name: Typecheck the composed frontend (template + every plugin frontend)
+        env:
+          PLUGINS_SRC: ${{ github.workspace }}/plugins-src
+        run: |
+          bash bin/compose-frontend.sh /tmp/composed all
+          cd /tmp/composed && bun install && bunx tsc --noEmit -p tsconfig.json
       - name: Validate seeds
         run: |
           python3 - <<'PY'
@@ -38,6 +41,10 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 2
+      - uses: actions/checkout@v4
+        with:
+          repository: MahmoodKhalil57/premium-cms-plugins
+          path: plugins-src
       - uses: oven-sh/setup-bun@v2
       - name: Push template + themes into their template repositories
         env:
@@ -45,11 +52,13 @@ jobs:
           TEMPLATE_KEY_ECOM: ${{ secrets.TEMPLATE_KEY_ECOM }}
           TEMPLATE_KEY_DENTAL: ${{ secrets.TEMPLATE_KEY_DENTAL }}
           TEMPLATE_KEY_BISTRO: ${{ secrets.TEMPLATE_KEY_BISTRO }}
+          PLUGINS_SRC: ${{ github.workspace }}/plugins-src
         run: bash bin/sync-template-repos.sh --push
       - name: Publish theme listings to the marketplace
         env:
           CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
           ARTIFACTS_PUBLISH_TOKEN: ${{ secrets.ARTIFACTS_PUBLISH_TOKEN }}
+          PLUGINS_SRC: ${{ github.workspace }}/plugins-src
         run: bash bin/publish-theme.sh
       - name: Reconcile demo projects with demos.json (create / theme / destroy)
         env:

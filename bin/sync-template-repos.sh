@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
-# Mirror the shared frontend template + each theme's own files into that theme's
+# Mirror the composed frontend (shared template + the theme's plugin frontends,
+# see bin/compose-frontend.sh) + each theme's own files into that theme's
 # template repository (the one projects are generated from and theme-seed reads):
-#   frontend-template/* (minus seed/, README.md, public/prints/)  →  <repo>/
+#   compose(frontend-template, theme.json plugins) (minus seed/, README.md, public/prints/)  →  <repo>/
 #   themes/<id>/{seed,README.md,public}                             →  <repo>/
 # Pushes when --push is given. Repos come from themes/<id>/theme.json
 # (premiumcms.templateRepo). CI authenticates with per-repo deploy keys (TEMPLATE_KEY_<ID>); locally your own git auth is used.
@@ -34,7 +35,10 @@ for d in "$ROOT"/themes/*/; do
 	use_key "$id"
 	dst="$WORK/$id"
 	[ -d "$dst/.git" ] || git clone -q "${URL_PREFIX}${repo}.git" "$dst"
-	rsync -a --delete --exclude '.git' --exclude 'seed/' --exclude 'README.md' --exclude 'public/prints/' --exclude 'node_modules' --exclude 'dist' --exclude '.astro' "$ROOT/frontend-template/" "$dst/"
+	# The template for this theme = shared core + the frontends of the plugins the theme lists (bin/compose-frontend.sh).
+	plugins="$(python3 -c "import json,sys;print(','.join((json.load(open(sys.argv[1])).get('premiumcms') or {}).get('plugins',[])))" "$d/theme.json")"
+	composed="$WORK/composed-$id"; bash "$ROOT/bin/compose-frontend.sh" "$composed" "$plugins" "$id"
+	rsync -a --delete --exclude '.git' --exclude 'seed/' --exclude 'README.md' --exclude 'public/prints/' --exclude 'node_modules' --exclude 'dist' --exclude '.astro' "$composed/" "$dst/"
 	if [ "$id" != "premiumcms" ]; then
 		rm -rf "$dst/seed"; cp -r "$d/seed" "$dst/seed"
 		[ -f "$d/README.md" ] && cp "$d/README.md" "$dst/README.md"

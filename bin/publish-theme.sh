@@ -2,7 +2,7 @@
 # Publish theme listings (theme.json + thumbnail + screenshots) to the marketplace
 # bucket and rebuild marketplace/themes/index.json from the repo.
 #   bin/publish-theme.sh            all themes/*      bin/publish-theme.sh bistro
-# env: CF_ACCOUNT_ID, ARTIFACTS_PUBLISH_TOKEN
+# env: CF_ACCOUNT_ID, ARTIFACTS_PUBLISH_TOKEN, PLUGINS_SRC (plugins repo checkout, for the versions stamped into premiumcms.template / requires)
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 python3 - "$ROOT" "$@" <<'PY'
@@ -21,6 +21,11 @@ def r2_get(key):
     except urllib.error.HTTPError as e:
         if e.code == 404: return None
         raise
+template_version = json.load(open(os.path.join(root, "frontend-template", "package.json")))["version"]
+psrc = os.environ.get("PLUGINS_SRC") or os.path.join(root, "..", "premium-cms-plugins")
+plugin_versions = {}
+for mf in glob.glob(os.path.join(psrc, "plugins", "*", "manifest.json")):
+    m = json.load(open(mf)); plugin_versions[m["id"]] = m["version"]
 dirs = [os.path.join(root, "themes", i) for i in ids] if ids else sorted(glob.glob(os.path.join(root, "themes", "*")))
 raw = r2_get("marketplace/themes/index.json"); index = json.loads(raw) if raw else {"themes": []}
 entries = {t["id"]: t for t in index.get("themes", [])}
@@ -28,6 +33,11 @@ for d in dirs:
     tj = os.path.join(d, "theme.json")
     if not os.path.exists(tj): continue
     theme = json.load(open(tj)); tid = theme["id"]
+    # Versions the listing was published against: the shared template and each plugin frontend the theme uses.
+    pc = theme.setdefault("premiumcms", {})
+    pc["template"] = template_version
+    pc["requires"] = {pid: plugin_versions[pid] for pid in pc.get("plugins", []) if pid in plugin_versions}
+    json.dump(theme, open(tj, "w"), indent="\t", ensure_ascii=False); open(tj, "a").write("\n")
     assert tid == os.path.basename(d), f"{d}: id must equal the folder name"
     thumb = os.path.join(d, "thumbnail.png"); theme["hasThumbnail"] = os.path.exists(thumb)
     if theme["hasThumbnail"]: r2_put(f"marketplace/themes/{tid}/thumbnail.png", open(thumb, "rb").read(), "image/png")

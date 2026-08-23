@@ -1,12 +1,11 @@
 /**
  * HTML for the theme's repeating pieces — post cards, the featured post,
- * archive rows, product cards. One source for the Astro components AND the
+ * archive rows. (Product cards live in the Commerce plugin frontend.) One source for the Astro components AND the
  * page-builder markers (`data-posts-grid` etc.), so a designed page and the
  * built-in defaults render the same markup.
  */
 import { CMS_URL } from "../config";
 import type { Entry, MediaValue, Term } from "./emdash";
-import { formatPrice, STORE_CURRENCY } from "./money";
 import { esc } from "./pt";
 import { getReadingTime } from "../utils/reading-time";
 
@@ -57,19 +56,6 @@ export function postListItemHtml(post: Entry, tags: Term[] = []): string {
 	const meta = [date ? `<time>${esc(date)}</time><span class="meta-dot"></span>` : "", `<span>${minutes} min read</span>`].join("");
 	const tagHtml = tags.length ? `<div class="post-tags">${tags.slice(0, 3).map((t) => `<a href="/tag/${esc(t.slug)}" class="post-tag">${esc(t.label)}</a>`).join("")}</div>` : "";
 	return `<article class="post-item"><a href="/posts/${esc(post.id)}" class="post-link"><div class="post-meta">${meta}</div><h2 class="post-title">${esc(post.data.title ?? "Untitled")}</h2>${post.data.excerpt ? `<p class="post-excerpt">${esc(post.data.excerpt)}</p>` : ""}</a>${tagHtml}</article>`;
-}
-
-export function productCardHtml(product: Entry): string {
-	const f = product.data.fields;
-	const img = imageHtml((f.image as MediaValue | null) ?? null);
-	const price = formatPrice(f.price as number, STORE_CURRENCY);
-	const compare = f.compare_at_price ? `<s>${esc(formatPrice(f.compare_at_price as number, STORE_CURRENCY))}</s>` : "";
-	const hasSizes = typeof f.sizes === "string" ? f.sizes.trim().length > 0 : Array.isArray(f.sizes) && f.sizes.length > 0;
-	// Sized products are chosen on their page (size picker); everything else adds straight from the card.
-	const action = hasSizes
-		? `<a class="ec-add-to-cart ec-add-to-cart--link" href="/products/${esc(product.id)}">Choose size</a>`
-		: `<button type="button" class="ec-add-to-cart" data-add-to-cart="${esc(product.id)}" data-product-id="${esc(product.data.id)}" data-title="${esc(product.data.title ?? "")}" data-price="${esc(String(f.price ?? ""))}" data-slug="${esc(product.id)}">Add to cart</button>`;
-	return `<article class="ec-product-card" data-product="${esc(product.data.id)}"><a href="/products/${esc(product.id)}" class="ec-product-card__media">${img || `<div class="ec-product-card__placeholder" aria-hidden="true"></div>`}</a><div class="ec-product-card__body"><h3 class="ec-product-card__title"><a href="/products/${esc(product.id)}">${esc(product.data.title ?? "")}</a></h3><p class="ec-product-card__price"><span>${esc(price)}</span>${compare}</p><p class="ec-product-card__stock" data-availability="${esc(product.data.id)}" hidden></p>${action}</div></article>`;
 }
 
 export const byNewest = (a: Entry, b: Entry) => (b.data.publishedAt?.getTime() ?? 0) - (a.data.publishedAt?.getTime() ?? 0);

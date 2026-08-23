@@ -7,12 +7,13 @@
  *   data-posts-grid [data-limit] [data-skip-featured]   card grid of latest posts
  *   data-posts-list [data-limit]           archive rows
  *   data-posts-count                       "12 articles"
- *   data-product-grid                      shop grid (featured first)
+ *   (plugin frontends add their own, e.g. Commerce's data-product-grid)
  *
  * Layout markers (data-menu, data-widget-area, data-site-title, …) are
  * handled by fillLayoutSlots; fillAllSlots runs both.
  */
-import { byNewest, featuredPostHtml, postCardHtml, postListItemHtml, productCardHtml } from "./cards";
+import { byNewest, featuredPostHtml, postCardHtml, postListItemHtml } from "./cards";
+import { fillPluginSlots } from "../plugins/server";
 import { getEmDashCollection, getTermsForEntries } from "./emdash";
 import { fillLayoutSlots, getLayout, type LayoutData, type SiteIdentity } from "./layout";
 
@@ -26,8 +27,8 @@ const attr = (attrs: string, name: string): string | null => {
 };
 
 export async function fillContentSlots(html: string): Promise<string> {
-	if (!/data-(featured-post|posts-grid|posts-list|posts-count|product-grid)\b/.test(html)) return html;
-	let out = html;
+	let out = await fillPluginSlots(html);
+	if (!/data-(featured-post|posts-grid|posts-list|posts-count)\b/.test(out)) return out;
 	if (/data-(featured-post|posts-grid|posts-list|posts-count)\b/.test(html)) {
 		const { entries } = await getEmDashCollection("posts");
 		const posts = [...entries].sort(byNewest);
@@ -47,12 +48,6 @@ export async function fillContentSlots(html: string): Promise<string> {
 				return `<${tag}${attrs}>${posts.slice(0, limit).map((p) => postListItemHtml(p, tags(p))).join("")}</${tag}>`;
 			})
 			.replace(MARKER("data-posts-count"), (_m, tag, attrs) => `<${tag}${attrs}>${posts.length} ${posts.length === 1 ? "article" : "articles"}</${tag}>`);
-	}
-	if (/data-product-grid\b/.test(html)) {
-		const { entries } = await getEmDashCollection("products");
-		const featured = entries.filter((p) => p.data.fields.featured);
-		const rest = entries.filter((p) => !p.data.fields.featured);
-		out = out.replace(MARKER("data-product-grid"), (_m, tag, attrs) => `<${tag}${attrs}>${[...featured, ...rest].map(productCardHtml).join("")}</${tag}>`);
 	}
 	return out;
 }
