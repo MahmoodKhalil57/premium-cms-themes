@@ -19,7 +19,9 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 PROJECT="${1:?project id}"; THEME="${2:?theme id}"; ONLY="${3:-}"
 URL="${PLATFORM_URL:-https://premium-cms.com}/_emdash/api/plugins/premium-platform/fleet/export"
-[ -n "${DEPLOY_KEY:-}" ] || { echo "DEPLOY_KEY is not set"; exit 1; }
+KEY_CACHE="$HOME/apps/premiumcms/.deploy-key"
+if [ -z "${DEPLOY_KEY:-}" ] && [ -s "$KEY_CACHE" ]; then DEPLOY_KEY="$(cat "$KEY_CACHE")"; export DEPLOY_KEY; fi
+[ -n "${DEPLOY_KEY:-}" ] || { echo "DEPLOY_KEY is not set (env or ~/apps/premiumcms/.deploy-key)"; exit 1; }
 SEED="$ROOT/themes/$THEME/seed/seed.json"
 [ -f "$SEED" ] || { echo "no seed at themes/$THEME/seed/seed.json"; exit 1; }
 if [ -n "$ONLY" ]; then PLUGINS="$ONLY"; else

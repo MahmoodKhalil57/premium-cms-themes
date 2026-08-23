@@ -34,6 +34,20 @@ SEED_DIR="$ROOT/themes/$THEME/seed"
 [ -f "$SEED_DIR/seed.json" ] || { echo "no seed at themes/$THEME/seed/seed.json"; exit 1; }
 PLATFORM_URL="${PLATFORM_URL:-https://premium-cms.com}"
 
+
+# DEPLOY_KEY: env var, else the local cache (~/apps/premiumcms/.deploy-key,
+# outside every repo), else read once from apex D1 (creds in ~/apps/premiumcms/.env.apex)
+# and cached. Never printed.
+KEY_CACHE="$HOME/apps/premiumcms/.deploy-key"
+load_deploy_key() {
+	[ -n "${DEPLOY_KEY:-}" ] && return 0
+	if [ -s "$KEY_CACHE" ]; then DEPLOY_KEY="$(cat "$KEY_CACHE")"; export DEPLOY_KEY; return 0; fi
+	DEPLOY_KEY="$(set -a; . ~/apps/premiumcms/.env.apex 2>/dev/null; set +a; CLOUDFLARE_API_TOKEN="$APEX_CLOUDFLARE_API_TOKEN" CLOUDFLARE_ACCOUNT_ID="$APEX_CLOUDFLARE_ACCOUNT_ID" bunx wrangler d1 execute apex-db --remote --config ~/apps/premiumcms-repos/premium-cms-image/platform/instances/apex/wrangler.jsonc --command "SELECT value FROM options WHERE name='plugin:premium-platform:settings:DEPLOY_KEY'" --json 2>/dev/null | python3 -c "import json,sys;out=json.load(sys.stdin);print(json.loads(out[0]['results'][0]['value']),end='')")"
+	[ -n "$DEPLOY_KEY" ] || { echo "DEPLOY_KEY: not in env, no cache, and apex D1 read failed"; return 1; }
+	export DEPLOY_KEY
+	(umask 077 && printf '%s' "$DEPLOY_KEY" > "$KEY_CACHE") || true
+}
+
 compose() {
 	python3 - "$SEED_DIR" <<'PY'
 import glob, json, os, sys
@@ -75,11 +89,7 @@ apply() {
 		curl -sS -m 120 -X POST "$PLATFORM_URL/seed-api" -H "Content-Type: application/json" -H "x-provision-secret: $secret" --data-binary @"$doc" > "$out"
 		python3 -c "import json,sys;r=json.load(open(sys.argv[1]));print('applied to apex:',json.dumps(r.get('result'))[:300]) if r.get('ok') else sys.exit('FAILED: '+str(r.get('error')))" "$out"
 	else
-		if [ -z "${DEPLOY_KEY:-}" ]; then
-			DEPLOY_KEY="$(set -a; . ~/apps/premiumcms/.env.apex 2>/dev/null; set +a; CLOUDFLARE_API_TOKEN="$APEX_CLOUDFLARE_API_TOKEN" CLOUDFLARE_ACCOUNT_ID="$APEX_CLOUDFLARE_ACCOUNT_ID" bunx wrangler d1 execute apex-db --remote --config ~/apps/premiumcms-repos/premium-cms-image/platform/instances/apex/wrangler.jsonc --command "SELECT value FROM options WHERE name='plugin:premium-platform:settings:DEPLOY_KEY'" --json 2>/dev/null | python3 -c "import json,sys;out=json.load(sys.stdin);print(json.loads(out[0]['results'][0]['value']),end='')")"
-			export DEPLOY_KEY
-			[ -n "$DEPLOY_KEY" ] || { echo "DEPLOY_KEY is not set and could not be read from apex"; return 1; }
-		fi
+		load_deploy_key || return 1
 		python3 -c "import json,os,sys;json.dump({'key':os.environ['DEPLOY_KEY'],'project':sys.argv[2],'seed':json.load(open(sys.argv[1]))},open(sys.argv[3],'w'))" "$doc" "$PROJECT" "$doc.body"
 		curl -sS -m 120 -X POST "$PLATFORM_URL/_emdash/api/plugins/premium-platform/fleet/seed" -H "Content-Type: application/json" --data-binary @"$doc.body" > "$out"
 		rm -f "$doc.body"
