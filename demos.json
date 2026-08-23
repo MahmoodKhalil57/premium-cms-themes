@@ -24,6 +24,12 @@
 			"project": "bistro",
 			"siteTitle": "Dean Street Bistro",
 			"tagline": "Honest food, wood-fired pizza and a very good burger"
+		},
+		{
+			"theme": "premiumcms",
+			"project": "blog-demo",
+			"siteTitle": "Blog demo",
+			"tagline": "A second premiumcms demo, created purely by pushing demos.json"
 		}
 	]
 }
