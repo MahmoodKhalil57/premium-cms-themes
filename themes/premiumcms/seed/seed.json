@@ -5,6 +5,10 @@
 		"name": "PremiumCMS site seed",
 		"description": "The PremiumCMS product site: landing, pricing, about, legal, sign-up / sign-in and the customer dashboard (powered by the Platform plugin frontend), plus the blog. Applied on every deploy (update-on-conflict)."
 	},
+	"settings": {
+		"title": "PremiumCMS",
+		"tagline": "Isolated CMS instances on your clients' own domains"
+	},
 	"collections": [],
 	"menus": [
 		{
