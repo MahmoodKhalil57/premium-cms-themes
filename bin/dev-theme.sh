@@ -25,6 +25,10 @@
 # applies straight to premium-cms.com with PROVISION_SECRET from
 # ~/apps/premiumcms/apex/.env.
 #
+# SEED_TARGET_URL / SEED_TARGET_SECRET redirect the apply at a local instance
+# instead of the fleet; premium-cms-image/platform/bin/local.sh sets both. The
+# delta cache is keyed per target, so local and remote applies stay independent.
+#
 # This updates ONLY the target project. Other projects on the theme, the
 # marketplace listing and the template repo update when you commit + push
 # (CI: template-repo sync, listing publish, fleet reseed) — so finish with a
@@ -38,7 +42,12 @@ SEED_DIR="$ROOT/themes/$THEME/seed"
 [ -f "$SEED_DIR/seed.json" ] || { echo "no seed at themes/$THEME/seed/seed.json"; exit 1; }
 PLATFORM_URL="${PLATFORM_URL:-https://premium-cms.com}"
 CACHE_DIR="$HOME/apps/premiumcms/.dev-theme-cache"; mkdir -p "$CACHE_DIR"
-STATE="$CACHE_DIR/$PROJECT-$THEME.json"
+# The delta cache records what a given target already has. "local" is not a
+# single target: the demo stack runs one instance per theme, each with its own
+# database, so the tag carries the host and port or a fresh instance inherits
+# another's "already applied" state and gets seeded with nothing.
+TARGET_TAG="$( [ -n "${SEED_TARGET_URL:-}" ] && echo "local-$(printf '%s' "$SEED_TARGET_URL" | sed -e 's|https\?://||' -e 's|/.*||' -e 's|[^A-Za-z0-9]|-|g')" || echo remote )"
+STATE="$CACHE_DIR/$PROJECT-$THEME-$TARGET_TAG.json"
 
 KEY_CACHE="$HOME/apps/premiumcms/.deploy-key"
 load_deploy_key() {
@@ -108,7 +117,12 @@ apply() {
 	local doc out newstate rc=0
 	doc="$(mktemp)"; out="$(mktemp)"; newstate="$(mktemp)"
 	compose "$doc" "$newstate" || { rc=$?; rm -f "$doc" "$out" "$newstate"; [ "$rc" = 3 ] && return 0 || return "$rc"; }
-	if [ "$THEME" = "premiumcms" ] || [ "$PROJECT" = "apex" ]; then
+	if [ -n "${SEED_TARGET_URL:-}" ]; then
+		# Local stack (platform/bin/local.sh). Same endpoint and same
+		# update-on-conflict semantics as a real instance, different host.
+		curl -sS -m 180 -X POST "$SEED_TARGET_URL" -H "Content-Type: application/json" -H "x-provision-secret: ${SEED_TARGET_SECRET:-}" --data-binary @"$doc" > "$out" \
+			&& python3 -c "import json,sys;r=json.load(open(sys.argv[1]));print('applied locally:',json.dumps(r.get('result'))[:220]) if r.get('ok') else sys.exit('FAILED: '+str(r.get('error')))" "$out" || rc=1
+	elif [ "$THEME" = "premiumcms" ] || [ "$PROJECT" = "apex" ]; then
 		local secret
 		secret="$(grep -m1 '^PROVISION_SECRET=' ~/apps/premiumcms/apex/.env | cut -d= -f2-)"
 		[ -n "$secret" ] || { echo "PROVISION_SECRET not found in ~/apps/premiumcms/apex/.env"; rm -f "$doc" "$out" "$newstate"; return 1; }
