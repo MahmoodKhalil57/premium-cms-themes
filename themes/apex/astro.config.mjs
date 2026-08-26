@@ -3,6 +3,7 @@ import react from "@astrojs/react";
 import { d1, r2, sandbox } from "@emdash-cms/cloudflare";
 import { cloudflareEmail } from "@emdash-cms/cloudflare/plugins";
 import { formsPlugin } from "@emdash-cms/plugin-forms";
+import cloudflareEmailByo from "@premium-cms/plugin-cloudflare-email-byo";
 import webhookNotifier from "@emdash-cms/plugin-webhook-notifier";
 import { defineConfig, fontProviders } from "astro/config";
 import emdash from "emdash/astro";
@@ -28,7 +29,14 @@ export default defineConfig({
 					from: { email: "cms@send.premium-cms.com", name: "PremiumCMS" },
 				}),
 			],
-			sandboxed: [webhookNotifier],
+			// Two email providers are installed on purpose: cloudflareEmail sends
+			// through this Worker's send_email binding (the platform's Cloudflare
+			// account), cloudflareEmailByo sends through credentials the site
+			// owner enters in the admin (their account, their domain, their
+			// quota). EmDash auto-selects a provider only when exactly one is
+			// active, so with both present the choice is explicit under
+			// Settings → Email.
+			sandboxed: [webhookNotifier, cloudflareEmailByo],
 			sandboxRunner: sandbox(),
 			marketplace: "https://marketplace.emdashcms.com",
 		}),

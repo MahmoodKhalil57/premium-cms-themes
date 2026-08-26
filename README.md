@@ -116,6 +116,27 @@ plugins: [{
 Reusable plugins belong in the **`premium-cms-plugins`** repo instead; only
 block registration for one theme's own layouts belongs here.
 
+### Email providers
+
+`apex` installs two, deliberately. `cloudflareEmail` sends through the Worker's
+`send_email` binding — the *platform's* Cloudflare account. `cloudflare-email-byo`
+(from the plugins repo) sends through credentials the site owner enters in the
+admin — *their* account, domain and quota. EmDash auto-selects a provider only
+when exactly one is active, so with both installed the choice is explicit under
+Settings → Email.
+
+`cloudflare-email-byo` is consumed through a `file:` dependency on the sibling
+plugins repo, since it is not published yet:
+
+```json
+"@premium-cms/plugin-cloudflare-email-byo": "file:../../../premium-cms-plugins/plugins/cloudflare-email-byo"
+```
+
+That means **the plugin must be built before the theme is** — the descriptor
+points at its `dist/`, which is gitignored. Run `npx emdash-plugin build` in
+the plugin first. Replace this with a registry install once the publisher
+identity resolves.
+
 ## Deploying
 
 `wrangler.jsonc` names each theme's own D1 database and R2 bucket (`<slug>-db`,
