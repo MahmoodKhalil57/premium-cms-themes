@@ -1,9 +1,9 @@
 {
-	"name": "@premium-cms/theme-starter",
+	"name": "@premium-cms/theme-apex",
 	"version": "0.1.0",
 	"private": true,
 	"type": "module",
-	"description": "Reference PremiumCMS theme: a blog on Cloudflare (D1 + R2), seeded from theme code",
+	"description": "The apex PremiumCMS site: a blog on Cloudflare (D1 + R2), seeded from theme code",
 	"emdash": {
 		"seed": "seed/seed.json"
 	},

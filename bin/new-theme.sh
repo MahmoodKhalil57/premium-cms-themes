@@ -5,7 +5,7 @@
 #   bin/new-theme.sh <slug> [template]
 #
 # `template` is an official EmDash template name; it defaults to
-# blog-cloudflare, the same one themes/premium-starter is built from.
+# blog-cloudflare, the same one themes/apex is built from.
 #
 #   blog-cloudflare        posts, pages, taxonomies, menus, widget areas, RSS, search
 #   marketing-cloudflare   landing pages with custom Portable Text blocks

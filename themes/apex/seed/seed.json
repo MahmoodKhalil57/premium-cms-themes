@@ -2,8 +2,8 @@
 	"$schema": "https://emdashcms.com/seed.schema.json",
 	"version": "1",
 	"meta": {
-		"name": "PremiumCMS Starter",
-		"description": "Reference theme: a blog with posts, pages, taxonomies, menus, widget areas and sections",
+		"name": "Apex",
+		"description": "The apex PremiumCMS site \u2014 the reference theme, and the project that will spawn others",
 		"author": "PremiumCMS"
 	},
 	"settings": {

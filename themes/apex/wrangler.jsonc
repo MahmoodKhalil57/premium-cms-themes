@@ -1,19 +1,19 @@
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
-	"name": "premium-starter",
+	"name": "apex",
 	"main": "./src/worker.ts",
 	"compatibility_date": "2026-02-24",
 	"compatibility_flags": ["nodejs_compat"],
 	"d1_databases": [
 		{
 			"binding": "DB",
-			"database_name": "premium-starter-db",
+			"database_name": "apex-db",
 		},
 	],
 	"r2_buckets": [
 		{
 			"binding": "MEDIA",
-			"bucket_name": "premium-starter-media",
+			"bucket_name": "apex-media",
 		},
 	],
 	// Worker Loader for plugin sandboxing

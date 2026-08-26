@@ -20,14 +20,15 @@ themes/<slug>/
 
 ## Start here
 
-**`themes/premium-starter`** is the reference theme — a blog on Cloudflare (D1 +
-R2), taken from EmDash's `blog-cloudflare` template and pinned to published
-package versions. It covers the full CMS surface: two collections (`posts`,
+**`themes/apex`** is the reference theme *and* the apex project — the site
+premium-cms.com runs on. It is a blog on Cloudflare (D1 + R2), taken from
+EmDash's `blog-cloudflare` template and pinned to published package versions,
+and it covers the full CMS surface: two collections (`posts`,
 `pages`), two taxonomies (`category`, `tag`), a menu, two widget areas, two
 reusable sections, RSS, search, and eight sample posts.
 
 ```bash
-cd themes/premium-starter
+cd themes/apex
 bun install
 npx astro check      # 0 errors
 npx astro build
@@ -72,7 +73,7 @@ the admin for what a seed cannot express — secrets, uploaded media, one-off ed
 ## Themes ship plugins two ways
 
 **Installed plugins** are listed in `astro.config.mjs` under the `emdash()`
-integration. `premium-starter` runs `@emdash-cms/plugin-forms` in-process and
+integration. `apex` runs `@emdash-cms/plugin-forms` in-process and
 `@emdash-cms/plugin-webhook-notifier` sandboxed:
 
 ```js
