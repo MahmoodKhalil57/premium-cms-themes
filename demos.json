@@ -1,0 +1,26 @@
+{
+	"$comment": "The live demo site for each theme. Paths are verified to return 200 and are what screenshot runs and smoke checks should use.",
+	"apex": {
+		"url": "https://premium-cms.com",
+		"role": "apex",
+		"description": "The apex project: the site the apex theme is demonstrated on, and the one that will later spawn further projects.",
+		"cloudflare": {
+			"worker": "apex",
+			"zone": "premium-cms.com",
+			"d1": "apex-db",
+			"r2": "apex-media",
+			"kv": "apex-session"
+		},
+		"pages": {
+			"homepage": "/",
+			"posts": "/posts",
+			"post": "/posts/building-for-the-long-term",
+			"page": "/pages/about",
+			"category": "/category/development",
+			"tag": "/tag/webdev",
+			"search": "/search?q=test",
+			"rss": "/rss.xml",
+			"404": "/nonexistent"
+		}
+	}
+}

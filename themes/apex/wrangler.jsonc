@@ -8,6 +8,7 @@
 		{
 			"binding": "DB",
 			"database_name": "apex-db",
+			"database_id": "4a3e3fa6-5e2b-4227-98d1-9a71427802e4",
 		},
 	],
 	"r2_buckets": [

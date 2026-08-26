@@ -16,12 +16,24 @@ themes/<slug>/
     live.config.ts    the _emdash live collection
     layouts/ pages/ components/ styles/
   .agents/skills/     EmDash's own authoring guides, shipped with the template
+demos.json            the live demo site for each theme, and its verified page paths
 ```
+
+## Demos
+
+| Theme | Demo | Cloudflare |
+| --- | --- | --- |
+| `apex` | **https://premium-cms.com** | worker `apex` · `apex-db` · `apex-media` · `apex-session` |
+
+`demos.json` records each theme's demo URL together with the page paths worth
+checking (homepage, a post, a taxonomy archive, search, RSS, 404). Every path in
+it has been verified to return 200 — keep it that way, so screenshot runs and
+smoke checks can rely on it.
 
 ## Start here
 
 **`themes/apex`** is the reference theme *and* the apex project — the site
-premium-cms.com runs on. It is a blog on Cloudflare (D1 + R2), taken from
+[premium-cms.com](https://premium-cms.com) runs on. It is a blog on Cloudflare (D1 + R2), taken from
 EmDash's `blog-cloudflare` template and pinned to published package versions,
 and it covers the full CMS surface: two collections (`posts`,
 `pages`), two taxonomies (`category`, `tag`), a menu, two widget areas, two
@@ -107,10 +119,34 @@ block registration for one theme's own layouts belongs here.
 ## Deploying
 
 `wrangler.jsonc` names each theme's own D1 database and R2 bucket (`<slug>-db`,
-`<slug>-media`). `npm run deploy` runs `astro build && wrangler deploy`. The
-Cloudflare adapter also enables sessions over a `SESSION` KV binding, which no
-upstream template declares — provision it with the rest of the resources on
-first deploy.
+`<slug>-media`). `npm run deploy` runs `astro build && wrangler deploy`.
+
+The Cloudflare adapter also needs a `SESSION` KV binding that no upstream
+template declares. You do not have to create it by hand: `wrangler deploy`
+detects it and provisions it on first deploy (that is where `apex-session` came
+from).
+
+**Deploy order matters for a new site.** The setup wizard records `site_url`
+*write-once* from the origin of the request that completes it, and passkeys bind
+to the domain they were registered on. So attach the custom domain **before**
+running setup — otherwise the site is permanently pinned to its
+`*.workers.dev` hostname and the admin passkey is registered against the wrong
+origin.
+
+Seeding is a two-part story worth knowing. Schema, settings, menus and widget
+areas apply on first boot, but **sample content only lands when the setup wizard
+runs** — a freshly deployed site shows "No posts yet" until then. Step one can
+be driven over HTTP:
+
+```bash
+curl -X POST https://<site>/_emdash/api/setup \
+  -H "Content-Type: application/json" \
+  -d '{"title":"...","tagline":"...","includeContent":true}'
+```
+
+Creating the admin user cannot be scripted — EmDash uses passkeys, so
+registration has to happen in a browser on the device that will hold the
+credential, at `/_emdash/admin/setup`.
 
 ## Reference
 
