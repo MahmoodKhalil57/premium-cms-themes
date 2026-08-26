@@ -1,6 +1,7 @@
 import cloudflare from "@astrojs/cloudflare";
 import react from "@astrojs/react";
 import { d1, r2, sandbox } from "@emdash-cms/cloudflare";
+import { cloudflareEmail } from "@emdash-cms/cloudflare/plugins";
 import { formsPlugin } from "@emdash-cms/plugin-forms";
 import webhookNotifier from "@emdash-cms/plugin-webhook-notifier";
 import { defineConfig, fontProviders } from "astro/config";
@@ -18,7 +19,15 @@ export default defineConfig({
 		emdash({
 			database: d1({ binding: "DB", session: "auto" }),
 			storage: r2({ binding: "MEDIA" }),
-			plugins: [formsPlugin()],
+			plugins: [
+				formsPlugin(),
+				// Sends from the dedicated sending subdomain rather than the apex
+				// domain, so transactional delivery cannot affect the reputation
+				// of mail sent from premium-cms.com itself.
+				cloudflareEmail({
+					from: { email: "cms@send.premium-cms.com", name: "PremiumCMS" },
+				}),
+			],
 			sandboxed: [webhookNotifier],
 			sandboxRunner: sandbox(),
 			marketplace: "https://marketplace.emdashcms.com",

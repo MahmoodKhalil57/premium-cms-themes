@@ -17,6 +17,14 @@
 			"bucket_name": "apex-media",
 		},
 	],
+	// Cloudflare Email Sending — delivers magic links, invites and
+	// notifications. The sender domain must be onboarded for Email Sending
+	// (send.premium-cms.com already is).
+	"send_email": [
+		{
+			"name": "EMAIL",
+		},
+	],
 	// Worker Loader for plugin sandboxing
 	"worker_loaders": [
 		{
