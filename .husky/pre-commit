@@ -1,0 +1,4 @@
+# Minimal by design: format staged files and validate JSON/JSONC.
+# Typechecks, tests and builds belong in CI — a slow pre-commit is one
+# people start bypassing with --no-verify, which is worse than no hook.
+bunx lint-staged

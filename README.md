@@ -21,8 +21,8 @@ demos.json            the live demo site for each theme, and its verified page p
 
 ## Demos
 
-| Theme | Demo | Cloudflare |
-| --- | --- | --- |
+| Theme  | Demo                        | Cloudflare                                                |
+| ------ | --------------------------- | --------------------------------------------------------- |
 | `apex` | **https://premium-cms.com** | worker `apex` · `apex-db` · `apex-media` · `apex-session` |
 
 `demos.json` records each theme's demo URL together with the page paths worth
@@ -32,7 +32,7 @@ smoke checks can rely on it.
 
 ## Start here
 
-**`themes/apex`** is the reference theme *and* the apex project — the site
+**`themes/apex`** is the reference theme _and_ the apex project — the site
 [premium-cms.com](https://premium-cms.com) runs on. It is a blog on Cloudflare (D1 + R2), taken from
 EmDash's `blog-cloudflare` template and pinned to published package versions,
 and it covers the full CMS surface: two collections (`posts`,
@@ -56,12 +56,12 @@ cd themes/<slug> && bun install && npx astro build
 
 Available upstream templates:
 
-| Template | What it gives you |
-| --- | --- |
-| `blog-cloudflare` | posts, pages, taxonomies, menus, widget areas, RSS, search |
-| `marketing-cloudflare` | landing pages built from custom Portable Text blocks |
-| `portfolio-cloudflare` | editorial portfolio, image-led layouts |
-| `starter-cloudflare` | minimal |
+| Template               | What it gives you                                          |
+| ---------------------- | ---------------------------------------------------------- |
+| `blog-cloudflare`      | posts, pages, taxonomies, menus, widget areas, RSS, search |
+| `marketing-cloudflare` | landing pages built from custom Portable Text blocks       |
+| `portfolio-cloudflare` | editorial portfolio, image-led layouts                     |
+| `starter-cloudflare`   | minimal                                                    |
 
 The script copies from the EmDash checkout at `../premium-cms-image/templates/`
 when it is present — so new themes always match the image we deploy — and falls
@@ -70,7 +70,7 @@ back to GitHub otherwise.
 **It also rewrites dependency specifiers.** The upstream templates live in
 EmDash's pnpm workspace and declare `workspace:*` and `catalog:` versions, which
 mean nothing outside it. The script pins them to published versions from a table
-in `bin/new-theme.sh`, and *warns* about any specifier it has no pin for — if you
+in `bin/new-theme.sh`, and _warns_ about any specifier it has no pin for — if you
 see that warning, add the pin rather than ignoring it, or `install` will fail.
 
 ## Content is code
@@ -95,7 +95,7 @@ emdash({
   plugins: [formsPlugin()],
   sandboxed: [webhookNotifier],
   sandboxRunner: sandbox(),
-})
+});
 ```
 
 **Theme-local plugins** live inside the theme and exist to register custom
@@ -106,11 +106,13 @@ Register with an absolute `file://` entrypoint; a relative path fails because
 the virtual `emdash/plugins` module has no on-disk location to resolve against:
 
 ```js
-plugins: [{
-  id: "marketing-blocks",
-  version: "0.1.0",
-  entrypoint: new URL("./src/plugins/marketing-blocks/index.ts", import.meta.url).href,
-}]
+plugins: [
+  {
+    id: "marketing-blocks",
+    version: "0.1.0",
+    entrypoint: new URL("./src/plugins/marketing-blocks/index.ts", import.meta.url).href,
+  },
+];
 ```
 
 Reusable plugins belong in the **`premium-cms-plugins`** repo instead; only
@@ -119,9 +121,9 @@ block registration for one theme's own layouts belongs here.
 ### Email providers
 
 `apex` installs two, deliberately. `cloudflareEmail` sends through the Worker's
-`send_email` binding — the *platform's* Cloudflare account. `cloudflare-email-byo`
+`send_email` binding — the _platform's_ Cloudflare account. `cloudflare-email-byo`
 (from the plugins repo) sends through credentials the site owner enters in the
-admin — *their* account, domain and quota. EmDash auto-selects a provider only
+admin — _their_ account, domain and quota. EmDash auto-selects a provider only
 when exactly one is active, so with both installed the choice is explicit under
 Settings → Email.
 
@@ -148,7 +150,7 @@ detects it and provisions it on first deploy (that is where `apex-session` came
 from).
 
 **Deploy order matters for a new site.** The setup wizard records `site_url`
-*write-once* from the origin of the request that completes it, and passkeys bind
+_write-once_ from the origin of the request that completes it, and passkeys bind
 to the domain they were registered on. So attach the custom domain **before**
 running setup — otherwise the site is permanently pinned to its
 `*.workers.dev` hostname and the admin passkey is registered against the wrong
@@ -175,3 +177,50 @@ The EmDash checkout at `../premium-cms-image` is the source of truth: the
 templates are in `templates/`, the theme documentation in
 `docs/src/content/docs/themes/`. Each theme also ships `.agents/skills/` —
 EmDash's own guides for building sites, creating plugins and using the CLI.
+
+## CI/CD
+
+Pushing to `main` deploys **only the themes that changed**. `bin/changed-themes.sh`
+diffs the push and emits the affected slugs; the deploy job fans out over just
+those. Repo-level files (`bin/`, README, root config) deploy nothing — they
+cannot change what a theme's Worker serves. Each theme is its own Astro site
+and its own Worker, so with hundreds of them a change to one must never
+rebuild the rest.
+
+| Workflow     | Trigger                                     | Does                                                               |
+| ------------ | ------------------------------------------- | ------------------------------------------------------------------ |
+| `deploy.yml` | push to `main` under `themes/**`, or manual | build + `wrangler deploy` the changed themes                       |
+| `verify.yml` | pull request                                | formatting, JSON validity, `astro check` + build on changed themes |
+
+Manual dispatch takes a comma-separated list of slugs, or blank for every theme
+— the escape hatch for redeploying without a code change.
+
+### Required secrets
+
+Set on the repository under **Settings → Secrets and variables → Actions**:
+
+| Secret                  | Value                                                                                       |
+| ----------------------- | ------------------------------------------------------------------------------------------- |
+| `CLOUDFLARE_API_TOKEN`  | A token scoped to this account with Workers Scripts:Edit, D1:Edit, R2:Edit, Workers KV:Edit |
+| `CLOUDFLARE_ACCOUNT_ID` | The Cloudflare account ID                                                                   |
+
+Deploys fail with an explicit message rather than a wrangler stack trace when
+the token is missing.
+
+### Plugins are not chained to this
+
+A push to `premium-cms-plugins` does **not** redeploy themes. The one remaining
+coupling is that a theme consuming a plugin through a `file:` dependency needs
+that plugin built first, which is why the deploy job checks out the plugins repo
+and runs `bin/build-plugin-deps.sh`. That step is a no-op for a theme with no
+local plugin dependencies — which is what every theme should look like once
+plugins install from the registry instead.
+
+## Hooks
+
+`husky` runs a minimal pre-commit: format staged files, validate JSON/JSONC.
+Typechecks and builds stay in CI.
+
+```bash
+bun install     # installs the hook via the prepare script
+```

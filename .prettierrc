@@ -1,0 +1,10 @@
+{
+	"useTabs": true,
+	"printWidth": 100,
+	"semi": true,
+	"trailingComma": "all",
+	"overrides": [
+		{ "files": ["*.json", "*.jsonc"], "options": { "useTabs": true } },
+		{ "files": ["*.md"], "options": { "useTabs": false, "proseWrap": "preserve" } }
+	]
+}

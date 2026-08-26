@@ -1,0 +1,23 @@
+{
+	"name": "premium-cms-themes",
+	"version": "0.0.0",
+	"private": true,
+	"type": "module",
+	"description": "PremiumCMS themes — repo tooling only; each theme under themes/ has its own package.json",
+	"scripts": {
+		"prepare": "husky",
+		"format": "prettier --write .",
+		"format:check": "prettier --check .",
+		"changed": "bin/changed-themes.sh",
+		"new": "bin/new-theme.sh"
+	},
+	"lint-staged": {
+		"*.{json,jsonc}": "bin/check-json.mjs",
+		"*.{js,mjs,ts,tsx,astro,css,md,json,jsonc,yml,yaml}": "prettier --write --ignore-unknown"
+	},
+	"devDependencies": {
+		"husky": "^9.1.7",
+		"lint-staged": "^17.3.0",
+		"prettier": "^3.9.6"
+	}
+}
