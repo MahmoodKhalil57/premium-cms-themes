@@ -1,6 +1,6 @@
 import cloudflare from "@astrojs/cloudflare";
 import react from "@astrojs/react";
-import { d1, r2 } from "@premium-cms/cloudflare";
+import { d1, r2, sandbox } from "@premium-cms/cloudflare";
 import icon from "astro-iconset";
 import { defineConfig, fontProviders } from "astro/config";
 import emdash from "@premium-cms/emdash/astro";
@@ -73,6 +73,10 @@ export default defineConfig({
 					entrypoint: new URL("./src/plugins/fallback-email/index.ts", import.meta.url).href,
 				},
 			],
+			// The site owner can browse and install marketplace plugins/themes.
+			// Marketplace installs run in the sandbox, so a sandboxRunner is required.
+			sandboxRunner: sandbox(),
+			marketplace: "https://marketplace.premium-cms.com",
 		}),
 	],
 	fonts: [
