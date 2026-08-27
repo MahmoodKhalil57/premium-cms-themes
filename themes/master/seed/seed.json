@@ -1,0 +1,27 @@
+{
+	"$schema": "https://emdashcms.com/seed.schema.json",
+	"version": 1,
+	"meta": { "name": "master" },
+	"settings": {
+		"title": "PremiumCMS Master",
+		"tagline": "Control plane — provisions and manages instances"
+	},
+	"collections": [
+		{
+			"slug": "projects",
+			"label": "Projects",
+			"labelSingular": "Project",
+			"description": "Isolated CMS instances provisioned by the Projects plugin. Create a row with a label and a theme to provision a new instance.",
+			"icon": "browsers",
+			"supports": [],
+			"fields": [
+				{ "slug": "label", "label": "Label", "type": "string", "required": true, "searchable": true },
+				{ "slug": "theme", "label": "Theme", "type": "string", "required": true },
+				{ "slug": "project_id", "label": "Project ID", "type": "string" },
+				{ "slug": "provision_status", "label": "Status", "type": "string" },
+				{ "slug": "url", "label": "URL", "type": "url" }
+			]
+		}
+	],
+	"content": []
+}

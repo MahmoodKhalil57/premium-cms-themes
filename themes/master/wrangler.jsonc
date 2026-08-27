@@ -1,0 +1,19 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "master",
+	"main": "./src/worker.ts",
+	"compatibility_date": "2026-02-24",
+	"compatibility_flags": ["nodejs_compat"],
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "master-db",
+			"database_id": "a9a1051f-2594-4bff-b07a-99c55505154a",
+		},
+	],
+	"r2_buckets": [{ "binding": "MEDIA", "bucket_name": "master-media" }],
+	"kv_namespaces": [{ "binding": "SESSION", "id": "502cd737b6e542998e3ea6c0f26ecb46" }],
+	"send_email": [{ "name": "EMAIL" }],
+	"worker_loaders": [{ "binding": "LOADER" }],
+	"triggers": { "crons": ["* * * * *", "*/2 * * * *"] },
+}
