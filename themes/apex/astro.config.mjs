@@ -7,6 +7,7 @@ import cloudflareEmailByo from "@premium-cms/plugin-cloudflare-email-byo";
 import webhookNotifier from "@premium-cms/plugin-webhook-notifier";
 import { defineConfig, fontProviders } from "astro/config";
 import emdash from "@premium-cms/emdash/astro";
+import premiumcmsProjects from "@premium-cms/plugin-premiumcms-projects";
 
 export default defineConfig({
 	output: "server",
@@ -28,6 +29,9 @@ export default defineConfig({
 				cloudflareEmail({
 					from: { email: "cms@send.premium-cms.com", name: "PremiumCMS" },
 				}),
+				// Projects control plane, in-process (provisioning exceeds sandbox
+				// limits). apex is where customer sites are created.
+				premiumcmsProjects,
 			],
 			// Two email providers are installed on purpose: cloudflareEmail sends
 			// through this Worker's send_email binding (the platform's Cloudflare

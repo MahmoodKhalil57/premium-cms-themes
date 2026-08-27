@@ -72,6 +72,44 @@
 					"searchable": true
 				}
 			]
+		},
+		{
+			"slug": "projects",
+			"label": "Projects",
+			"labelSingular": "Project",
+			"description": "Isolated CMS instances provisioned by the Projects plugin. Add a label + theme to provision one.",
+			"icon": "browsers",
+			"supports": [],
+			"fields": [
+				{
+					"slug": "label",
+					"label": "Label",
+					"type": "string",
+					"required": true,
+					"searchable": true
+				},
+				{
+					"slug": "theme",
+					"label": "Theme",
+					"type": "string",
+					"required": true
+				},
+				{
+					"slug": "project_id",
+					"label": "Project ID",
+					"type": "string"
+				},
+				{
+					"slug": "provision_status",
+					"label": "Status",
+					"type": "string"
+				},
+				{
+					"slug": "url",
+					"label": "URL",
+					"type": "url"
+				}
+			]
 		}
 	],
 	"taxonomies": [
