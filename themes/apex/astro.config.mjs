@@ -38,7 +38,7 @@ export default defineConfig({
 			// Settings → Email.
 			sandboxed: [webhookNotifier, cloudflareEmailByo],
 			sandboxRunner: sandbox(),
-			marketplace: "https://marketplace.emdashcms.com",
+			marketplace: "https://marketplace.premium-cms.com",
 		}),
 	],
 	fonts: [
