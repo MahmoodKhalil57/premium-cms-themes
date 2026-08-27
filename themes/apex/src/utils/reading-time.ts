@@ -1,4 +1,4 @@
-import type { PortableTextBlock } from "emdash";
+import type { PortableTextBlock } from "@premium-cms/emdash";
 
 const WORDS_PER_MINUTE = 200;
 const CJK_CHARACTERS_PER_MINUTE = 500;

@@ -6,7 +6,7 @@
  */
 
 import { defineLiveCollection } from "astro:content";
-import { emdashLoader } from "emdash/runtime";
+import { emdashLoader } from "@premium-cms/emdash/runtime";
 
 export const collections = {
 	_emdash: defineLiveCollection({ loader: emdashLoader() }),

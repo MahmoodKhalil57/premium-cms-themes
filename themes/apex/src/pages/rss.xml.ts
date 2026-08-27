@@ -1,5 +1,5 @@
 import type { APIRoute } from "astro";
-import { getEmDashCollection, getSiteSettings } from "emdash";
+import { getEmDashCollection, getSiteSettings } from "@premium-cms/emdash";
 
 import { resolveBlogSiteIdentity } from "../utils/site-identity";
 

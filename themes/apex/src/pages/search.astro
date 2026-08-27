@@ -1,7 +1,7 @@
 ---
 export const prerender = false;
 
-import { search } from "emdash";
+import { search } from "@premium-cms/emdash";
 import Base from "../layouts/Base.astro";
 
 const query = Astro.url.searchParams.get("q")?.trim() || "";

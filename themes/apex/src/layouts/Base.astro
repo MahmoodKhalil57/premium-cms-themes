@@ -1,13 +1,13 @@
 ---
-import { getMenu, getEmDashCollection, getSiteSettings } from "emdash";
+import { getMenu, getEmDashCollection, getSiteSettings } from "@premium-cms/emdash";
 import {
 	WidgetArea,
 	EmDashHead,
 	EmDashBodyStart,
 	EmDashBodyEnd,
-} from "emdash/ui";
-import { createPublicPageContext } from "emdash/page";
-import LiveSearch from "emdash/ui/search";
+} from "@premium-cms/emdash/ui";
+import { createPublicPageContext } from "@premium-cms/emdash/page";
+import LiveSearch from "@premium-cms/emdash/ui/search";
 import { Font } from "astro:assets";
 import { resolveBlogSiteIdentity } from "../utils/site-identity";
 import "../styles/tokens.css";
@@ -343,9 +343,9 @@ const isLoggedIn = !!Astro.locals.user;
 			@layer base;
 
 			@layer base {
-				*:where(:not([class*="emdash"]):not([class*="ec-"])),
-				*:where(:not([class*="emdash"]):not([class*="ec-"]))::before,
-				*:where(:not([class*="emdash"]):not([class*="ec-"]))::after {
+				*:where(:not([class*="@premium-cms/emdash"]):not([class*="ec-"])),
+				*:where(:not([class*="@premium-cms/emdash"]):not([class*="ec-"]))::before,
+				*:where(:not([class*="@premium-cms/emdash"]):not([class*="ec-"]))::after {
 					box-sizing: border-box;
 				}
 
@@ -404,13 +404,13 @@ const isLoggedIn = !!Astro.locals.user;
 					min-height: 100vh;
 				}
 
-				a:where(:not([class*="emdash"]):not([class*="ec-"])) {
+				a:where(:not([class*="@premium-cms/emdash"]):not([class*="ec-"])) {
 					color: var(--color-brand);
 					text-decoration: none;
 					transition: color var(--transition-fast);
 				}
 
-				a:where(:not([class*="emdash"]):not([class*="ec-"])):hover {
+				a:where(:not([class*="@premium-cms/emdash"]):not([class*="ec-"])):hover {
 					color: var(--color-brand-hover);
 				}
 

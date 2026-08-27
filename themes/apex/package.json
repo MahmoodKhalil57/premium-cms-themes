@@ -4,7 +4,7 @@
 	"private": true,
 	"type": "module",
 	"description": "The apex PremiumCMS site: a blog on Cloudflare (D1 + R2), seeded from theme code",
-	"emdash": {
+	"@premium-cms/emdash": {
 		"seed": "seed/seed.json"
 	},
 	"scripts": {
@@ -17,12 +17,12 @@
 	"dependencies": {
 		"@astrojs/cloudflare": "^14.2.5",
 		"@astrojs/react": "^6.0.4",
-		"@emdash-cms/cloudflare": "^0.35.0",
-		"@emdash-cms/plugin-forms": "^0.2.5",
-		"@emdash-cms/plugin-webhook-notifier": "^0.2.0",
+		"@premium-cms/cloudflare": "^0.35.0",
+		"@premium-cms/plugin-forms": "^0.2.5",
+		"@premium-cms/plugin-webhook-notifier": "^0.2.0",
 		"@premium-cms/plugin-cloudflare-email-byo": "file:../../../premium-cms-plugins/plugins/cloudflare-email-byo",
 		"astro": "^7.0.0",
-		"emdash": "^0.35.0",
+		"@premium-cms/emdash": "^0.35.0",
 		"react": "^19.2.4",
 		"react-dom": "^19.2.4"
 	},
