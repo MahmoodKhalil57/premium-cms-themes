@@ -36,6 +36,12 @@ for d in "${DIRS[@]}"; do
 		echo "The plugins repository must be checked out as a sibling of this one."
 		exit 1
 	fi
+	if [ ! -f "$d/emdash-plugin.jsonc" ]; then
+		# Trusted plugins (definePlugin, consumed as source — main points at
+		# src/) have no emdash-plugin build. Nothing to build.
+		echo "  source plugin (no build needed): $d"
+		continue
+	fi
 	echo "  building plugin: $d"
 	( cd "$d" && bun install >/dev/null 2>&1 && npx emdash-plugin build >/dev/null )
 	echo "    built"
