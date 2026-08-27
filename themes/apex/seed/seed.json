@@ -3,7 +3,7 @@
 	"version": "1",
 	"meta": {
 		"name": "Apex",
-		"description": "The apex PremiumCMS site \u2014 the reference theme, and the project that will spawn others",
+		"description": "The apex PremiumCMS site — the reference theme, and the project that will spawn others",
 		"author": "PremiumCMS"
 	},
 	"settings": {
@@ -108,6 +108,16 @@
 					"slug": "url",
 					"label": "URL",
 					"type": "url"
+				},
+				{
+					"slug": "credit_balance",
+					"label": "Credit balance ($)",
+					"type": "number"
+				},
+				{
+					"slug": "add_credits",
+					"label": "Add credits ($) — save to grant",
+					"type": "number"
 				}
 			]
 		}
