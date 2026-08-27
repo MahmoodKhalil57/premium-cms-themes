@@ -109,6 +109,13 @@ jobs:
             echo "no wrangler config — this theme is not Cloudflare-deployed; skipping"
             exit 0
           fi
+          # A theme with no concrete database_id is a marketplace theme
+          # provisioned into instances by the projects plugin, not a
+          # directly-deployed instance like apex/master. Skip direct deploy.
+          if ! grep -q '"database_id"' wrangler.jsonc 2>/dev/null; then
+            echo "no database_id — provisioning-only theme; skipping direct deploy"
+            exit 0
+          fi
           if [ -z "${CLOUDFLARE_API_TOKEN:-}" ]; then
             echo "::error::CLOUDFLARE_API_TOKEN is not set on this repository."
             echo "Add it under Settings → Secrets and variables → Actions."
