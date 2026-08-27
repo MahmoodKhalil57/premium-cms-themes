@@ -1,9 +1,10 @@
 import cloudflare from "@astrojs/cloudflare";
 import react from "@astrojs/react";
-import { d1, r2 } from "@premium-cms/cloudflare";
+import { d1, r2, sandbox } from "@premium-cms/cloudflare";
 import icon from "astro-iconset";
 import { defineConfig, fontProviders } from "astro/config";
 import emdash from "@premium-cms/emdash/astro";
+import cloudflareEmailByo from "@premium-cms/plugin-cloudflare-email-byo";
 
 export default defineConfig({
 	output: "server",
@@ -62,6 +63,11 @@ export default defineConfig({
 					entrypoint: new URL("./src/plugins/marketing-blocks/index.ts", import.meta.url).href,
 				},
 			],
+			// Bring-your-own-Cloudflare email. Provisioning seeds its settings
+			// (the platform's fallback email account) so magic-link login works
+			// before the site owner configures their own email.
+			sandboxed: [cloudflareEmailByo],
+			sandboxRunner: sandbox(),
 		}),
 	],
 	fonts: [
