@@ -15,5 +15,6 @@
 	"kv_namespaces": [{ "binding": "SESSION", "id": "502cd737b6e542998e3ea6c0f26ecb46" }],
 	"send_email": [{ "name": "EMAIL" }],
 	"worker_loaders": [{ "binding": "LOADER" }],
+	"services": [{ "binding": "SELF", "service": "master" }],
 	"triggers": { "crons": ["* * * * *", "*/2 * * * *"] },
 }

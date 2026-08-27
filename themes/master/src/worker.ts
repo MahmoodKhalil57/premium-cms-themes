@@ -17,13 +17,20 @@ export default {
 	...handler,
 	scheduled: async (event: ScheduledController, env: Env, ctx: ExecutionContext) => {
 		ctx.waitUntil(baseScheduled(event, env, ctx));
-		const token = (env as unknown as { TICK_TOKEN?: string }).TICK_TOKEN ?? "";
-		if (!token) return;
+		const e = env as unknown as { TICK_TOKEN?: string; SELF?: { fetch: typeof fetch } };
+		const token = e.TICK_TOKEN ?? "";
+		if (!token || !e.SELF) return;
 		try {
-			await fetch("https://master.premium-cms.com/_emdash/api/plugins/premiumcms-projects/tick", {
-				method: "POST",
-				headers: { Authorization: `Bearer ${token}`, "X-EmDash-Request": "1" },
-			});
+			// Self service-binding, not a public fetch: a Worker's subrequest to
+			// its own custom domain does not reliably loop back, so drive the
+			// tick through the SELF binding instead.
+			await e.SELF.fetch(
+				"https://master.premium-cms.com/_emdash/api/plugins/premiumcms-projects/tick",
+				{
+					method: "POST",
+					headers: { Authorization: `Bearer ${token}`, "X-EmDash-Request": "1" },
+				},
+			);
 		} catch {
 			// A failed tick is retried on the next minute; never block maintenance.
 		}
