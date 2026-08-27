@@ -31,7 +31,7 @@ export default defineConfig({
 				}),
 				// Projects control plane, in-process (provisioning exceeds sandbox
 				// limits). apex is where customer sites are created.
-				premiumcmsProjects,
+				premiumcmsProjects(),
 			],
 			// Two email providers are installed on purpose: cloudflareEmail sends
 			// through this Worker's send_email binding (the platform's Cloudflare

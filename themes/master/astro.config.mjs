@@ -24,7 +24,7 @@ export default defineConfig({
 				cloudflareEmail({
 					from: { email: "cms@send.premium-cms.com", name: "PremiumCMS Master" },
 				}),
-				premiumcmsProjects,
+				premiumcmsProjects(),
 			],
 		}),
 	],
