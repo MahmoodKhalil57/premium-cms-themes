@@ -38,8 +38,11 @@ for d in "${DIRS[@]}"; do
 	fi
 	if [ ! -f "$d/emdash-plugin.jsonc" ]; then
 		# Trusted plugins (definePlugin, consumed as source — main points at
-		# src/) have no emdash-plugin build. Nothing to build.
-		echo "  source plugin (no build needed): $d"
+		# src/) have no emdash-plugin build. Still install their deps so the
+		# theme's bundler can resolve the plugin source's imports (e.g.
+		# @premium-cms/emdash) from the plugin's own node_modules.
+		echo "  source plugin (install only): $d"
+		( cd "$d" && bun install >/dev/null 2>&1 )
 		continue
 	fi
 	echo "  building plugin: $d"
