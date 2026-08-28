@@ -1,25 +1,39 @@
 {
 	"$comment": "The live demo site for each theme. Paths are verified to return 200 and are what screenshot runs and smoke checks should use.",
 	"apex": {
-		"url": "https://premium-cms.com",
+		"url": "https://p01m10e4fh0nsp0cwsbv3rnnq53.premium-cms.com",
 		"role": "apex",
-		"description": "The apex project: the site the apex theme is demonstrated on, and the one that will later spawn further projects.",
+		"description": "The apex project: provisioned by master, demonstrates the apex (blog) theme, and is the control plane that spawns further projects.",
 		"cloudflare": {
-			"worker": "apex",
+			"worker": "p01m10e4fh0nsp0cwsbv3rnnq53",
 			"zone": "premium-cms.com",
-			"d1": "apex-db",
-			"r2": "apex-media",
-			"kv": "apex-session"
+			"d1": "p01m10e4fh0nsp0cwsbv3rnnq53-db",
+			"r2": "p01m10e4fh0nsp0cwsbv3rnnq53-media",
+			"kv": "p01m10e4fh0nsp0cwsbv3rnnq53-session"
 		},
 		"pages": {
 			"homepage": "/",
 			"posts": "/posts",
-			"post": "/posts/building-for-the-long-term",
-			"page": "/pages/about",
-			"category": "/category/development",
-			"tag": "/tag/webdev",
 			"search": "/search?q=test",
 			"rss": "/rss.xml",
+			"404": "/nonexistent"
+		}
+	},
+	"marketing": {
+		"url": "https://p01c699g8q4xqvh65v27jjhy437.premium-cms.com",
+		"role": "theme-demo",
+		"description": "The marketing (SaaS landing) theme's demo, provisioned by apex. is_theme = a copyable theme/demo.",
+		"cloudflare": {
+			"worker": "p01c699g8q4xqvh65v27jjhy437",
+			"zone": "premium-cms.com",
+			"d1": "p01c699g8q4xqvh65v27jjhy437-db",
+			"r2": "p01c699g8q4xqvh65v27jjhy437-media",
+			"kv": "p01c699g8q4xqvh65v27jjhy437-session"
+		},
+		"pages": {
+			"homepage": "/",
+			"pricing": "/pricing",
+			"contact": "/contact",
 			"404": "/nonexistent"
 		}
 	}

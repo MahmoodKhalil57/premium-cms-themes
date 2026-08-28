@@ -4,11 +4,17 @@
 	"main": "./src/worker.ts",
 	"compatibility_date": "2026-02-24",
 	"compatibility_flags": ["nodejs_compat"],
+	// Apex is a PROVISIONING-ONLY theme: it is provisioned as an instance by the
+	// master control plane (like marketing), not deployed directly. So there is
+	// no concrete `database_id`/KV id here — the CI's deploy step skips any theme
+	// without a `database_id`, and the real bindings (D1/KV/R2/SELF/FRONTEND_ORIGIN)
+	// are supplied per-instance by the projects plugin at provision time. The
+	// binding names below are the contract the golden bundle expects (and back
+	// `astro build` + local dev).
 	"d1_databases": [
 		{
 			"binding": "DB",
 			"database_name": "apex-db",
-			"database_id": "4a3e3fa6-5e2b-4227-98d1-9a71427802e4",
 		},
 	],
 	"r2_buckets": [
@@ -17,9 +23,8 @@
 			"bucket_name": "apex-media",
 		},
 	],
-	// Cloudflare Email Sending — delivers magic links, invites and
-	// notifications. The sender domain must be onboarded for Email Sending
-	// (send.premium-cms.com already is).
+	// Cloudflare Email Sending — delivers magic links, invites and notifications.
+	// The sender domain must be onboarded for Email Sending (send.premium-cms.com).
 	"send_email": [
 		{
 			"name": "EMAIL",
@@ -31,27 +36,17 @@
 			"binding": "LOADER",
 		},
 	],
-	// Session store (EmDash auth sessions). Declared here so `wrangler deploy`
-	// reproduces the live binding set rather than dropping it.
+	// Session store (EmDash auth sessions).
 	"kv_namespaces": [
 		{
 			"binding": "SESSION",
-			"id": "ecaac029607942ecaafa2f28095cd06e",
 		},
 	],
 	// Cloudflare Images binding used by EmDash's image pipeline.
 	"images": {
 		"binding": "IMAGES",
 	},
-	"services": [{ "binding": "SELF", "service": "apex" }],
-	// Static-frontend cutover: the public site is the GitHub Pages build of
-	// site-apex; the Worker proxies every non-/_emdash GET/HEAD there while
-	// serving the admin + REST API locally. Remove this var + redeploy to roll
-	// back to EmDash's own SSR pages.
-	"vars": {
-		"FRONTEND_ORIGIN": "https://mahmoodkhalil57.github.io/site-apex",
-	},
-	// General maintenance plus the bounded Media Usage lane (see src/worker.ts)
+	// General maintenance plus the projects provisioning tick (see src/worker.ts).
 	"triggers": {
 		"crons": ["* * * * *", "*/2 * * * *"],
 	},
