@@ -31,7 +31,26 @@
 			"binding": "LOADER",
 		},
 	],
+	// Session store (EmDash auth sessions). Declared here so `wrangler deploy`
+	// reproduces the live binding set rather than dropping it.
+	"kv_namespaces": [
+		{
+			"binding": "SESSION",
+			"id": "ecaac029607942ecaafa2f28095cd06e",
+		},
+	],
+	// Cloudflare Images binding used by EmDash's image pipeline.
+	"images": {
+		"binding": "IMAGES",
+	},
 	"services": [{ "binding": "SELF", "service": "apex" }],
+	// Static-frontend cutover: the public site is the GitHub Pages build of
+	// site-apex; the Worker proxies every non-/_emdash GET/HEAD there while
+	// serving the admin + REST API locally. Remove this var + redeploy to roll
+	// back to EmDash's own SSR pages.
+	"vars": {
+		"FRONTEND_ORIGIN": "https://mahmoodkhalil57.github.io/site-apex",
+	},
 	// General maintenance plus the bounded Media Usage lane (see src/worker.ts)
 	"triggers": {
 		"crons": ["* * * * *", "*/2 * * * *"],

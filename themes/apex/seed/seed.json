@@ -77,7 +77,7 @@
 			"slug": "projects",
 			"label": "Projects",
 			"labelSingular": "Project",
-			"description": "Isolated CMS instances provisioned by the Projects plugin. Add a label + theme to provision one.",
+			"description": "Instances provisioned by this control plane. Pick a theme/demo to copy, set a starting balance, and it provisions automatically. Mark 'Is theme/demo' to make this instance itself copyable.",
 			"icon": "browsers",
 			"supports": [],
 			"fields": [
@@ -90,36 +90,50 @@
 				},
 				{
 					"slug": "theme",
-					"label": "Theme",
+					"label": "Copy from theme/demo",
 					"type": "string",
-					"required": true
+					"required": true,
+					"options": {
+						"visibility": "create"
+					}
 				},
 				{
-					"slug": "project_id",
-					"label": "Project ID",
-					"type": "string"
+					"slug": "is_theme",
+					"label": "Is theme / demo",
+					"type": "boolean",
+					"options": {
+						"visibility": "create"
+					}
 				},
 				{
-					"slug": "provision_status",
-					"label": "Status",
-					"type": "string"
+					"slug": "starting_credits",
+					"label": "Starting credit balance ($)",
+					"type": "number",
+					"options": {
+						"visibility": "create"
+					}
 				},
 				{
 					"slug": "url",
 					"label": "URL",
-					"type": "url"
-				},
-				{
-					"slug": "credit_balance",
-					"label": "Credit balance ($)",
-					"type": "number"
+					"type": "url",
+					"options": {
+						"readOnly": true,
+						"visibility": "edit"
+					}
 				},
 				{
 					"slug": "add_credits",
-					"label": "Add credits ($) — save to grant",
-					"type": "number"
+					"label": "Add credits ($)",
+					"type": "number",
+					"options": {
+						"visibility": "edit"
+					}
 				}
-			]
+			],
+			"admin": {
+				"listColumns": []
+			}
 		}
 	],
 	"taxonomies": [
