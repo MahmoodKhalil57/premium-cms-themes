@@ -1,6 +1,7 @@
 # Build the static frontend from the backend snapshot and publish to GitHub
 # Pages. Triggered on push, on a content-publish dispatch from the backend, or
-# manually. The Astro frontend is never hosted on Cloudflare — only the backend
+# manually. Seeds are applied by the platform (roll), never from here. The
+# Astro frontend is never hosted on Cloudflare — only the backend
 # (admin + REST API + media) is.
 name: Deploy static frontend
 
@@ -37,12 +38,7 @@ jobs:
         env:
           EMDASH_SNAPSHOT_DB: ./snapshot.db
           SITE_URL: ${{ secrets.SITE_URL }}
-        run: bunx astro build --config astro.config.static.mjs
-      - name: Apply seed to backend (idempotent)
-        if: ${{ hashFiles('seed.json') != '' }}
-        env:
-          SEED_SECRET: ${{ secrets.SEED_SECRET }}
-        run: node bin/apply-seed.mjs "${{ secrets.BACKEND_URL }}" ./seed.json
+        run: bunx astro build
       - uses: actions/upload-pages-artifact@v3
         with:
           path: ./dist

@@ -61,6 +61,21 @@ for (const [table, info] of Object.entries(schema)) {
 	created++;
 }
 
+// Tables the public render path queries but the snapshot deliberately omits
+// (comments carry commenter PII and hydrate client-side; cron is runtime
+// bookkeeping). Empty stand-ins keep the build from throwing on them.
+const STUBS = {
+	_emdash_comments:
+		"id text primary key, collection text, content_id text, parent_id text, author_name text, author_email text, author_url text, author_user_id text, body text, status text, ip_hash text, user_agent text, moderation_metadata text, created_at text, updated_at text",
+	_emdash_comment_reactions:
+		"id text primary key, comment_id text, reaction text, voter_hash text, created_at text",
+	_emdash_cron_tasks:
+		"id text primary key, plugin_id text, task_name text, schedule text, is_oneshot integer, data text, next_run_at text, last_run_at text, status text, locked_at text, enabled integer, created_at text",
+};
+for (const [table, cols] of Object.entries(STUBS)) {
+	if (!schema[table]) db.exec(`CREATE TABLE IF NOT EXISTS "${table}" (${cols})`);
+}
+
 let rowsTotal = 0;
 const insertAll = db.transaction(() => {
 	for (const [table, rows] of Object.entries(tables)) {
