@@ -17,7 +17,8 @@
  */
 import BetterSqlite3 from "better-sqlite3";
 import crypto from "node:crypto";
-import { rmSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, rmSync } from "node:fs";
+import path from "node:path";
 
 const backend = (process.argv[2] || process.env.BACKEND_URL || "").replace(/\/$/, "");
 const outFile = process.argv[3] || process.env.EMDASH_SNAPSHOT_DB || "snapshot.db";
@@ -76,5 +77,85 @@ const insertAll = db.transaction(() => {
 	}
 });
 insertAll();
+
+/*
+ * Git-backed collections (`_emdash_collections.storage = 'git'`) keep their
+ * entries in THIS repo as content/<collection>/<slug>.json — the backend holds
+ * only their schema. Materialize those files straight into the ec_* tables so
+ * the static build renders them without any backend request.
+ */
+const JSON_TYPES = new Set([
+	"portableText",
+	"json",
+	"multiSelect",
+	"repeater",
+	"media",
+	"relation",
+	"file",
+]);
+let gitRows = 0;
+const gitCollections = (tables._emdash_collections ?? []).filter((c) => c.storage === "git");
+if (gitCollections.length > 0) {
+	const fieldsByCollection = new Map();
+	for (const f of tables._emdash_fields ?? []) {
+		if (!fieldsByCollection.has(f.collection_id)) fieldsByCollection.set(f.collection_id, []);
+		fieldsByCollection.get(f.collection_id).push(f);
+	}
+	const insertGit = db.transaction(() => {
+		for (const c of gitCollections) {
+			const table = `ec_${c.slug}`;
+			const cols = schema[table]?.columns;
+			if (!cols) continue;
+			const dir = path.join("content", c.slug);
+			if (!existsSync(dir)) continue;
+			const fields = fieldsByCollection.get(c.id) ?? [];
+			const stmt = db.prepare(
+				`INSERT OR REPLACE INTO "${table}" (${cols.map((x) => `"${x}"`).join(",")}) VALUES (${cols.map(() => "?").join(",")})`,
+			);
+			for (const file of readdirSync(dir)) {
+				if (!file.endsWith(".json")) continue;
+				let entry;
+				try {
+					entry = JSON.parse(readFileSync(path.join(dir, file), "utf8"));
+				} catch (err) {
+					console.error(`  ! ${dir}/${file}: ${err.message}`);
+					continue;
+				}
+				if ((entry.status ?? "published") !== "published" && !process.env.EMDASH_INCLUDE_DRAFTS)
+					continue;
+				const slug = entry.slug ?? file.slice(0, -5);
+				const row = {
+					id: entry.id ?? slug,
+					slug,
+					status: entry.status ?? "published",
+					locale: entry.locale ?? "en",
+					translation_group: entry.translationGroup ?? slug,
+					created_at: entry.createdAt ?? entry.updatedAt ?? new Date().toISOString(),
+					updated_at: entry.updatedAt ?? new Date().toISOString(),
+					published_at: entry.publishedAt ?? entry.updatedAt ?? null,
+					version: 1,
+				};
+				for (const f of fields) {
+					const v = entry.data?.[f.slug];
+					if (v === undefined) continue;
+					row[f.slug] =
+						JSON_TYPES.has(f.type) || (v && typeof v === "object")
+							? JSON.stringify(v)
+							: typeof v === "boolean"
+								? v
+									? 1
+									: 0
+								: v;
+				}
+				stmt.run(cols.map((x) => (row[x] === undefined ? null : row[x])));
+				gitRows++;
+			}
+		}
+	});
+	insertGit();
+}
+
 db.close();
-console.log(`✓ ${outFile}: ${created} tables, ${rowsTotal} rows from ${backend}`);
+console.log(
+	`✓ ${outFile}: ${created} tables, ${rowsTotal} rows from ${backend}${gitRows ? ` + ${gitRows} git-backed entries from content/` : ""}`,
+);
