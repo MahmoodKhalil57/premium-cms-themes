@@ -20,7 +20,7 @@
 		"@premium-cms/auth": "^0.35.9",
 		"@premium-cms/blocks": "^0.35.9",
 		"@premium-cms/cloudflare": "^0.35.9",
-		"@premium-cms/emdash": "^0.35.24",
+		"@premium-cms/emdash": "^0.35.25",
 		"@premium-cms/plugin-premiumcms-projects": "^0.2.6",
 		"astro": "^7.0.0",
 		"react": "^19.2.4",
