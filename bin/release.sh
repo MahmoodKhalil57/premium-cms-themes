@@ -12,9 +12,15 @@
 #
 # Env (build variables on the Worker): CLOUDFLARE_ACCOUNT_ID, CLOUDFLARE_API_TOKEN
 # (account that owns the platform-artifacts bucket). THEMES=a,b limits step 1.
+#
+# Run locally (no WORKERS_CI), it also does the deploy command itself: the
+# workspace's ../.env.master supplies the platform account (CLOUDFLARE_MASTER_*)
+# and MASTER_PLATFORM_TOKEN, so one command builds, ships master and rolls.
 set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
+# shellcheck source=/dev/null
+source "$ROOT/bin/env-master.sh"
 
 publishable() {
 	for d in themes/*/; do
@@ -40,3 +46,9 @@ done
 echo "::: master"
 bin/build-plugin-deps.sh themes/master
 ( cd themes/master && bun install && bunx astro build )
+
+if [ -z "${WORKERS_CI:-}" ]; then
+	echo "::: deploy master"
+	( cd themes/master && bunx wrangler deploy )
+	bin/roll.sh
+fi

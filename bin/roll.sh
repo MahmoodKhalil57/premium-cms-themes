@@ -14,6 +14,8 @@
 # Env: MASTER_PLATFORM_TOKEN (an admin API token on master), optionally
 # MASTER_URL (default https://master.premium-cms.com).
 set -euo pipefail
+# shellcheck source=/dev/null
+source "$(dirname "${BASH_SOURCE[0]}")/env-master.sh"
 STEPS="${1:-${ROLL_STEPS:-bundle,plugins,seed,frontend}}"
 MASTER="${MASTER_URL:-https://master.premium-cms.com}"
 : "${MASTER_PLATFORM_TOKEN:?MASTER_PLATFORM_TOKEN is not set — cannot roll the instances}"
