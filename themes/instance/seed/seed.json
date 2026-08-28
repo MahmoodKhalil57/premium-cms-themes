@@ -15,7 +15,11 @@
 			"slug": "pages",
 			"label": "Pages",
 			"labelSingular": "Page",
-			"supports": ["drafts", "revisions", "seo"],
+			"supports": [
+				"drafts",
+				"revisions",
+				"seo"
+			],
 			"fields": [
 				{
 					"slug": "title",
@@ -57,27 +61,63 @@
 			"name": "footer_product",
 			"label": "Footer: Product",
 			"items": [
-				{ "type": "custom", "label": "Features", "url": "/#features" },
-				{ "type": "custom", "label": "Pricing", "url": "/pricing" },
-				{ "type": "custom", "label": "Changelog", "url": "/changelog" }
+				{
+					"type": "custom",
+					"label": "Features",
+					"url": "/#features"
+				},
+				{
+					"type": "custom",
+					"label": "Pricing",
+					"url": "/pricing"
+				},
+				{
+					"type": "custom",
+					"label": "Changelog",
+					"url": "/changelog"
+				}
 			]
 		},
 		{
 			"name": "footer_company",
 			"label": "Footer: Company",
 			"items": [
-				{ "type": "custom", "label": "About", "url": "/about" },
-				{ "type": "custom", "label": "Blog", "url": "/blog" },
-				{ "type": "custom", "label": "Careers", "url": "/careers" }
+				{
+					"type": "custom",
+					"label": "About",
+					"url": "/about"
+				},
+				{
+					"type": "custom",
+					"label": "Blog",
+					"url": "/blog"
+				},
+				{
+					"type": "custom",
+					"label": "Careers",
+					"url": "/careers"
+				}
 			]
 		},
 		{
 			"name": "footer_support",
 			"label": "Footer: Support",
 			"items": [
-				{ "type": "custom", "label": "Documentation", "url": "/docs" },
-				{ "type": "custom", "label": "Contact", "url": "/contact" },
-				{ "type": "custom", "label": "Status", "url": "/status" }
+				{
+					"type": "custom",
+					"label": "Documentation",
+					"url": "/docs"
+				},
+				{
+					"type": "custom",
+					"label": "Contact",
+					"url": "/contact"
+				},
+				{
+					"type": "custom",
+					"label": "Status",
+					"url": "/status"
+				}
 			]
 		}
 	],

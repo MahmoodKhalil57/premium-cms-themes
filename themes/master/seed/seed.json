@@ -39,9 +39,8 @@
 					"slug": "is_theme",
 					"label": "Is theme / demo",
 					"type": "boolean",
-					"options": {
-						"visibility": "create"
-					}
+					"options": {},
+					"description": "Publish this project as a marketplace theme/demo: its content is exported into its repo and listed for others to copy. Needs GitHub connected. Re-synced on every roll."
 				},
 				{
 					"slug": "starting_credits",
