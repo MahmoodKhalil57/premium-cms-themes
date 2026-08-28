@@ -4,17 +4,38 @@ name: Deploy themes
 # `detect` narrows the push down to the themes that actually changed, and the
 # deploy job fans out over just those. With hundreds of themes on one image,
 # never deploy the whole set because one of them moved.
+#
+# Two kinds of theme:
+#   - directly-deployed instances (a concrete `database_id` in wrangler.jsonc,
+#     i.e. master): `wrangler deploy`.
+#   - provisioning-only themes (no database_id): their golden bundle is built
+#     and published to R2, where the projects plugin deploys it into instances.
+#
+# After the bundles are in place, `roll` asks the root control plane (master)
+# to redeploy every provisioned instance from `latest` and cascade down the
+# tree — each parent rolls its own children with its own credentials. That is
+# how an image publish, a theme change or a plugin release reaches every site
+# without touching them one by one.
 on:
   push:
     branches: [main]
     paths:
       - "themes/**"
+  repository_dispatch:
+    # Sent by the image repo after it publishes new @premium-cms/* packages,
+    # by the plugins repo after a marketplace release, and by a frontend
+    # template repo after its code changes.
+    types: [image-published, plugins-published, frontend-template-updated]
   workflow_dispatch:
     inputs:
       themes:
         description: "Theme slugs to deploy, comma-separated. Blank = every theme."
         required: false
         default: ""
+      steps:
+        description: "Roll steps, comma-separated (bundle,plugins,seed,frontend). Blank = no roll."
+        required: false
+        default: "bundle,plugins,seed,frontend"
 
 concurrency:
   # Serialise per branch: two overlapping deploys of the same Worker race on
@@ -23,44 +44,105 @@ concurrency:
   cancel-in-progress: false
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
+  # A new image means every theme rebuilds: move them all onto the published
+  # packages and commit the bump so the repo stays the record of what runs.
+  bump:
+    if: github.event_name == 'repository_dispatch' && github.event.action == 'image-published'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: premium-cms-themes
+      - uses: actions/checkout@v4
+        with:
+          repository: MahmoodKhalil57/premium-cms-plugins
+          path: premium-cms-plugins
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Bump @premium-cms/* to latest
+        working-directory: premium-cms-themes
+        run: bin/bump-image.sh
+      - name: Commit the bump
+        working-directory: premium-cms-themes
+        run: |
+          set -euo pipefail
+          git config user.name "premiumcms-ci"
+          git config user.email "ci@premium-cms.com"
+          git add -A themes
+          if git diff --cached --quiet; then
+            echo "already current"
+          else
+            git commit -m "chore: bump image to latest @premium-cms/* [skip ci]"
+            git push
+          fi
+
   detect:
+    needs: [bump]
+    # `bump` is skipped on every event but image-published; still run.
+    if: always() && (needs.bump.result == 'success' || needs.bump.result == 'skipped')
     runs-on: ubuntu-latest
     outputs:
       themes: ${{ steps.pick.outputs.themes }}
       count: ${{ steps.pick.outputs.count }}
+      steps: ${{ steps.pick.outputs.steps }}
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: main
           # Need the previous commit to diff against.
           fetch-depth: 0
 
       - id: pick
+        env:
+          EVENT: ${{ github.event_name }}
+          ACTION: ${{ github.event.action }}
+          RAW_THEMES: ${{ github.event.inputs.themes }}
+          RAW_STEPS: ${{ github.event.inputs.steps }}
+          BEFORE: ${{ github.event.before }}
+          SHA: ${{ github.sha }}
         run: |
           set -euo pipefail
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            RAW='${{ github.event.inputs.themes }}'
-            if [ -z "$RAW" ]; then
-              THEMES=$(for d in themes/*/; do [ -f "$d/package.json" ] && basename "$d"; done \
-                | python3 -c "import sys,json; print(json.dumps([l.strip() for l in sys.stdin if l.strip()]))")
-              echo "manual run: all themes"
-            else
-              THEMES=$(python3 -c "import json,sys; print(json.dumps([s.strip() for s in sys.argv[1].split(',') if s.strip()]))" "$RAW")
-              echo "manual run: $RAW"
-            fi
-          else
-            THEMES=$(bin/changed-themes.sh "${{ github.event.before }}" "${{ github.sha }}")
-          fi
+          all_themes() {
+            for d in themes/*/; do [ -f "$d/package.json" ] && basename "$d"; done \
+              | python3 -c "import sys,json; print(json.dumps([l.strip() for l in sys.stdin if l.strip()]))"
+          }
+          csv() { python3 -c "import json,sys; print(json.dumps([s.strip() for s in sys.argv[1].split(',') if s.strip()]))" "$1"; }
+          case "$EVENT" in
+            workflow_dispatch)
+              if [ -z "$RAW_THEMES" ]; then THEMES=$(all_themes); else THEMES=$(csv "$RAW_THEMES"); fi
+              STEPS=$(csv "$RAW_STEPS")
+              ;;
+            repository_dispatch)
+              case "$ACTION" in
+                image-published)            THEMES=$(all_themes); STEPS='["bundle","plugins","seed","frontend"]' ;;
+                plugins-published)          THEMES='[]';          STEPS='["plugins"]' ;;
+                frontend-template-updated)  THEMES='[]';          STEPS='["frontend"]' ;;
+                *)                          THEMES='[]';          STEPS='[]' ;;
+              esac
+              ;;
+            *)
+              THEMES=$(bin/changed-themes.sh "$BEFORE" "$SHA")
+              # A theme change ships a new bundle + seed; frontend code lives in
+              # the template repos and has its own trigger.
+              STEPS='["bundle","seed"]'
+              ;;
+          esac
           echo "themes=$THEMES" >> "$GITHUB_OUTPUT"
+          echo "steps=$STEPS" >> "$GITHUB_OUTPUT"
           COUNT=$(python3 -c "import json,sys; print(len(json.loads(sys.argv[1])))" "$THEMES")
           echo "count=$COUNT" >> "$GITHUB_OUTPUT"
-          echo "Deploying $COUNT theme(s): $THEMES"
+          echo "Deploying $COUNT theme(s): $THEMES — then rolling $STEPS"
 
   deploy:
     needs: detect
-    if: needs.detect.outputs.count != '0'
+    if: always() && needs.detect.result == 'success' && needs.detect.outputs.count != '0'
     runs-on: ubuntu-latest
     strategy:
       # One theme's failure must not cancel the others' deploys.
@@ -70,6 +152,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: main
           path: premium-cms-themes
 
       # A theme may consume a plugin from the sibling repo through a `file:`
@@ -90,6 +173,18 @@ jobs:
         working-directory: premium-cms-themes
         run: bin/build-plugin-deps.sh themes/${{ matrix.theme }}
 
+      - name: Refresh a sibling plugin's image pin
+        # The plugin's own lockfile may pin an older core than the theme's;
+        # the theme's bundler resolves the plugin's imports from there.
+        working-directory: premium-cms-themes
+        run: |
+          set -euo pipefail
+          for rel in $(python3 -c "
+          import json; p=json.load(open('themes/${{ matrix.theme }}/package.json'))
+          print(' '.join(v[5:] for v in (p.get('dependencies') or {}).values() if v.startswith('file:')))"); do
+            ( cd "themes/${{ matrix.theme }}/$rel" && bun update @premium-cms/emdash >/dev/null 2>&1 || true )
+          done
+
       - name: Install
         working-directory: premium-cms-themes/themes/${{ matrix.theme }}
         run: bun install
@@ -99,26 +194,65 @@ jobs:
         run: bunx astro build
 
       - name: Deploy
-        working-directory: premium-cms-themes/themes/${{ matrix.theme }}
+        working-directory: premium-cms-themes
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
           set -euo pipefail
+          cd themes/${{ matrix.theme }}
           if [ ! -f wrangler.jsonc ] && [ ! -f wrangler.toml ]; then
             echo "no wrangler config — this theme is not Cloudflare-deployed; skipping"
             exit 0
           fi
-          # A theme with no concrete database_id is a marketplace theme
-          # provisioned into instances by the projects plugin, not a
-          # directly-deployed instance like apex/master. Skip direct deploy.
-          if ! grep -q '"database_id"' wrangler.jsonc 2>/dev/null; then
-            echo "no database_id — provisioning-only theme; skipping direct deploy"
-            exit 0
-          fi
           if [ -z "${CLOUDFLARE_API_TOKEN:-}" ]; then
             echo "::error::CLOUDFLARE_API_TOKEN is not set on this repository."
-            echo "Add it under Settings → Secrets and variables → Actions."
             exit 1
           fi
-          bunx wrangler deploy
+          if grep -q '"database_id"' wrangler.jsonc 2>/dev/null; then
+            echo "directly-deployed instance — wrangler deploy"
+            bunx wrangler deploy
+          else
+            echo "provisioning-only theme — publishing its golden bundle"
+            cd ../..
+            bin/publish-theme-bundle.sh ${{ matrix.theme }}
+          fi
+
+  roll:
+    needs: [detect, deploy]
+    # Roll after the deploys (or straight away when nothing needed deploying,
+    # e.g. a plugin release), never after a failed deploy.
+    if: >-
+      always() && needs.detect.result == 'success'
+      && (needs.deploy.result == 'success' || needs.deploy.result == 'skipped')
+      && needs.detect.outputs.steps != '[]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Roll the instance tree from master
+        env:
+          STEPS: ${{ needs.detect.outputs.steps }}
+          TOKEN: ${{ secrets.MASTER_PLATFORM_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ -z "$TOKEN" ]; then
+            echo "::error::MASTER_PLATFORM_TOKEN is not set — cannot roll the instances."
+            exit 1
+          fi
+          OUT=$(curl -sS --max-time 3000 -X POST \
+            "https://master.premium-cms.com/_emdash/api/plugins/premiumcms-projects/roll" \
+            -H "Authorization: Bearer $TOKEN" -H "X-EmDash-Request: 1" \
+            -H "Content-Type: application/json" -A "premiumcms-ci/1.0" \
+            -d "{\"steps\": $STEPS, \"cascade\": true}")
+          echo "$OUT" | python3 -m json.tool || echo "$OUT"
+          echo "$OUT" | python3 -c "
+          import json,sys
+          d=json.load(sys.stdin).get('data',{})
+          def walk(rs,depth=1):
+              for r in rs:
+                  print('  '*depth + f\"{r['label']} ({r['project']}): {'ok' if r['ok'] else 'FAILED'} \" + ', '.join(f'{k}={v}' for k,v in r['steps'].items()))
+                  c=r.get('children')
+                  if isinstance(c,list): walk(c,depth+1)
+                  elif isinstance(c,dict): print('  '*(depth+1)+'children skipped: '+c.get('skipped',''))
+          walk(d.get('results',[]))
+          sys.exit(0 if d.get('success') else 1)"
