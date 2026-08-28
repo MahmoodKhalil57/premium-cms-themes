@@ -1,26 +1,84 @@
 {
 	"$schema": "https://emdashcms.com/seed.schema.json",
 	"version": 1,
-	"meta": { "name": "master" },
+	"meta": {
+		"name": "master"
+	},
 	"settings": {
 		"title": "PremiumCMS Master",
-		"tagline": "Control plane — provisions and manages instances"
+		"tagline": "Control plane \u2014 provisions and manages instances"
 	},
 	"collections": [
 		{
 			"slug": "projects",
 			"label": "Projects",
 			"labelSingular": "Project",
-			"description": "Isolated CMS instances provisioned by the Projects plugin. Create a row with a label and a theme to provision a new instance.",
+			"description": "Instances provisioned by this control plane. Pick a theme/demo to copy, set a starting balance, and it provisions automatically. Mark 'Is theme/demo' to make this instance itself copyable.",
 			"icon": "browsers",
 			"supports": [],
 			"fields": [
-				{ "slug": "label", "label": "Label", "type": "string", "required": true, "searchable": true },
-				{ "slug": "theme", "label": "Theme", "type": "string", "required": true },
-				{ "slug": "project_id", "label": "Project ID", "type": "string" },
-				{ "slug": "provision_status", "label": "Status", "type": "string" },
-				{ "slug": "url", "label": "URL", "type": "url" }
-			]
+				{
+					"slug": "label",
+					"label": "Label",
+					"type": "string",
+					"required": true,
+					"searchable": true
+				},
+				{
+					"slug": "theme",
+					"label": "Copy from theme/demo",
+					"type": "string",
+					"required": true,
+					"options": {
+						"visibility": "create"
+					}
+				},
+				{
+					"slug": "is_theme",
+					"label": "Is theme / demo",
+					"type": "boolean",
+					"options": {
+						"visibility": "create"
+					}
+				},
+				{
+					"slug": "starting_credits",
+					"label": "Starting credit balance ($)",
+					"type": "number",
+					"options": {
+						"visibility": "create"
+					}
+				},
+				{
+					"slug": "url",
+					"label": "URL",
+					"type": "url",
+					"options": {
+						"readOnly": true,
+						"visibility": "edit"
+					}
+				},
+				{
+					"slug": "domain",
+					"label": "Platform domain",
+					"type": "string",
+					"options": {
+						"visibility": "edit"
+					},
+					"description": "A hostname on the platform zone to give this instance (e.g. shop.premium-cms.com, or the bare zone). Attached to its Worker and made its canonical URL on save; clear to go back to the p\u2026 hostname. Rejected values are cleared (see the plugin log)."
+				},
+				{
+					"slug": "add_credits",
+					"label": "Add credits ($)",
+					"type": "number",
+					"options": {
+						"visibility": "edit"
+					}
+				}
+			],
+			"admin": {
+				"listColumns": []
+			}
 		}
 	],
 	"content": []

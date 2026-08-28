@@ -3,7 +3,7 @@
 	"version": "1",
 	"meta": {
 		"name": "Apex",
-		"description": "The apex PremiumCMS site — the reference theme, and the project that will spawn others",
+		"description": "The apex PremiumCMS site \u2014 the reference theme, and the project that will spawn others",
 		"author": "PremiumCMS"
 	},
 	"settings": {
@@ -121,6 +121,15 @@
 						"readOnly": true,
 						"visibility": "edit"
 					}
+				},
+				{
+					"slug": "domain",
+					"label": "Platform domain",
+					"type": "string",
+					"options": {
+						"visibility": "edit"
+					},
+					"description": "A hostname on the platform zone to give this instance (e.g. shop.premium-cms.com, or the bare zone). Attached to its Worker and made its canonical URL on save; clear to go back to the p\u2026 hostname. Rejected values are cleared (see the plugin log)."
 				},
 				{
 					"slug": "add_credits",
