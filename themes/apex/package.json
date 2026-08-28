@@ -21,7 +21,7 @@
 		"@premium-cms/auth": "^0.35.9",
 		"@premium-cms/blocks": "^0.35.9",
 		"@premium-cms/cloudflare": "^0.35.9",
-		"@premium-cms/emdash": "^0.35.10",
+		"@premium-cms/emdash": "^0.35.13",
 		"@premium-cms/plugin-cloudflare-email-byo": "^0.1.0",
 		"@premium-cms/plugin-forms": "^0.2.5",
 		"@premium-cms/plugin-premiumcms-projects": "file:../../../premium-cms-plugins/plugins/premiumcms-projects",
