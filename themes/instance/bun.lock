@@ -15,7 +15,7 @@
         "@premium-cms/emdash": "^0.35.26",
         "@premium-cms/plugin-cloudflare-email-byo": "^0.1.0",
         "@premium-cms/plugin-forms": "^0.2.6",
-        "@premium-cms/plugin-premiumcms-projects": "^0.2.6",
+        "@premium-cms/plugin-premiumcms-projects": "^0.2.8",
         "@premium-cms/plugin-webhook-notifier": "^0.2.0",
         "astro": "^7.0.0",
         "astro-iconset": "^0.0.4",
@@ -447,7 +447,7 @@
 
     "@premium-cms/plugin-forms": ["@premium-cms/plugin-forms@0.2.6", "", { "dependencies": { "ulidx": "^2.4.1" }, "peerDependencies": { "@cloudflare/kumo": "2.6.0", "@phosphor-icons/react": "^2.1.10", "@premium-cms/emdash": ">=0.11.0", "astro": ">=6.0.0-beta.0", "react": "^18.0.0 || ^19.0.0" } }, "sha512-ljWQJE/9Gt+SqH52XsnHMFRqnjLzynSedcbUTa8G8GJTcuKB6Fel8pFeHvF4jMt/XrdtpucN3goB/oT27pFQiw=="],
 
-    "@premium-cms/plugin-premiumcms-projects": ["@premium-cms/plugin-premiumcms-projects@0.2.6", "", { "dependencies": { "blakejs": "^1.2.1", "tweetnacl": "^1.0.3" }, "peerDependencies": { "@premium-cms/emdash": "^0.35.18" } }, "sha512-AkcJ2P7r1m0bENJgt2fcWgLCBgo/CpGZYUqVSh6YljztKvoLtUFGa+inHqX0F1mMyCZy6JX3m1m+W3CxrcYllA=="],
+    "@premium-cms/plugin-premiumcms-projects": ["@premium-cms/plugin-premiumcms-projects@0.2.8", "", { "dependencies": { "blakejs": "^1.2.1", "tweetnacl": "^1.0.3" }, "peerDependencies": { "@premium-cms/emdash": "^0.35.18" } }, "sha512-uDtvoE+H5CuZYGOakdVPygRFoGKIot8RSY2DWjw8O4VkWz4NxcAF+T/tzENrLIbmpyfJmfO7eNbiJQbE860+Kw=="],
 
     "@premium-cms/plugin-types": ["@premium-cms/plugin-types@0.3.1", "", { "dependencies": { "zod": "^4.4.1" } }, "sha512-f4G4eR8DQiaTr5RG/z7/KWeVz4ApE3kAlzBHvHZHdQxf/DOn9GPEkr7sgc4LB+zoCKrq1eC3x4X5dWJMid/k8A=="],
 
