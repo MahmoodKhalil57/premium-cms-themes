@@ -24,7 +24,7 @@ for envf in "$ROOT/../.env.master" "$ROOT/.env"; do
 done
 : "${ARTIFACTS_ACCOUNT_ID:=${CLOUDFLARE_MASTER_ACOUNT_ID:-${CLOUDFLARE_ACCOUNT_ID:-}}}"
 : "${ARTIFACTS_PUBLISH_TOKEN:=${CLOUDFLARE_MASTER_API_TOKEN:-${CLOUDFLARE_API_TOKEN:-}}}"
-export ARTIFACTS_ACCOUNT_ID ARTIFACTS_PUBLISH_TOKEN THEME
+export ARTIFACTS_ACCOUNT_ID ARTIFACTS_PUBLISH_TOKEN THEME MARKETPLACE_DEPLOY_KEY
 
 echo "building $THEME…"
 ( cd "$THEME_DIR" && bunx astro build >/dev/null 2>&1 ) || { echo "astro build failed"; exit 1; }
@@ -110,3 +110,26 @@ with concurrent.futures.ThreadPoolExecutor(max_workers=12) as ex:
 put(f"themes/{theme}/latest.json", json.dumps({"version": version}).encode(), "application/json")
 print(f"published {theme}@{version} ({len(modules)} modules, {len(assets)} assets)")
 EOF
+
+# Keep the bucket small: the deploy service only ever reads `latest`, so
+# every version but the newest two is dead weight (hundreds of objects each).
+if [ -n "${MARKETPLACE_DEPLOY_KEY:-}" ]; then
+	python3 - "$THEME" <<'PY'
+import json, os, sys, urllib.request, urllib.parse
+theme = sys.argv[1]; acct = os.environ["ARTIFACTS_ACCOUNT_ID"]; tok = os.environ["ARTIFACTS_PUBLISH_TOKEN"]; dk = os.environ["MARKETPLACE_DEPLOY_KEY"]
+H = {"Authorization": f"Bearer {tok}", "User-Agent": "premiumcms-theme-publisher/1.0"}
+versions, cursor = set(), ""
+while True:
+    d = json.load(urllib.request.urlopen(urllib.request.Request(
+        f"https://api.cloudflare.com/client/v4/accounts/{acct}/r2/buckets/platform-artifacts/objects?prefix={urllib.parse.quote(f'themes/{theme}/', safe='')}&per_page=1000" + (f"&cursor={cursor}" if cursor else ""), headers=H)))
+    for o in d["result"]:
+        k = o["key"].split("/")
+        if len(k) >= 4: versions.add(k[2])
+    ri = d.get("result_info") or {}; cursor = ri.get("cursor") or ""
+    if not ri.get("is_truncated") or not cursor: break
+for v in sorted(versions)[:-2]:
+    req = urllib.request.Request("https://marketplace.premium-cms.com/api/v1/purge-prefix", data=json.dumps({"bucket": "platform-artifacts", "prefix": f"themes/{theme}/{v}/"}).encode(),
+        headers={"X-Deploy-Key": dk, "Content-Type": "application/json", "User-Agent": "premiumcms-theme-publisher/1.0"}, method="POST")
+    print(f"pruned {theme}@{v}: {json.load(urllib.request.urlopen(req)).get('deleted')} objects")
+PY
+fi
