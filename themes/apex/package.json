@@ -17,7 +17,7 @@
 	"dependencies": {
 		"@astrojs/cloudflare": "^14.2.5",
 		"@astrojs/react": "^6.0.4",
-		"@premium-cms/admin": "^0.35.13",
+		"@premium-cms/admin": "^0.35.14",
 		"@premium-cms/auth": "^0.35.9",
 		"@premium-cms/blocks": "^0.35.9",
 		"@premium-cms/cloudflare": "^0.35.9",
