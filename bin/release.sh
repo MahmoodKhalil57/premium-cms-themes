@@ -16,14 +16,6 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
 
-# Themes consume the projects plugin through a `file:` dependency on the
-# sibling plugins checkout; a Workers Build clones only this repo.
-SIBLING="$ROOT/../premium-cms-plugins"
-if [ ! -d "$SIBLING" ]; then
-	echo "cloning sibling plugins repo…"
-	git clone --quiet --depth 1 https://github.com/MahmoodKhalil57/premium-cms-plugins "$SIBLING"
-fi
-
 publishable() {
 	for d in themes/*/; do
 		[ -f "$d/package.json" ] || continue
