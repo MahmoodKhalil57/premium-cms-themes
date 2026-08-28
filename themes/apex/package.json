@@ -17,11 +17,11 @@
 	"dependencies": {
 		"@astrojs/cloudflare": "^14.2.5",
 		"@astrojs/react": "^6.0.4",
-		"@premium-cms/admin": "^0.35.12",
+		"@premium-cms/admin": "^0.35.13",
 		"@premium-cms/auth": "^0.35.9",
 		"@premium-cms/blocks": "^0.35.9",
 		"@premium-cms/cloudflare": "^0.35.9",
-		"@premium-cms/emdash": "^0.35.15",
+		"@premium-cms/emdash": "^0.35.16",
 		"@premium-cms/plugin-cloudflare-email-byo": "^0.1.0",
 		"@premium-cms/plugin-forms": "^0.2.5",
 		"@premium-cms/plugin-premiumcms-projects": "file:../../../premium-cms-plugins/plugins/premiumcms-projects",
