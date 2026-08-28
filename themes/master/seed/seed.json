@@ -30,8 +30,10 @@
 					"type": "string",
 					"required": true,
 					"options": {
-						"visibility": "create"
-					}
+						"visibility": "create",
+						"optionsUrl": "/_emdash/api/plugins/premiumcms-projects/themeOptions"
+					},
+					"description": "The marketplace theme/demo this project starts from \u2014 its frontend repo and seed."
 				},
 				{
 					"slug": "is_theme",
