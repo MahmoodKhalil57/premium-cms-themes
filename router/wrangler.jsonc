@@ -1,0 +1,8 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "premium-cms-router",
+	"main": "./src/worker.ts",
+	"compatibility_date": "2026-02-24",
+	"compatibility_flags": ["nodejs_compat"],
+	"kv_namespaces": [{ "binding": "DOMAINS", "id": "1f1ac109eaff4285a8883c29cbda55f3" }],
+}
