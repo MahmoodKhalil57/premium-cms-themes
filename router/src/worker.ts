@@ -7,6 +7,10 @@
  * the hostname up in the DOMAINS KV (custom hostname → the instance's canonical
  * `p<ulid>.premium-cms.com` origin) and proxy through to that instance, which
  * serves the admin/API locally and proxies the public frontend to GitHub Pages.
+ *
+ * Runs on the zone-wide `*\/*` route (the only pattern Cloudflare matches for
+ * custom-hostname traffic), so it also sees the platform's own hostnames;
+ * those pass straight through to their Workers-custom-domain origin.
  */
 interface Env {
 	DOMAINS: KVNamespace;
@@ -15,7 +19,13 @@ interface Env {
 export default {
 	async fetch(request: Request, env: Env): Promise<Response> {
 		const url = new URL(request.url);
-		const target = await env.DOMAINS.get(url.hostname.toLowerCase());
+		const host = url.hostname.toLowerCase();
+		const target = await env.DOMAINS.get(host);
+		if (!target && (host === "premium-cms.com" || host.endsWith(".premium-cms.com"))) {
+			// One of ours (master, apex, an instance, the marketplace…): its
+			// Workers custom domain is the origin for this subrequest.
+			return fetch(request);
+		}
 		if (!target) {
 			return new Response("This domain is not connected to a site.", {
 				status: 404,
