@@ -5,4 +5,9 @@
 	"compatibility_date": "2026-02-24",
 	"compatibility_flags": ["nodejs_compat"],
 	"kv_namespaces": [{ "binding": "DOMAINS", "id": "1f1ac109eaff4285a8883c29cbda55f3" }],
+	// The Cloudflare-for-SaaS fallback origin. It must be a ROUTE on a proxied
+	// placeholder DNS record (router → 192.0.2.1), never a Workers custom
+	// domain: for custom-hostname traffic Cloudflare connects to the fallback
+	// origin as an origin, and a Workers domain isn't connectable (522).
+	"routes": [{ "pattern": "router.premium-cms.com/*", "zone_name": "premium-cms.com" }],
 }
