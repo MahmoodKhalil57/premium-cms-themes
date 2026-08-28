@@ -51,11 +51,14 @@ def put(key, data, ctype="application/octet-stream"):
         req = urllib.request.Request(base + urllib.parse.quote(key, safe=""), data=data, method="PUT",
             headers={"Authorization": f"Bearer {token}", "Content-Type": ctype, "User-Agent": "premiumcms-theme-publisher/1.0"})
         try:
-            with urllib.request.urlopen(req) as r:
+            with urllib.request.urlopen(req, timeout=60) as r:
                 r.read()
             return
         except urllib.error.HTTPError as e:
             last = f"{key}: HTTP {e.code} {e.read()[:200]!r}"
+            time.sleep(1.5 * (attempt + 1))
+        except Exception as e:  # stalled socket, reset, DNS blip — retry
+            last = f"{key}: {type(e).__name__}: {e}"
             time.sleep(1.5 * (attempt + 1))
     raise RuntimeError(last)
 
