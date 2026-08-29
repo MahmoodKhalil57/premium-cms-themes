@@ -21,6 +21,8 @@ The GitHub Agent plugin builds every pull request from a whitelisted author in a
 Cloudflare container: `npm run check:cf` (bin/check-cf.mjs — JSON validity +
 `astro check` when installed) → `astro build` against the content snapshot →
 the `dist/` is pushed to a `static/<branch>` branch → `npm run test:cf`
-(`bun test tests/ci`). Results land on the PR as a comment and a commit status.
-Site repos declare both scripts in package.json; the tooling sync keeps
-`bin/` and `tests/ci/` current.
+(`bun test tests/ci`) → the passing build is hosted as a Cloudflare preview and
+`npm run test:preview:cf` (`bun test tests/preview`, `PREVIEW_URL` set) runs
+against it. Results land on the PR as a comment and a commit status.
+Site repos declare the three scripts in package.json; the tooling sync keeps
+`bin/`, `tests/ci/` and `tests/preview/` current.
