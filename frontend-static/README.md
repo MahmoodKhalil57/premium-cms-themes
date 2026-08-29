@@ -5,14 +5,15 @@ site is a **static build on GitHub Pages** — the Astro frontend is never hoste
 on Cloudflare. Only the backend (admin panel + REST API + media) runs on
 Cloudflare.
 
-On every push / content-publish, GitHub Actions:
+The site is built by the platform, never by GitHub Actions: a push to the
+default branch or a content publish makes the GitHub Agent plugin build the
+site in a Cloudflare container (`bin/snapshot-to-sqlite.mjs` → `astro build`)
+and push `dist/` to `static/<branch>`, which GitHub Pages serves ("deploy from a
+branch"). Pull requests get the same build on `static/<pr-branch>` plus a
+Cloudflare preview URL.
 
-1. fetches a content **snapshot** from the backend (`bin/snapshot-to-sqlite.mjs`),
-2. builds the site to static HTML against that snapshot (the site's own `astro.config.mjs`),
-3. deploys `dist/` to GitHub Pages.
-
-Secrets (set by the platform): `BACKEND_URL`, `SITE_URL`, `EMDASH_PREVIEW_SECRET`,
-`SEED_SECRET`.
+The build reads the site's content snapshot with the site's preview secret; no
+repository secrets are needed any more.
 
 ## Pull-request checks (`check:cf` / `test:cf`)
 
