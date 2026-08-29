@@ -16,11 +16,35 @@ interface Env {
 	DOMAINS: KVNamespace;
 }
 
+/** `p<ulid>--<label>` — the instance's canonical name, two dashes, a preview label (pr-12, main-b-1). */
+const PREVIEW_HOST = /^(p[0-9a-z]{26})--([a-z0-9](?:[a-z0-9-]{0,38}[a-z0-9])?)\.premium-cms\.com$/;
+
 export default {
 	async fetch(request: Request, env: Env): Promise<Response> {
 		const url = new URL(request.url);
 		const host = url.hostname.toLowerCase();
 		const target = await env.DOMAINS.get(host);
+		// `<rn>--<label>.premium-cms.com`: a preview of that instance served
+		// straight from its repository (static/pr-N, static/main-b-N). The
+		// wildcard record brings every such hostname here; the instance decides
+		// what the label means.
+		const preview = !target ? host.match(PREVIEW_HOST) : null;
+		if (preview) {
+			const [, rn, label] = preview;
+			const headers = new Headers(request.headers);
+			headers.delete("host");
+			headers.set("X-Premium-Preview", label);
+			const upstream = await fetch(`https://${rn}.premium-cms.com${url.pathname}${url.search}`, {
+				method: request.method,
+				headers,
+				body: request.method === "GET" || request.method === "HEAD" ? undefined : request.body,
+				redirect: "manual",
+			});
+			const out = new Headers(upstream.headers);
+			out.delete("content-encoding");
+			out.delete("content-length");
+			return new Response(upstream.body, { status: upstream.status, headers: out });
+		}
 		if (!target && (host === "premium-cms.com" || host.endsWith(".premium-cms.com"))) {
 			// One of ours (master, apex, an instance, the marketplace…): its
 			// Workers custom domain is the origin for this subrequest.
