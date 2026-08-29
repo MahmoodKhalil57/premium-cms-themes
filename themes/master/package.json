@@ -21,7 +21,7 @@
 		"@premium-cms/blocks": "^0.35.9",
 		"@premium-cms/cloudflare": "^0.35.10",
 		"@premium-cms/emdash": "^0.35.28",
-		"@premium-cms/plugin-premiumcms-projects": "^0.2.8",
+		"@premium-cms/plugin-premiumcms-projects": "^0.2.9",
 		"astro": "^7.0.0",
 		"react": "^19.2.4",
 		"react-dom": "^19.2.4"
