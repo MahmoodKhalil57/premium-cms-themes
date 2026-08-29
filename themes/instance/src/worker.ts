@@ -1,4 +1,12 @@
 import handler, { createScheduledHandler, PluginBridge } from "@premium-cms/cloudflare/worker";
+import {
+	cookieHas,
+	EDIT_MODE_COOKIE,
+	EDIT_PARAM,
+	injectToolbarHtml,
+	renderToolbar,
+	TOOLBAR_MIN_ROLE,
+} from "@premium-cms/emdash/visual-editing";
 
 export { PluginBridge };
 
@@ -12,8 +20,58 @@ export { PluginBridge };
  *   - `FRONTEND_ORIGIN` unset → the frontend is not connected yet, so serve a
  *     "not set up" placeholder instead of EmDash's own SSR pages. The owner
  *     connects GitHub from Settings → General to enable it.
+ *
+ * The static build never sees a session, so the visual-editing toolbar that
+ * EmDash's middleware would inject on a server-rendered page is spliced in
+ * here instead: a request carrying the session cookie is checked against the
+ * backend's own `auth/me` (in-process), and editors get the toolbar with
+ * `private, no-store` caching. Anonymous visitors cost nothing extra.
  */
 const BACKEND_PREFIXES = ["/_emdash", "/.well-known"];
+const SESSION_COOKIE = "astro-session";
+type Backend = { fetch: (r: Request, e: unknown, c: ExecutionContext) => Promise<Response> };
+const backend = handler as Backend;
+
+/** The requester's role per the backend (0 when anonymous or the check fails). */
+async function roleOf(
+	request: Request,
+	url: URL,
+	env: unknown,
+	ctx: ExecutionContext,
+): Promise<number> {
+	try {
+		const me = await backend.fetch(
+			new Request(`${url.origin}/_emdash/api/auth/me`, {
+				headers: {
+					cookie: request.headers.get("cookie") ?? "",
+					authorization: request.headers.get("authorization") ?? "",
+					"X-EmDash-Request": "1",
+					accept: "application/json",
+				},
+			}),
+			env,
+			ctx,
+		);
+		if (!me.ok) return 0;
+		const body = (await me.json()) as { data?: { role?: unknown } } | null;
+		const role = Number(body?.data?.role);
+		return Number.isFinite(role) ? role : 0;
+	} catch {
+		return 0;
+	}
+}
+
+function canonical(url: URL): Response {
+	const target = new URL(url);
+	target.searchParams.delete(EDIT_PARAM);
+	return new Response(null, {
+		status: 302,
+		headers: {
+			location: target.pathname + target.search + target.hash,
+			"cache-control": "no-store",
+		},
+	});
+}
 
 function isBackendPath(pathname: string): boolean {
 	return BACKEND_PREFIXES.some((p) => pathname === p || pathname.startsWith(`${p}/`));
@@ -70,9 +128,21 @@ export default {
 			if (request.method !== "GET" && request.method !== "HEAD") {
 				return new Response("Method Not Allowed", { status: 405 });
 			}
+			const cookie = request.headers.get("cookie");
+			const wantsEdit = url.searchParams.has(EDIT_PARAM);
+			const mayBeEditor =
+				cookie?.includes(`${SESSION_COOKIE}=`) || request.headers.has("authorization") || wantsEdit;
+			const role = mayBeEditor ? await roleOf(request, url, env, ctx) : 0;
+			const editor = role >= TOOLBAR_MIN_ROLE;
+			// A shared `?_edit` link degrades to the plain page for everyone else.
+			if (wantsEdit && !editor) return canonical(url);
+
 			const headers = new Headers(request.headers);
 			headers.delete("host");
-			const upstream = await fetch(`${origin}${url.pathname}${url.search}`, {
+			const search = new URLSearchParams(url.search);
+			search.delete(EDIT_PARAM);
+			const query = search.toString();
+			const upstream = await fetch(`${origin}${url.pathname}${query ? `?${query}` : ""}`, {
 				method: request.method,
 				headers,
 				redirect: "follow",
@@ -81,6 +151,21 @@ export default {
 			const out = new Headers(upstream.headers);
 			out.delete("content-encoding");
 			out.delete("content-length");
+			if (
+				editor &&
+				request.method === "GET" &&
+				(out.get("content-type") ?? "").includes("text/html")
+			) {
+				const toolbar = renderToolbar({
+					editMode: cookieHas(cookie, EDIT_MODE_COOKIE, "true"),
+					isPreview: false,
+				});
+				out.set("cache-control", "private, no-store");
+				return new Response(injectToolbarHtml(await upstream.text(), toolbar), {
+					status: upstream.status,
+					headers: out,
+				});
+			}
 			return new Response(upstream.body, { status: upstream.status, headers: out });
 		}
 		return (
@@ -92,7 +177,7 @@ export default {
 		env: Record<string, unknown>,
 		ctx: ExecutionContext,
 	) => {
-		ctx.waitUntil(baseScheduled(event as never, env as never, ctx));
+		ctx.waitUntil(Promise.resolve(baseScheduled(event as never, env as never, ctx)));
 		const self = (env as { SELF?: { fetch: typeof fetch } }).SELF;
 		if (!self) return;
 		try {
