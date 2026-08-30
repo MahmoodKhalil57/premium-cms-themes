@@ -13,7 +13,7 @@
         "@premium-cms/blocks": "^0.35.10",
         "@premium-cms/cloudflare": "^0.35.30",
         "@premium-cms/emdash": "^0.35.44",
-        "@premium-cms/plugin-cloudflare-email-byo": "^0.1.0",
+        "@premium-cms/plugin-cloudflare-email-byo": "^0.2.0",
         "@premium-cms/plugin-forms": "^0.2.6",
         "@premium-cms/plugin-premiumcms-projects": "^0.2.16",
         "@premium-cms/plugin-types": "^0.3.4",
@@ -508,7 +508,7 @@
 
     "@premium-cms/gutenberg-to-portable-text": ["@premium-cms/gutenberg-to-portable-text@0.35.9", "", { "dependencies": { "@wordpress/block-serialization-default-parser": "^5.13.0", "parse5": "^7.2.1" } }, "sha512-kI3EkqhAFZgdZXx6e1zyffO6J0X32IJOZHSuC3FNBgjEaYCD5nXQValeeI+4m6n3OJofXeYO31zpHJADiO3ETg=="],
 
-    "@premium-cms/plugin-cloudflare-email-byo": ["@premium-cms/plugin-cloudflare-email-byo@0.1.0", "", { "peerDependencies": { "@premium-cms/emdash": ">=0.35.0" } }, "sha512-w+gVtzxBc3YwZLcHo1d8jhG7MywTHf4jU1iZHk+ru/9ppR6+pg63VFuS5SlBni5K5lkIaiXrrLDO6xd/5Pyj/Q=="],
+    "@premium-cms/plugin-cloudflare-email-byo": ["@premium-cms/plugin-cloudflare-email-byo@0.2.0", "", { "peerDependencies": { "@premium-cms/emdash": ">=0.35.0" } }, "sha512-HkOCS/o0rwYqXkKLMwyF11wgskFPXSmNrbPis6+i4KdFMtGAcy/TBMQdVJvNpc8+Pa6BaDGZjykKqB+c6p5teg=="],
 
     "@premium-cms/plugin-forms": ["@premium-cms/plugin-forms@0.2.6", "", { "dependencies": { "ulidx": "^2.4.1" }, "peerDependencies": { "@cloudflare/kumo": "2.6.0", "@phosphor-icons/react": "^2.1.10", "@premium-cms/emdash": ">=0.11.0", "astro": ">=6.0.0-beta.0", "react": "^18.0.0 || ^19.0.0" } }, "sha512-ljWQJE/9Gt+SqH52XsnHMFRqnjLzynSedcbUTa8G8GJTcuKB6Fel8pFeHvF4jMt/XrdtpucN3goB/oT27pFQiw=="],
 
