@@ -31,19 +31,9 @@ export default {
 		const preview = !target ? host.match(PREVIEW_HOST) : null;
 		if (preview) {
 			const [, rn, label] = preview;
-			const headers = new Headers(request.headers);
-			headers.delete("host");
-			headers.set("X-Premium-Preview", label);
-			const upstream = await fetch(`https://${rn}.premium-cms.com${url.pathname}${url.search}`, {
-				method: request.method,
-				headers,
-				body: request.method === "GET" || request.method === "HEAD" ? undefined : request.body,
-				redirect: "manual",
+			return proxy(request, `https://${rn}.premium-cms.com${url.pathname}${url.search}`, {
+				"X-Premium-Preview": label,
 			});
-			const out = new Headers(upstream.headers);
-			out.delete("content-encoding");
-			out.delete("content-length");
-			return new Response(upstream.body, { status: upstream.status, headers: out });
 		}
 		if (!target && (host === "premium-cms.com" || host.endsWith(".premium-cms.com"))) {
 			// One of ours (master, apex, an instance, the marketplace…): its
@@ -56,17 +46,35 @@ export default {
 				headers: { "content-type": "text/plain; charset=utf-8" },
 			});
 		}
-		const headers = new Headers(request.headers);
-		headers.delete("host");
-		const upstream = await fetch(`https://${target}${url.pathname}${url.search}`, {
-			method: request.method,
-			headers,
-			body: request.method === "GET" || request.method === "HEAD" ? undefined : request.body,
-			redirect: "manual",
-		});
-		const out = new Headers(upstream.headers);
-		out.delete("content-encoding");
-		out.delete("content-length");
-		return new Response(upstream.body, { status: upstream.status, headers: out });
+		return proxy(request, `https://${target}${url.pathname}${url.search}`);
 	},
 };
+
+/**
+ * Forward a request to the instance that owns it. A WebSocket upgrade (the
+ * agent runtime's chat and browser-bridge sockets under /_emdash/agents/*) is
+ * returned exactly as the origin answered it — rebuilding the 101 response
+ * would drop the socket — everything else is re-wrapped so the edge can
+ * re-encode the body for the client.
+ */
+async function proxy(
+	request: Request,
+	target: string,
+	extra: Record<string, string> = {},
+): Promise<Response> {
+	const headers = new Headers(request.headers);
+	headers.delete("host");
+	for (const [k, v] of Object.entries(extra)) headers.set(k, v);
+	const websocket = (request.headers.get("upgrade") ?? "").toLowerCase() === "websocket";
+	const upstream = await fetch(target, {
+		method: request.method,
+		headers,
+		body: request.method === "GET" || request.method === "HEAD" ? undefined : request.body,
+		redirect: "manual",
+	});
+	if (websocket) return upstream;
+	const out = new Headers(upstream.headers);
+	out.delete("content-encoding");
+	out.delete("content-length");
+	return new Response(upstream.body, { status: upstream.status, headers: out });
+}
