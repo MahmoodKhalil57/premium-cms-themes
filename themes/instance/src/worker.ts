@@ -132,6 +132,179 @@ const baseScheduled = createScheduledHandler();
 /** A static branch name without its `static/` prefix: `pr-12`, `main`, `main-b-1`. */
 const PREVIEW_LABEL = /^[a-z0-9][a-z0-9-]{0,40}$/;
 const PREVIEW_HEADER = "x-premium-preview";
+
+// ── Editors on previews ─────────────────────────────────────────────────
+//
+// A preview hostname is its own origin, so the editor's session cookie (host
+// only) is not there. The first HTML navigation without a session bounces once
+// to the site's canonical origin, `/_emdash/preview-session/start?to=…`, which
+// — for a signed-in editor — mints a single-use, 60-second ticket in the SESSION
+// namespace and sends them back to `/_emdash/preview-session?ticket=…` on the
+// preview host, where the ticket becomes the same session cookie for that host.
+// Anyone else comes back with a marker cookie instead, so they bounce only once.
+// With a session on the preview host, `/_emdash/*` is served by the backend
+// like anywhere else and preview pages get the toolbar (and its plugins).
+const PREVIEW_SESSION_PATH = "/_emdash/preview-session";
+const PREVIEW_SESSION_START = `${PREVIEW_SESSION_PATH}/start`;
+const PREVIEW_ANON_COOKIE = "emdash_preview_anon";
+const PREVIEW_TICKET_TTL = 60;
+
+type SiteOrigins = { siteUrl: string; platformUrl: string };
+let originsCache: { at: number; value: SiteOrigins } | null = null;
+
+/** The site's canonical URL (where editors sign in) and its platform URL, from the options table. */
+async function siteOrigins(env: Record<string, unknown>): Promise<SiteOrigins> {
+	if (originsCache && Date.now() - originsCache.at < 60_000) return originsCache.value;
+	const db = env.DB as D1Database | undefined;
+	const map = new Map<string, string>();
+	if (db) {
+		const rows = await db
+			.prepare(
+				"SELECT name, value FROM options WHERE name IN ('emdash:site_url','custom_domain:default_url')",
+			)
+			.all<{ name: string; value: string }>();
+		for (const r of rows.results ?? []) {
+			try {
+				const v = JSON.parse(r.value) as unknown;
+				if (typeof v === "string") map.set(r.name, v);
+			} catch {
+				map.set(r.name, r.value);
+			}
+		}
+	}
+	const platformUrl = (map.get("custom_domain:default_url") ?? "").replace(/\/+$/, "");
+	const siteUrl = (map.get("emdash:site_url") ?? platformUrl).replace(/\/+$/, "");
+	const value = { siteUrl, platformUrl };
+	originsCache = { at: Date.now(), value };
+	return value;
+}
+
+/** `https://<rn>--<label>.<platform zone>` for this site, or null when the site has no platform URL. */
+function previewOrigin(platformUrl: string, label: string): string | null {
+	let host: string;
+	try {
+		host = new URL(platformUrl).hostname;
+	} catch {
+		return null;
+	}
+	const dot = host.indexOf(".");
+	if (dot <= 0) return null;
+	return `https://${host.slice(0, dot)}--${label}.${host.slice(dot + 1)}`;
+}
+
+/** The preview label of a URL on one of this site's preview hostnames, or null. */
+function previewLabelOf(platformUrl: string, target: URL): string | null {
+	if (target.protocol !== "https:") return null;
+	let host: string;
+	try {
+		host = new URL(platformUrl).hostname;
+	} catch {
+		return null;
+	}
+	const dot = host.indexOf(".");
+	if (dot <= 0) return null;
+	const m = target.hostname.match(/^([a-z0-9]+)--([a-z0-9][a-z0-9-]{0,40})\.(.+)$/);
+	if (!m || m[1] !== host.slice(0, dot) || m[3] !== host.slice(dot + 1)) return null;
+	return m[2] ?? null;
+}
+
+function cookieValue(cookie: string | null, name: string): string | null {
+	if (!cookie) return null;
+	for (const part of cookie.split(";")) {
+		const eq = part.indexOf("=");
+		if (eq < 0) continue;
+		if (part.slice(0, eq).trim() === name) return part.slice(eq + 1).trim();
+	}
+	return null;
+}
+
+function redirect(location: string, setCookie?: string[]): Response {
+	const headers = new Headers({
+		location,
+		"cache-control": "no-store",
+		"x-robots-tag": "noindex, nofollow",
+	});
+	for (const c of setCookie ?? []) headers.append("set-cookie", c);
+	return new Response(null, { status: 302, headers });
+}
+
+/** A same-origin path to return to after the handoff (never another host). */
+function safeNext(raw: string | null): string {
+	if (!raw || !raw.startsWith("/") || raw.startsWith("//") || raw.startsWith("/\\")) return "/";
+	return raw;
+}
+
+function randomTicket(): string {
+	const bytes = crypto.getRandomValues(new Uint8Array(32));
+	return [...bytes].map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+/** `/_emdash/preview-session/start?to=<preview url>` on the site's own origin: hand a signed-in editor over to the preview host. */
+async function startPreviewSession(
+	request: Request,
+	url: URL,
+	env: Record<string, unknown>,
+	ctx: ExecutionContext,
+): Promise<Response> {
+	const { platformUrl } = await siteOrigins(env);
+	let to: URL;
+	try {
+		to = new URL(url.searchParams.get("to") ?? "");
+	} catch {
+		return new Response("Bad request", { status: 400 });
+	}
+	if (!platformUrl || !previewLabelOf(platformUrl, to))
+		return new Response("Not one of this site's previews.", { status: 400 });
+	const next = encodeURIComponent(to.pathname + to.search);
+	const cookie = request.headers.get("cookie");
+	const session = cookieValue(cookie, SESSION_COOKIE);
+	const kv = env.SESSION as KVNamespace | undefined;
+	if (session && kv && (await roleOf(request, url, env, ctx)) >= TOOLBAR_MIN_ROLE) {
+		const ticket = randomTicket();
+		await kv.put(
+			`preview-ticket:${ticket}`,
+			JSON.stringify({ session, exp: Date.now() + PREVIEW_TICKET_TTL * 1000 }),
+			{ expirationTtl: PREVIEW_TICKET_TTL },
+		);
+		return redirect(`${to.origin}${PREVIEW_SESSION_PATH}?ticket=${ticket}&next=${next}`);
+	}
+	return redirect(`${to.origin}${PREVIEW_SESSION_PATH}?anon=1&next=${next}`);
+}
+
+/** `/_emdash/preview-session?ticket=…|anon=1&next=…` on a preview host: turn the ticket into this host's session cookie. */
+async function finishPreviewSession(url: URL, env: Record<string, unknown>): Promise<Response> {
+	const next = safeNext(url.searchParams.get("next"));
+	const ticket = url.searchParams.get("ticket") ?? "";
+	const kv = env.SESSION as KVNamespace | undefined;
+	const anon = `${PREVIEW_ANON_COOKIE}=1; Path=/; Max-Age=1800; Secure; SameSite=Lax`;
+	if (/^[0-9a-f]{64}$/.test(ticket) && kv) {
+		const key = `preview-ticket:${ticket}`;
+		const raw = await kv.get(key);
+		if (raw) {
+			await kv.delete(key);
+			try {
+				const t = JSON.parse(raw) as { session?: string; exp?: number };
+				if (typeof t.session === "string" && t.session && (t.exp ?? 0) > Date.now()) {
+					return redirect(next, [
+						`${SESSION_COOKIE}=${t.session}; Path=/; HttpOnly; Secure; SameSite=Lax`,
+						`${PREVIEW_ANON_COOKIE}=; Path=/; Max-Age=0; Secure; SameSite=Lax`,
+					]);
+				}
+			} catch {
+				// fall through: an unreadable ticket is treated like none
+			}
+		}
+	}
+	return redirect(next, [anon]);
+}
+
+/** A top-level HTML navigation (the only requests worth bouncing for a session). */
+function isDocumentNavigation(request: Request): boolean {
+	if (request.method !== "GET") return false;
+	const dest = request.headers.get("sec-fetch-dest");
+	if (dest && dest !== "document") return false;
+	return (request.headers.get("accept") ?? "").includes("text/html");
+}
 /** How long a branch head is trusted before GitHub is asked again. */
 const REF_TTL_SECONDS = 10;
 const GITHUB = "https://api.github.com";
@@ -304,11 +477,12 @@ async function servePreview(
 				"x-robots-tag": "noindex, nofollow",
 			},
 		});
+	if (!PREVIEW_LABEL.test(label)) return plain(404, `No preview called "${label}".`);
+	// The session handoff, then everything under /_emdash (admin, API, media) as on any other hostname.
+	if (url.pathname === PREVIEW_SESSION_PATH) return finishPreviewSession(url, env);
+	if (isBackendPath(url.pathname)) return backend.fetch(request, env, ctx);
 	if (request.method !== "GET" && request.method !== "HEAD")
 		return new Response("Method Not Allowed", { status: 405 });
-	if (!PREVIEW_LABEL.test(label)) return plain(404, `No preview called "${label}".`);
-	if (isBackendPath(url.pathname))
-		return plain(404, "Previews are static: the backend is not available on a preview hostname.");
 	const conn = await repoConnection(env);
 	if (!conn)
 		return plain(503, "This site has no GitHub connection, so there is nothing to preview.");
@@ -333,16 +507,41 @@ async function servePreview(
 	}
 	if (!served) return plain(404, "Not found in this preview.");
 	const ext = served.path.split(".").pop()?.toLowerCase() ?? "";
+	const headers: Record<string, string> = {
+		"content-type": MIME[ext] ?? "application/octet-stream",
+		"cache-control": "public, max-age=60",
+		"x-robots-tag": "noindex, nofollow",
+		"x-preview-branch": branch,
+		"x-preview-commit": sha,
+		vary: PREVIEW_HEADER,
+	};
+	if (ext === "html" && request.method === "GET") {
+		const cookie = request.headers.get("cookie");
+		const hasSession = !!cookieValue(cookie, SESSION_COOKIE);
+		if (hasSession && (await roleOf(request, url, env, ctx)) >= TOOLBAR_MIN_ROLE) {
+			const toolbar = renderToolbar({
+				editMode: cookieHas(cookie, EDIT_MODE_COOKIE, "true"),
+				isPreview: true,
+			});
+			const html = injectToolbarHtml(new TextDecoder().decode(served.body), toolbar);
+			return new Response(html, {
+				status: served.status,
+				headers: { ...headers, "cache-control": "private, no-store" },
+			});
+		}
+		// No session here yet: one bounce through the site's origin decides whether there is an editor to hand over.
+		if (!hasSession && !cookieValue(cookie, PREVIEW_ANON_COOKIE) && isDocumentNavigation(request)) {
+			const { siteUrl, platformUrl } = await siteOrigins(env);
+			const origin = platformUrl ? previewOrigin(platformUrl, label) : null;
+			if (siteUrl && origin) {
+				const to = encodeURIComponent(`${origin}${url.pathname}${url.search}`);
+				return redirect(`${siteUrl}${PREVIEW_SESSION_START}?to=${to}`);
+			}
+		}
+	}
 	return new Response(request.method === "HEAD" ? null : served.body, {
 		status: served.status,
-		headers: {
-			"content-type": MIME[ext] ?? "application/octet-stream",
-			"cache-control": "public, max-age=60",
-			"x-robots-tag": "noindex, nofollow",
-			"x-preview-branch": branch,
-			"x-preview-commit": sha,
-			vary: PREVIEW_HEADER,
-		},
+		headers,
 	});
 }
 
@@ -364,6 +563,8 @@ export default {
 		// A preview hostname (via the router): serve the requested static branch from git.
 		const previewLabel = request.headers.get(PREVIEW_HEADER);
 		if (previewLabel) return servePreview(request, url, env, ctx, previewLabel.toLowerCase());
+		// An editor on the way to a preview hostname (see "Editors on previews").
+		if (url.pathname === PREVIEW_SESSION_START) return startPreviewSession(request, url, env, ctx);
 		// Public (non-backend) paths are NEVER served by EmDash's own SSR: the
 		// frontend is the GitHub Pages build, reached only through this proxy.
 		if (!isBackendPath(url.pathname)) {
