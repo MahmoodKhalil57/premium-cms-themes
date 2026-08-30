@@ -16,6 +16,7 @@
         "@premium-cms/plugin-cloudflare-email-byo": "^0.1.0",
         "@premium-cms/plugin-forms": "^0.2.6",
         "@premium-cms/plugin-premiumcms-projects": "^0.2.15",
+        "@premium-cms/plugin-types": "^0.3.3",
         "@premium-cms/plugin-webhook-notifier": "^0.2.0",
         "astro": "^7.0.0",
         "astro-iconset": "^0.0.4",
@@ -513,7 +514,7 @@
 
     "@premium-cms/plugin-premiumcms-projects": ["@premium-cms/plugin-premiumcms-projects@0.2.15", "", { "dependencies": { "blakejs": "^1.2.1", "tweetnacl": "^1.0.3" }, "peerDependencies": { "@premium-cms/emdash": "^0.35.18" } }, "sha512-PSMEFwx5VkkWzRhrCgXuSYizB4xzSgghvbXNMH+/RCOkSyV7enDYN3BrihAPuL8rpEUGODyU4sLYg5W1QPPiAg=="],
 
-    "@premium-cms/plugin-types": ["@premium-cms/plugin-types@0.3.2", "", { "dependencies": { "zod": "^4.4.1" } }, "sha512-ke00r+DERPrNW0VVNvqIxO9OTqMuQ4ve9qjn1SkwL/PGweTTtGXd9zY2DKF6voBE756NPRnGiE96s6RviqwNfg=="],
+    "@premium-cms/plugin-types": ["@premium-cms/plugin-types@0.3.3", "", { "dependencies": { "zod": "^4.4.1" } }, "sha512-FK2RHlfEjvjNo5bNNMz2hSfM/Yzc72XtSQ4+KJZZFhGcYFqVzDwM1R0fmEUyrJEf0mIkCEj+WIQSTBszLr5Bqw=="],
 
     "@premium-cms/plugin-webhook-notifier": ["@premium-cms/plugin-webhook-notifier@0.2.0", "", { "peerDependencies": { "@premium-cms/emdash": ">=0.15.0" } }, "sha512-f/V77w3Yzf+WvKMZF2FLwG+oPACRuw1AoDyzIkPORCwdy3mGycZYpejWsmOOixNsR+ymeg7wOL2jNw2J8IEE9A=="],
 
@@ -1917,7 +1918,7 @@
 
     "@oslojs/webauthn/@oslojs/encoding": ["@oslojs/encoding@1.0.0", "", {}, "sha512-dyIB0SdZgMm5BhGwdSp8rMxEFIopLKxDG1vxIBaiogyom6ZqH2aXPb6DEC2WzOOWKdPSq1cxdNeRx2wAn1Z+ZQ=="],
 
-    "@premium-cms/emdash/@premium-cms/plugin-types": ["@premium-cms/plugin-types@0.3.3", "", { "dependencies": { "zod": "^4.4.1" } }, "sha512-FK2RHlfEjvjNo5bNNMz2hSfM/Yzc72XtSQ4+KJZZFhGcYFqVzDwM1R0fmEUyrJEf0mIkCEj+WIQSTBszLr5Bqw=="],
+    "@premium-cms/admin/@premium-cms/plugin-types": ["@premium-cms/plugin-types@0.3.2", "", { "dependencies": { "zod": "^4.4.1" } }, "sha512-ke00r+DERPrNW0VVNvqIxO9OTqMuQ4ve9qjn1SkwL/PGweTTtGXd9zY2DKF6voBE756NPRnGiE96s6RviqwNfg=="],
 
     "@vscode/emmet-helper/jsonc-parser": ["jsonc-parser@2.3.1", "", {}, "sha512-H8jvkz1O50L3dMZCsLqiuB2tA7muqbSg1AtGEkN0leAqGjsUzDJir3Zwr02BhqdcITPg3ei3mZ+HjMocAknhhg=="],
 
