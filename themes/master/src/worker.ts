@@ -1,6 +1,14 @@
+import {
+	BrowserBridge,
+	handleAgentRequest,
+	PluginAgent,
+	Sandbox,
+} from "@premium-cms/cloudflare/agents";
 import handler, { createScheduledHandler, PluginBridge } from "@premium-cms/cloudflare/worker";
 
 export { PluginBridge };
+// The agent runtime (ctx.agents / ctx.sandbox for plugins), hosted by master itself.
+export { BrowserBridge, PluginAgent, Sandbox };
 
 const baseScheduled = createScheduledHandler();
 
@@ -15,6 +23,16 @@ const baseScheduled = createScheduledHandler();
  */
 export default {
 	...handler,
+	// The agent runtime's public endpoints first; everything else is EmDash.
+	fetch: async (request: Request, env: Env, ctx: ExecutionContext): Promise<Response> => {
+		if (new URL(request.url).pathname.startsWith("/_emdash/agents/")) {
+			const served = await handleAgentRequest(request, env as never);
+			if (served) return served;
+		}
+		return (
+			handler as { fetch: (r: Request, e: unknown, c: ExecutionContext) => Promise<Response> }
+		).fetch(request, env, ctx);
+	},
 	scheduled: async (event: ScheduledController, env: Env, ctx: ExecutionContext) => {
 		ctx.waitUntil(baseScheduled(event, env, ctx));
 		const e = env as unknown as { TICK_TOKEN?: string; SELF?: { fetch: typeof fetch } };

@@ -17,4 +17,19 @@
 	"worker_loaders": [{ "binding": "LOADER" }],
 	"services": [{ "binding": "SELF", "service": "master" }],
 	"triggers": { "crons": ["* * * * *", "*/2 * * * *"] },
+	// The agent runtime: plugins' Think agents, the browser bridge and the build sandbox, hosted here.
+	"ai": { "binding": "AI" },
+	"durable_objects": {
+		"bindings": [
+			{ "class_name": "PluginAgent", "name": "PluginAgent" },
+			{ "class_name": "BrowserBridge", "name": "BrowserBridge" },
+			{ "class_name": "Sandbox", "name": "Sandbox" },
+		],
+	},
+	"migrations": [
+		{ "tag": "v1", "new_sqlite_classes": ["PluginAgent", "BrowserBridge", "Sandbox"] },
+	],
+	"containers": [
+		{ "class_name": "Sandbox", "image": "docker.io/cloudflare/sandbox:0.12.9", "max_instances": 5 },
+	],
 }

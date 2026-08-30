@@ -1,3 +1,9 @@
+import {
+	BrowserBridge,
+	handleAgentRequest,
+	PluginAgent,
+	Sandbox,
+} from "@premium-cms/cloudflare/agents";
 import handler, { createScheduledHandler, PluginBridge } from "@premium-cms/cloudflare/worker";
 import {
 	cookieHas,
@@ -9,6 +15,9 @@ import {
 } from "@premium-cms/emdash/visual-editing";
 
 export { PluginBridge };
+// The agent runtime: plugins reach it through ctx.agents / ctx.sandbox; the
+// instance's own account hosts the AI, the objects and the build container.
+export { BrowserBridge, PluginAgent, Sandbox };
 
 /**
  * Backend Worker entry with a static-frontend proxy.
@@ -347,6 +356,11 @@ export default {
 		const origin =
 			typeof env.FRONTEND_ORIGIN === "string" ? env.FRONTEND_ORIGIN.replace(/\/+$/, "") : "";
 		const url = new URL(request.url);
+		// The agent runtime's public endpoints (toolbar client, ticket-gated chat socket, browser bridge).
+		if (url.pathname.startsWith("/_emdash/agents/")) {
+			const served = await handleAgentRequest(request, env as never);
+			if (served) return served;
+		}
 		// A preview hostname (via the router): serve the requested static branch from git.
 		const previewLabel = request.headers.get(PREVIEW_HEADER);
 		if (previewLabel) return servePreview(request, url, env, ctx, previewLabel.toLowerCase());
