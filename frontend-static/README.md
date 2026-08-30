@@ -17,7 +17,7 @@ API token (`EMDASH_API_TOKEN`); no repository secrets are needed any more.
 
 ## Local development
 
-The frontend renders the site's **content snapshot**, so running it on your
+The frontend renders from the site's **live backend**, so running it on your
 machine needs two values from the site: its backend URL and the **frontend API
 token** — the token of the site's built-in frontend service account (nobody
 signs in as it; it may only read content, schema and the snapshot, drafts
@@ -33,14 +33,20 @@ SITE_URL=https://<your site>
 EMDASH_API_TOKEN=ec_pat_…
 
 bun install
-bun dev          # = node bin/snapshot-to-sqlite.mjs && astro dev  → http://localhost:4321
+bun dev          # astro dev, live-connected  → http://localhost:4321
 ```
 
-`bin/snapshot-to-sqlite.mjs` pulls the snapshot into `snapshot.db` (re-run it
-to pick up new content; `EMDASH_INCLUDE_DRAFTS=1` includes drafts), and
-`astro dev` serves the site from it. `astro build` uses the same file — exactly
-what the platform's container build does. Site repos generated before the
-`dev` script existed can run the two commands by hand.
+With those two values set, `bun dev` **live-connects** to the deployed
+instance the same way the platform's builds and previews do: EmDash's data
+layer reads an in-memory database that keeps itself refreshed from the
+backend's `/_emdash/api/snapshot` (`@premium-cms/emdash/db/snapshot-live`),
+so publishing in the admin shows up on the next reload — no snapshot file, no
+pull step (`EMDASH_INCLUDE_DRAFTS=1` renders drafts too). The dev server also
+proxies `/_emdash/*` to the backend, so client-side features (forms, commerce)
+work same-origin. `astro build` renders from the same live source; only the
+platform's container build materializes `snapshot.db` first
+(`bin/snapshot-to-sqlite.mjs`, kept for exactly that) by setting
+`EMDASH_SNAPSHOT_DB`.
 
 ## Pull-request checks (`check:cf` / `test:cf`)
 
