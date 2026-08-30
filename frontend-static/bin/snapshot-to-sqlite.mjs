@@ -2,7 +2,7 @@
  * Snapshot → local SQLite loader for the static-frontend build.
  *
  * Fetches a portable content snapshot from a live backend
- * (`${BACKEND}/_emdash/api/snapshot`, authed with an HMAC preview signature)
+ * (`${BACKEND}/_emdash/api/snapshot`, authenticated with the site's frontend API token)
  * and materializes it as a local SQLite file. A subsequent `astro build`
  * (output: static) points EmDash's getDb() at this file via a raw
  * `@premium-cms/emdash/db/sqlite` DatabaseDescriptor, so the entire existing
@@ -13,29 +13,23 @@
  * and INSERT every row; the build's migration run then no-ops.
  *
  *   node bin/snapshot-to-sqlite.mjs <backend-url> <out.db>
- * env: EMDASH_PREVIEW_SECRET (matches the backend's emdash:preview_secret)
+ * env: EMDASH_API_TOKEN — the frontend service account's token (admins: Settings →
+ *      /_emdash/api/settings/frontend-token)
  */
 import BetterSqlite3 from "better-sqlite3";
-import crypto from "node:crypto";
 import { existsSync, readdirSync, readFileSync, rmSync } from "node:fs";
 import path from "node:path";
 
 const backend = (process.argv[2] || process.env.BACKEND_URL || "").replace(/\/$/, "");
 const outFile = process.argv[3] || process.env.EMDASH_SNAPSHOT_DB || "snapshot.db";
-const secret = process.env.EMDASH_PREVIEW_SECRET;
-if (!backend || !secret) {
-	console.error(
-		"usage: snapshot-to-sqlite.mjs <backend-url> <out.db>  (env EMDASH_PREVIEW_SECRET)",
-	);
+const token = process.env.EMDASH_API_TOKEN;
+if (!backend || !token) {
+	console.error("usage: snapshot-to-sqlite.mjs <backend-url> <out.db>  (env EMDASH_API_TOKEN)");
 	process.exit(1);
 }
 
-const exp = Math.floor(Date.now() / 1000) + 300;
-const source = backend;
-const sig = crypto.createHmac("sha256", secret).update(`${source}:${exp}`).digest("hex");
-
 const res = await fetch(`${backend}/_emdash/api/snapshot`, {
-	headers: { "X-Preview-Signature": `${source}:${exp}:${sig}` },
+	headers: { Authorization: `Bearer ${token}`, "X-EmDash-Request": "1" },
 });
 if (!res.ok) {
 	console.error(`snapshot fetch failed: ${res.status} ${(await res.text()).slice(0, 200)}`);

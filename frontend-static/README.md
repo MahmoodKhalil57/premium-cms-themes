@@ -12,23 +12,25 @@ and push `dist/` to `static/<branch>`, which GitHub Pages serves ("deploy from a
 branch"). Pull requests get the same build on `static/<pr-branch>` plus a
 Cloudflare preview URL.
 
-The build reads the site's content snapshot with the site's preview secret; no
-repository secrets are needed any more.
+The build reads the site's content snapshot with the frontend service account's
+API token (`EMDASH_API_TOKEN`); no repository secrets are needed any more.
 
 ## Local development
 
 The frontend renders the site's **content snapshot**, so running it on your
-machine needs two values from the site: its backend URL and its preview
-secret (the snapshot endpoint is signed with it, and it grants read access to
-unpublished content — treat it like a password). A site admin gets both from
-`https://<your site>/_emdash/api/settings/preview-secret` while signed in
-(JSON with an `env` block ready to paste).
+machine needs two values from the site: its backend URL and the **frontend API
+token** — the token of the site's built-in frontend service account (nobody
+signs in as it; it may only read content, schema and the snapshot, drafts
+included — treat it like a password). A site admin gets both from
+`https://<your site>/_emdash/api/settings/frontend-token` while signed in
+(JSON with an `env` block ready to paste; `POST …/frontend-token/rotate`
+replaces it).
 
 ```sh
 # .env (never commit it)
 BACKEND_URL=https://<your site>
 SITE_URL=https://<your site>
-EMDASH_PREVIEW_SECRET=prev_…
+EMDASH_API_TOKEN=ec_pat_…
 
 bun install
 bun dev          # = node bin/snapshot-to-sqlite.mjs && astro dev  → http://localhost:4321
