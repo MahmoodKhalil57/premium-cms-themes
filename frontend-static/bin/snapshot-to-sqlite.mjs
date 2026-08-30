@@ -20,6 +20,17 @@ import BetterSqlite3 from "better-sqlite3";
 import { existsSync, readdirSync, readFileSync, rmSync } from "node:fs";
 import path from "node:path";
 
+// `bun run` / `npm run` do not always hand .env to a `node` child: load it
+// ourselves — only for variables that are not already set.
+try {
+	for (const line of readFileSync(".env", "utf8").split("\n")) {
+		const m = line.match(/^\s*(?:export\s+)?([A-Z0-9_]+)\s*=\s*(.*)\s*$/);
+		if (m && !(m[1] in process.env)) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "");
+	}
+} catch {
+	// no .env — the environment must carry the values
+}
+
 const backend = (process.argv[2] || process.env.BACKEND_URL || "").replace(/\/$/, "");
 const outFile = process.argv[3] || process.env.EMDASH_SNAPSHOT_DB || "snapshot.db";
 const token = process.env.EMDASH_API_TOKEN;
