@@ -15,6 +15,31 @@ Cloudflare preview URL.
 The build reads the site's content snapshot with the site's preview secret; no
 repository secrets are needed any more.
 
+## Local development
+
+The frontend renders the site's **content snapshot**, so running it on your
+machine needs two values from the site: its backend URL and its preview
+secret (the snapshot endpoint is signed with it, and it grants read access to
+unpublished content — treat it like a password). A site admin gets both from
+`https://<your site>/_emdash/api/settings/preview-secret` while signed in
+(JSON with an `env` block ready to paste).
+
+```sh
+# .env (never commit it)
+BACKEND_URL=https://<your site>
+SITE_URL=https://<your site>
+EMDASH_PREVIEW_SECRET=prev_…
+
+bun install
+bun dev          # = node bin/snapshot-to-sqlite.mjs && astro dev  → http://localhost:4321
+```
+
+`bin/snapshot-to-sqlite.mjs` pulls the snapshot into `snapshot.db` (re-run it
+to pick up new content; `EMDASH_INCLUDE_DRAFTS=1` includes drafts), and
+`astro dev` serves the site from it. `astro build` uses the same file — exactly
+what the platform's container build does. Site repos generated before the
+`dev` script existed can run the two commands by hand.
+
 ## Pull-request checks (`check:cf` / `test:cf`)
 
 The GitHub Agent plugin builds every pull request from a whitelisted author in a
