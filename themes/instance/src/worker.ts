@@ -264,18 +264,12 @@ async function startPreviewSession(
 	// roleOf returns the real role for a valid session and 0 for an
 	// absent/invalid/expired one — the distinction the dev branch below needs.
 	const role = session && kv ? await roleOf(request, url, env, ctx) : 0;
-	console.log(
-		`[handoff] start to=${to.href} devTarget=${devTarget} hasSession=${!!session} hasKv=${!!kv} role=${role}`,
-	);
 	if (role >= TOOLBAR_MIN_ROLE && kv) {
 		const ticket = randomTicket();
 		await kv.put(
 			`preview-ticket:${ticket}`,
 			JSON.stringify({ session, exp: Date.now() + PREVIEW_TICKET_TTL * 1000, origin: to.origin }),
 			{ expirationTtl: PREVIEW_TICKET_TTL },
-		);
-		console.log(
-			`[handoff] start MINT ticket=${ticket.slice(0, 8)} → ${to.origin}${PREVIEW_SESSION_PATH}`,
 		);
 		return redirect(`${to.origin}${PREVIEW_SESSION_PATH}?ticket=${ticket}&next=${next}`);
 	}
@@ -284,15 +278,10 @@ async function startPreviewSession(
 		// just can't edit) — no login loop. An absent, invalid or EXPIRED
 		// session (role 0) authenticates on THIS origin first, since passkeys
 		// and magic-link emails only work here — this is the pill's real job.
-		if (role > 0) {
-			console.log(`[handoff] start BOUNCE (role ${role} < author) → ${to.href}`);
-			return redirect(to.href);
-		}
+		if (role > 0) return redirect(to.href);
 		const back = encodeURIComponent(url.pathname + url.search);
-		console.log(`[handoff] start LOGIN (role 0) → ${siteUrl || url.origin}/_emdash/admin/login`);
 		return redirect(`${siteUrl || url.origin}/_emdash/admin/login?redirect=${back}`);
 	}
-	console.log(`[handoff] start ANON → ${to.origin}${PREVIEW_SESSION_PATH}`);
 	return redirect(`${to.origin}${PREVIEW_SESSION_PATH}?anon=1&next=${next}`);
 }
 
@@ -305,7 +294,6 @@ async function finishPreviewSession(url: URL, env: Record<string, unknown>): Pro
 	if (/^[0-9a-f]{64}$/.test(ticket) && kv) {
 		const key = `preview-ticket:${ticket}`;
 		const raw = await kv.get(key);
-		console.log(`[handoff] finish ticket=${ticket.slice(0, 8)} found=${!!raw} next=${next}`);
 		if (raw) {
 			await kv.delete(key);
 			try {
