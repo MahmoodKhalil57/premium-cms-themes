@@ -246,14 +246,16 @@ async function startPreviewSession(
 	env: Record<string, unknown>,
 	ctx: ExecutionContext,
 ): Promise<Response> {
-	const { platformUrl } = await siteOrigins(env);
+	const { siteUrl, platformUrl } = await siteOrigins(env);
 	let to: URL;
 	try {
 		to = new URL(url.searchParams.get("to") ?? "");
 	} catch {
 		return new Response("Bad request", { status: 400 });
 	}
-	if (!platformUrl || !previewLabelOf(platformUrl, to))
+	const devTarget =
+		to.protocol === "http:" && (to.hostname === "localhost" || to.hostname === "127.0.0.1");
+	if (!devTarget && (!platformUrl || !previewLabelOf(platformUrl, to)))
 		return new Response("Not one of this site's previews.", { status: 400 });
 	const next = encodeURIComponent(to.pathname + to.search);
 	const cookie = request.headers.get("cookie");
@@ -263,10 +265,16 @@ async function startPreviewSession(
 		const ticket = randomTicket();
 		await kv.put(
 			`preview-ticket:${ticket}`,
-			JSON.stringify({ session, exp: Date.now() + PREVIEW_TICKET_TTL * 1000 }),
+			JSON.stringify({ session, exp: Date.now() + PREVIEW_TICKET_TTL * 1000, origin: to.origin }),
 			{ expirationTtl: PREVIEW_TICKET_TTL },
 		);
 		return redirect(`${to.origin}${PREVIEW_SESSION_PATH}?ticket=${ticket}&next=${next}`);
+	}
+	if (devTarget) {
+		// Local dev has no session yet: authenticate on THIS origin (passkeys
+		// and magic-link emails only work here), then return to this handoff.
+		const back = encodeURIComponent(url.pathname + url.search);
+		return redirect(`${siteUrl || url.origin}/_emdash/admin/login?redirect=${back}`);
 	}
 	return redirect(`${to.origin}${PREVIEW_SESSION_PATH}?anon=1&next=${next}`);
 }
@@ -283,11 +291,14 @@ async function finishPreviewSession(url: URL, env: Record<string, unknown>): Pro
 		if (raw) {
 			await kv.delete(key);
 			try {
-				const t = JSON.parse(raw) as { session?: string; exp?: number };
+				const t = JSON.parse(raw) as { session?: string; exp?: number; origin?: string };
 				if (typeof t.session === "string" && t.session && (t.exp ?? 0) > Date.now()) {
+					// A local-dev target reaches this through the site's vite proxy;
+					// Safari refuses Secure cookies on plain http://localhost.
+					const secure = t.origin?.startsWith("http://") ? "" : " Secure;";
 					return redirect(next, [
-						`${SESSION_COOKIE}=${t.session}; Path=/; HttpOnly; Secure; SameSite=Lax`,
-						`${PREVIEW_ANON_COOKIE}=; Path=/; Max-Age=0; Secure; SameSite=Lax`,
+						`${SESSION_COOKIE}=${t.session}; Path=/; HttpOnly;${secure} SameSite=Lax`,
+						`${PREVIEW_ANON_COOKIE}=; Path=/; Max-Age=0;${secure} SameSite=Lax`,
 					]);
 				}
 			} catch {
@@ -565,6 +576,9 @@ export default {
 		if (previewLabel) return servePreview(request, url, env, ctx, previewLabel.toLowerCase());
 		// An editor on the way to a preview hostname (see "Editors on previews").
 		if (url.pathname === PREVIEW_SESSION_START) return startPreviewSession(request, url, env, ctx);
+		// The finish leg for a local-dev target arrives here through the site's
+		// vite proxy (no preview header); Set-Cookie passes through to localhost.
+		if (url.pathname === PREVIEW_SESSION_PATH) return finishPreviewSession(url, env);
 		// Public (non-backend) paths are NEVER served by EmDash's own SSR: the
 		// frontend is the GitHub Pages build, reached only through this proxy.
 		if (!isBackendPath(url.pathname)) {
