@@ -7,7 +7,7 @@ Cloudflare.
 
 The site is built by the platform, never by GitHub Actions: a push to the
 default branch or a content publish makes the GitHub Agent plugin build the
-site in a Cloudflare container (`bin/snapshot-to-sqlite.mjs` → `astro build`)
+site in a Cloudflare container (live from the backend's content snapshot)
 and push `dist/` to `static/<branch>`, which GitHub Pages serves ("deploy from a
 branch"). Pull requests get the same build on `static/<pr-branch>` plus a
 Cloudflare preview URL.
@@ -43,10 +43,8 @@ backend's `/_emdash/api/snapshot` (`@premium-cms/emdash/db/snapshot-live`),
 so publishing in the admin shows up on the next reload — no snapshot file, no
 pull step (`EMDASH_INCLUDE_DRAFTS=1` renders drafts too). The dev server also
 proxies `/_emdash/*` to the backend, so client-side features (forms, commerce)
-work same-origin. `astro build` renders from the same live source; only the
-platform's container build materializes `snapshot.db` first
-(`bin/snapshot-to-sqlite.mjs`, kept for exactly that) by setting
-`EMDASH_SNAPSHOT_DB`.
+work same-origin. `astro build` renders from the same live source —
+the platform's container builds do exactly that too.
 
 ## Pull-request checks (`check:cf` / `test:cf`)
 
