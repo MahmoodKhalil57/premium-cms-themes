@@ -271,8 +271,10 @@ async function startPreviewSession(
 		return redirect(`${to.origin}${PREVIEW_SESSION_PATH}?ticket=${ticket}&next=${next}`);
 	}
 	if (devTarget) {
-		// Local dev has no session yet: authenticate on THIS origin (passkeys
-		// and magic-link emails only work here), then return to this handoff.
+		// A session that failed the role gate goes straight back, toolbar-less;
+		// only session-less visitors authenticate on THIS origin first
+		// (passkeys and magic-link emails only work here).
+		if (session) return redirect(to.href);
 		const back = encodeURIComponent(url.pathname + url.search);
 		return redirect(`${siteUrl || url.origin}/_emdash/admin/login?redirect=${back}`);
 	}
