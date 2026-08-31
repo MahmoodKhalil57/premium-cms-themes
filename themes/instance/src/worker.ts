@@ -261,7 +261,10 @@ async function startPreviewSession(
 	const cookie = request.headers.get("cookie");
 	const session = cookieValue(cookie, SESSION_COOKIE);
 	const kv = env.SESSION as KVNamespace | undefined;
-	if (session && kv && (await roleOf(request, url, env, ctx)) >= TOOLBAR_MIN_ROLE) {
+	// roleOf returns the real role for a valid session and 0 for an
+	// absent/invalid/expired one — the distinction the dev branch below needs.
+	const role = session && kv ? await roleOf(request, url, env, ctx) : 0;
+	if (role >= TOOLBAR_MIN_ROLE && kv) {
 		const ticket = randomTicket();
 		await kv.put(
 			`preview-ticket:${ticket}`,
@@ -271,10 +274,11 @@ async function startPreviewSession(
 		return redirect(`${to.origin}${PREVIEW_SESSION_PATH}?ticket=${ticket}&next=${next}`);
 	}
 	if (devTarget) {
-		// A session that failed the role gate goes straight back, toolbar-less;
-		// only session-less visitors authenticate on THIS origin first
-		// (passkeys and magic-link emails only work here).
-		if (session) return redirect(to.href);
+		// A VALID but below-author session bounces straight back (signed in,
+		// just can't edit) — no login loop. An absent, invalid or EXPIRED
+		// session (role 0) authenticates on THIS origin first, since passkeys
+		// and magic-link emails only work here — this is the pill's real job.
+		if (role > 0) return redirect(to.href);
 		const back = encodeURIComponent(url.pathname + url.search);
 		return redirect(`${siteUrl || url.origin}/_emdash/admin/login?redirect=${back}`);
 	}
